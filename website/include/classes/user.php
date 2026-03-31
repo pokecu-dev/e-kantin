@@ -10,7 +10,8 @@
 
         public function get_data($username,$password){
             $u = $this->db->real_escape_string(strtolower($username));
-
+            // $u = $this->db->real_escape_string($username);
+            
             $sql = "SELECT * FROM user WHERE USERNAME = '$u'";
             $query = $this->db->query($sql);
 

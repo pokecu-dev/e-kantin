@@ -16,7 +16,8 @@
     header('content-type: application/json');
 
     if ($userdata) {
-        $_SESSION['status'] = 'login';
+        // $_SESSION['status'] = 'login';
+        $_SESSION['status'] = 'success';
         $_SESSION['id_user'] = $userdata['ID'];
         $_SESSION['nama_lengkap'] = $userdata['NAMA_LENGKAP'];
         $_SESSION['role'] = $userdata['ROLE'];
@@ -25,6 +26,8 @@
             'status' => 'success',
             'role' => $userdata['ROLE']
             ]);
+        
+        
         
     }
     else{
