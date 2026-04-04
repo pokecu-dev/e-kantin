@@ -1,0 +1,6 @@
+# fungsi htaccess adalah memblokir akses user,jika masuk ke folder include dari url
+# http://localhost/include/apa_gitu -> akan terkena 403 forbid
+
+Order deny,allow
+Deny from all
+

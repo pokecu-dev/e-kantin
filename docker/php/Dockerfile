@@ -1,6 +1,3 @@
-# FROM php:8.2-apache
-
-# RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
 FROM php:8.2-apache
 
@@ -19,6 +16,10 @@ RUN docker-php-ext-install pdo pdo_mysql mysqli mbstring exif pcntl bcmath gd
 
 # 3. Aktifkan Apache mod_rewrite untuk Laravel Routing
 RUN a2enmod rewrite
+
+# untuk htacces,di file /website/include supaya tidak bisa di buka dari website
+RUN sed -i 's/AllowOverride None/AllowOverride All/g' \
+    /etc/apache2/apache2.conf
 
 # 4. Install Composer (Untuk install Laravel nantinya)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

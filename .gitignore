@@ -1,0 +1,5 @@
+# file dan folder yang tidak boleh di push:D
+
+.env
+mysql_data/
+

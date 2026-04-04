@@ -41,20 +41,22 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: inikantin
-      MYSQL_DATABASE: kantin
-      MYSQL_USER: user_kantin
-      MYSQL_PASSWORD: password_kantin
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3307:3306"
     volumes:
       - ./mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - kantin-network
 
   # DATABASE MANAGER (Akses di localhost:8081)
   phpmyadmin:
     image: phpmyadmin:latest
+    restart: always
     ports:
       - "8081:80"
     environment:
