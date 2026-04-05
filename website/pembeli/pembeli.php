@@ -39,6 +39,9 @@
         <input type="file" id="myfile" name="filename">
         <input type="submit" value="unggah">
     </form>
+
+    <br>
+    <a href="../index.html">tes</a>
     
 </body>
 </html>

@@ -8,6 +8,36 @@ jalankan
 
 docker-compose up -d --build
 
+Pertama Kali Clone
+1. git clone
+2. bikin .env (copy dari .env.example, isi valuenya)
+3. docker-compose up -d --build
+4. tunggu container jalan
+5. jalanin script import → ./script_DB/import_db.sh
+6. buka localhost:8080
+
+Kalau Pull
+BE push perubahan PHP doang
+→ git pull
+→ langsung refresh browser, selesai ✅ (karena volume)
+
+BE push update docker-compose.yml
+→ git pull
+→ docker-compose up -d
+→ selesai ✅
+
+BE push update Dockerfile
+→ git pull
+→ docker-compose up -d --build
+→ selesai ✅
+
+BE push update init.sql (struktur DB berubah)
+→ git pull
+→ ./script_DB/import_db.sh
+→ selesai ✅
+
+
+
 penjelasan docker(ai)
 syntax
 1. Menjalankan & Membangun

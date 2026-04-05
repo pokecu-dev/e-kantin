@@ -4,3 +4,4 @@
 Order deny,allow
 Deny from all
 
+ErrorDocument 403 "403 forbidden: Hy Sayank :P Mau nyari apa di sini? Balik ke Home sana!"
