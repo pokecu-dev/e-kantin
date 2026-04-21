@@ -1,15 +1,4 @@
 <?php
-    // echo 'penjual:D';
-    // echo 'br';
-    // echo 'btw ini masih kosong,belum ada apa apa,jadi siapapun bisa akses ini:v'
-
-
-?>
-
-<?php
-    
-
-    
 
     session_start();
     if(!isset($_SESSION['status']) || $_SESSION['status'] != 'success'){
@@ -17,7 +6,11 @@
         header("location: ../index.php");
         exit();
     }
-    if($_SESSION['role'] != "penjual")
+    if ($_SESSION['role'] != 'ADMIN') {
+        header("location: ../index.php");
+    }
+
+    
 
     $nama = $_SESSION['nama_lengkap'];
 
@@ -53,7 +46,7 @@
     </form>
 
     <br>
-    <a href="../atmin/TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
+    <a href="TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
     
 </body>
 </html>

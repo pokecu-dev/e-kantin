@@ -3,10 +3,12 @@
     ini_set('display_errors', 1);
     
     session_start();
-    require_once 'include/classes/user.php';
+    require_once __DIR__ . '/include/classes/user.php';
     include 'include/koneksi.php';
 
         
+    
+
     $username_in = $_POST['user_input'];
     $pass_in = $_POST['pass'];
     

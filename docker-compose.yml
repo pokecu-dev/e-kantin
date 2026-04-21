@@ -31,10 +31,18 @@ services:
       - "8080:80"
     volumes:
       - ./website:/var/www/html
+      - ./source:/var/source
     depends_on:
       - my-database
     networks:
       - kantin-network
+    environment:
+      DB_HOST: ${DB_HOST}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      DB_PORT: ${DB_PORT}
 
   # DATABASE MYSQL
   my-database:
@@ -52,6 +60,7 @@ services:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - kantin-network
+    
 
   # DATABASE MANAGER (Akses di localhost:8081)
   phpmyadmin:

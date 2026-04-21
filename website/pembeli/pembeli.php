@@ -1,5 +1,8 @@
 <?php
     
+
+    
+
     session_start();
     if(!isset($_SESSION['status']) || $_SESSION['status'] != 'success'){
         // echo $_SESSION['status'];
@@ -32,7 +35,7 @@
     <!-- <a href="/logout.php"><button>log out</button></a> -->
     <a href="../logout.php"><button>log out</button></a>
 
-    <br>
+    <!-- <br>
     <p>tes up file</p>
     <form action="upfile.php" method="post" enctype="multipart/form-data">
         <label for="myfile">pilih file:</label>
@@ -41,7 +44,7 @@
     </form>
 
     <br>
-    <a href="../index.html">tes</a>
-    
+    <a href="../TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
+     -->
 </body>
 </html>

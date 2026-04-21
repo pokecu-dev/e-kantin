@@ -13,7 +13,7 @@
         header('location: penjual/penjual.php');
     }
     else{
-        // admin ini nanti
+        header('location: atmin/admin.php');
     }
 
 ?>

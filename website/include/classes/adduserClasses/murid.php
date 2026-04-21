@@ -1,11 +1,12 @@
 <?php
     
-    // require_once "__DIR__ ./adduser.php";
-    // require_once "./adduser.php";
-    require_once "./users.php";
-    // require_once "/workspaces/e-kantin/website/include/classes/adduserClasses/users.php";
+    // require_once __DIR__ . "__DIR__ ./adduser.php";
+    // require_once __DIR__ . "./adduser.php";
+    // require_once __DIR__ . "./website/include/classes/adduserClasses/tes.php";
+    require_once __DIR__ . '/users.php';  
+    // require_once __DIR__ . "/workspaces/e-kantin/website/include/classes/adduserClasses/users.php";
 
-    class Murid extends Users{
+    class Murid extends tes{
 
         public function add($usn, $pass, $nama_lengkap, $no_tlp, $email,$nisn,$id_kelas,$tempat_lahir,$tanggal_lahir,$alamat_rumah)
         {

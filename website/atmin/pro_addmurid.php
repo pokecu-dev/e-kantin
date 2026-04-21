@@ -1,6 +1,6 @@
 <?php
-    require_once "include/koneksi.php";
-    require_once "include/classes/adduserClasses/murid.php";
+    require_once __DIR__ . "/../include/koneksi.php";
+    require_once __DIR__ . "/../include/classes/adduserClasses/murid.php";
     // deklarasi
     $usn = $_POST['usn'];
     $pass = $_POST['pass'];
@@ -14,6 +14,8 @@
     $alamat_rumah = $_POST['alamat_rumah'];
 
     $idkelas;
+
+    $usn = strtolower($usn);
 
     // pengecekan id kelas
     if(is_numeric($kelas_input)){

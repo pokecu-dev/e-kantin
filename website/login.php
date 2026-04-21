@@ -118,9 +118,9 @@
                     else if(data.role === 'MURID' || data.role === 'GURU'){
                         window.location.href = 'pembeli/pembeli.php'
                     }
-                    // else if(data.role === "ADMIN"){
-
-                    // }
+                    else if(data.role === "ADMIN"){
+                        window.location.href = 'atmin/admin.php'
+                    }
                     else{
                         notif.innerText = "role tidak dikenali!";
                     }

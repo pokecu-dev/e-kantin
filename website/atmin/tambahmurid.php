@@ -6,7 +6,8 @@
 </head>
 <body>
     <h2>Form Test Tambah Murid</h2>
-    <form action="./pro_adduser.php" method="POST">
+    <p>note:usn akan di ubah menjadi huruf kecil semua</p>
+    <form action="./proaddmurid.php" method="POST">
         
         <label>Username</label><br>
         <input type="text" name="usn"><br><br>
@@ -30,7 +31,7 @@
         <input list="kelas_list" name="id_kelas" placeholder="Cari kelas...(x,xi,xii)"><br>
         <datalist id="kelas_list">
             <?php
-            require_once 'include/koneksi.php';
+            require_once __DIR__ . '/include/koneksi.php';
             $sql = "SELECT * FROM KELAS";
             $query = $conn->query($sql);
             while($kelas = $query->fetch_assoc()):
