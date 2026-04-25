@@ -93,14 +93,15 @@ berisi 2 tipe extensi,bash dan powershell
 - gunakan bash( .sh) jika memakai terminal wsl/linux/macos
 - gunakan powershell( .ps1) jika memakai powershell
 
-fe:sesudah pull jalanin impor
+fe:sesudah pull jalanin impor,
+
 be(jika db update):sebelum push jalanin ekspor
 
-impor akan mengisi mysql_data menggunakan file init.sql
+impor akan mengisi mysql_data menggunakan file init.sql,
 ekspor akan mengisi init.sql menggunakan folder mysql_data
 
 db aseli terletak di mysql_data,karena di simpan di situ:v
 
 NOTE:
-- JIKA SC PS1 TIDAK BISA JALAN,BUKA POWERSHELL JALAN KAN "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser" LALU KETIK Y,JANGAN PROTES DULU
+- JIKA SC PS1 TIDAK BISA JALAN,BUKA POWERSHELL JALAN KAN "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser" LALU KETIK Y,JANGAN PROTES DULU,
 - JIKA SC SH TIDAK JALAN,KETIK "chmod +x script/import.sh script/export.sh"

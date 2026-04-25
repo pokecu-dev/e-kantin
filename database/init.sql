@@ -16,34 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `detail_menu_kantin`
---
-
-DROP TABLE IF EXISTS `detail_menu_kantin`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `detail_menu_kantin` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `id_kantin` int NOT NULL,
-  `menu` varchar(100) NOT NULL,
-  `harga` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_id_kantin` (`id_kantin`),
-  CONSTRAINT `fk_id_kantin` FOREIGN KEY (`id_kantin`) REFERENCES `list_kantin` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `detail_menu_kantin`
---
-
-LOCK TABLES `detail_menu_kantin` WRITE;
-/*!40000 ALTER TABLE `detail_menu_kantin` DISABLE KEYS */;
-INSERT INTO `detail_menu_kantin` VALUES (1,1,'nasi goreng mawut',6000),(2,1,'bakso',8000),(3,2,'sate kambing',7000),(4,3,'ayam geprek',5000);
-/*!40000 ALTER TABLE `detail_menu_kantin` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `kelas`
 --
 
@@ -111,7 +83,7 @@ CREATE TABLE `MURID` (
   KEY `FK_ID_KELAS` (`ID_KELAS`),
   CONSTRAINT `FK_ID_KELAS` FOREIGN KEY (`ID_KELAS`) REFERENCES `kelas` (`ID`),
   CONSTRAINT `FK_ID_USER` FOREIGN KEY (`ID_USER`) REFERENCES `users` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,8 +92,38 @@ CREATE TABLE `MURID` (
 
 LOCK TABLES `MURID` WRITE;
 /*!40000 ALTER TABLE `MURID` DISABLE KEYS */;
-INSERT INTO `MURID` VALUES (2,1,'1234567890',2,'TULUNGAGUNG','2009-12-10','DESA PUCANGLABAN');
+INSERT INTO `MURID` VALUES (2,1,'1234567890',2,'TULUNGAGUNG','2009-12-10','DESA PUCANGLABAN'),(3,7,'67853999',2,'the gunung','2002-03-12','the gunung'),(4,8,'12345678',1,'tulungagung','2026-04-09','bago');
 /*!40000 ALTER TABLE `MURID` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tb_menu`
+--
+
+DROP TABLE IF EXISTS `tb_menu`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_menu` (
+  `ID_MENU` int NOT NULL AUTO_INCREMENT,
+  `ID_KANTIN` int DEFAULT NULL,
+  `NAMA_MENU` varchar(100) NOT NULL,
+  `HARGA` varchar(15) NOT NULL,
+  `KATEGORI` enum('makanan','minuman','snack') NOT NULL,
+  `STOK` int DEFAULT '0',
+  `STATUS` enum('tersedia','habis') DEFAULT 'tersedia',
+  `FOTO_MENU` varchar(255) DEFAULT NULL,
+  `DESK` text,
+  PRIMARY KEY (`ID_MENU`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tb_menu`
+--
+
+LOCK TABLES `tb_menu` WRITE;
+/*!40000 ALTER TABLE `tb_menu` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tb_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -173,7 +175,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `USERNAME` (`USERNAME`),
   UNIQUE KEY `NO_TLP` (`NO_TLP`),
   UNIQUE KEY `EMAIL` (`EMAIL`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -182,7 +184,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'adin','SIGMA_COY','MUHAMMAD SAIFUDDIN','+62 81235807937','adin@dnproject.my.id','MURID'),(2,'penjual1','ADMIN!@#','penjual santoso eak','+62 123654789','PENJUAL@gmail.com','PENJUAL'),(3,'mulyono','mobil esemka','bapak mulyono','+62 097384324736','ratapansolo@solo.com','MURID'),(4,'atemin_nyata','ini atemin ygy','pokok admin','+62 097384434736','adminUntukNyata@gmail.com','ADMIN'),(5,'EBADRUS','GURU PPLG','PAK BADRUS','+62 097344434736','guru@ebadrus.com','GURU'),(6,'tes',NULL,NULL,NULL,NULL,'MURID');
+INSERT INTO `users` VALUES (1,'adin','SIGMA_COY','MUHAMMAD SAIFUDDIN','+62 81235807937','adin@dnproject.my.id','MURID'),(2,'penjual1','ADMIN!@#','penjual santoso eak','+62 123654789','PENJUAL@gmail.com','PENJUAL'),(3,'mulyono','mobil esemka','bapak mulyono','+62 097384324736','ratapansolo@solo.com','MURID'),(4,'atemin_nyata','ini atemin ygy','pokok admin','+62 097384434736','adminUntukNyata@gmail.com','ADMIN'),(5,'EBADRUS','GURU PPLG','PAK BADRUS','+62 097344434736','guru@ebadrus.com','GURU'),(6,'tes',NULL,NULL,NULL,NULL,'MURID'),(7,'tuwes','tuwes123','buwat tuwes','+60 1234567890','tuwes@tuwes.com','MURID'),(8,'bagus','bagus14','prasetiyo','+62 87521098','vinas@gmail.com','MURID');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -195,4 +197,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-05 11:00:38
+-- Dump completed on 2026-04-25 11:53:22

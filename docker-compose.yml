@@ -31,7 +31,7 @@ services:
       - "8080:80"
     volumes:
       - ./website:/var/www/html
-      - ./source:/var/source
+      - ./source:/var/www/html/source
     depends_on:
       - my-database
     networks:

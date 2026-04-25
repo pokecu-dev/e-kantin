@@ -16,7 +16,7 @@
     $idkelas;
 
     $usn = strtolower($usn);
-
+    
     // pengecekan id kelas
     if(is_numeric($kelas_input)){
         $idkelas = $kelas_input;
