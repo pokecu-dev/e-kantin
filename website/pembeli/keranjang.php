@@ -1,23 +1,3 @@
-<?php
-session_start();
-if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
-    // echo $_SESSION['status'];
-    header("location: ../index.php");
-    exit();
-}
-if ($_SESSION['role'] != "penjual")
-
-    $nama = $_SESSION['nama_lengkap'];
-
-// echo $nama . '<br> <br>';
-
-
-// echo ' sebagai pembeli';
-
-
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,11 +6,11 @@ if ($_SESSION['role'] != "penjual")
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             color: black;
             font-family: 'Poppins', sans-serif;
+
         }
 
         .container {
@@ -41,7 +21,12 @@ if ($_SESSION['role'] != "penjual")
             background-color: #dac8b9;
             padding: 15px;
             border-radius: 10px;
-           
+
+
+        }
+
+        .text {
+            margin-left: 10px;
         }
 
         /* Mengatur baris header dan produk agar sama persis */
@@ -53,9 +38,8 @@ if ($_SESSION['role'] != "penjual")
             align-items: center;
             gap: 10px;
             padding: 8px;
-             overflow-x: hidden;
-             overflow-x: auto;
-
+            overflow-x: hidden;
+            overflow-x: auto;
         }
 
         /* Warna background */
@@ -79,19 +63,8 @@ if ($_SESSION['role'] != "penjual")
             align-items: center;
             gap: 10px;
         }
-        .detail{
-          
-            justify-content: center;
-            text-align: center;
-            display: flex;
-            margin: 0;
-        }
-        .detail small{
-              text-align: center; 
-               justify-content: center;
-               margin: 0 auto;
-        }
-        .detail img {
+
+        .div1 img {
             width: 50px;
             height: 50px;
             border-radius: 5px;
@@ -113,56 +86,25 @@ if ($_SESSION['role'] != "penjual")
             background-color: #fff5eb;
             border-radius: 5px;
         }
-
-        /* .div1 {
-            color: black;
-            justify-content: center;
-            text-align: center;
-            display: grid;
-            width: 100%;
-            align-items: center;
-        } */
-
-        /* {
-            background: rgb(71, 45, 45);
-            width: 140px;
-            height: 45px;
-            border-radius: 10px;
-            list-style: none;
-            justify-content: center;
-            align-items: center;
-            display: flex;
-        } */
     </style>
 </head>
 
 <body>
-
-    <div class="logo-mobile">
-        <img src="../../source/website1/icon/logo.svg" alt="KantinKita">
-    </div>
-
-    <div class="logo-desktop">
-        <img src="../../source/website1/icon/logo1.svg" alt="KantinKita">
-    </div>
-    <!-- --------/LOGO------------ -->
     <div class="top-nav">
         <nav class="menu">
-            <a href="penjual.php">
-                <img src="../../source/website1/icon/pesanan2.svg" alt=" home"> <span class="nav-teks">History</span>
+            <a href="pembeli.php">
+                <img src="../../source/website1/icon/home1.svg" alt=" home"> <span class="nav-teks">Beranda</span>
             </a>
-            <a href="edit1.php">
-                <img src="../../source/website1/icon/edit1.svg" alt=""><span class="nav-teks">Edit</span>
+            <a href="#">
+                <img src="../../source/website1/icon/pesanan2.svg" alt=""><span class="nav-teks">Pesanan</span>
             </a>
             <a href="#">
                 <img src="../../source/website1/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
             </a>
         </nav>
-
     </div>
-    <!------------------------- PESANAN -------------------------->
     <div class="container">
-        <h2 class="text">Daftar Pesanan</h2>
+        <h2 class="text">History Pesanan</h2>
         <div class="parent">
             <div class="header-tabel">
                 <div>Produk</div>
@@ -173,10 +115,7 @@ if ($_SESSION['role'] != "penjual")
             <div class="card">
                 <div class="produk">
                     <div class="div1">
-                       <div class="detail">
-                        <small class="antri">Antrean: 10</small>
                         <img src="nasi-goreng.jpg">
-                       </div>
                         <div>
                             <p>Nasi Goreng</p>
                             <small>Varian: Spesial</small>
@@ -194,13 +133,8 @@ if ($_SESSION['role'] != "penjual")
 
                 <div class="produk">
                     <div class="div1">
-                       <div class="detail">
-                        <small class="antri">Antrean: 10</small>
                         <img src="nasi-goreng.jpg">
-                       </div>
-                        
                         <div>
-                           
                             <p>Nasi Goreng</p>
                             <small>Varian: Spesial</small>
                         </div>
@@ -217,14 +151,6 @@ if ($_SESSION['role'] != "penjual")
             </div>
         </div>
     </div>
-    <br>
-    <br>
-
-    <h2>tombol log out</h2>
-    <!-- <a href="/logout.php"><button>log out</button></a> -->
-    <a href="../logout.php"><button>log out</button></a>
-
-
 </body>
 
 </html>
