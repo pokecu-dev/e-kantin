@@ -33,7 +33,7 @@
         
     }
     else{
-        echo json_encode(['status' => 'error', 'message' => 'Username/Password salah bwang!']);
+        echo json_encode(['status' => 'error', 'message' => 'Username/Password salah!']);
     }
         
           
