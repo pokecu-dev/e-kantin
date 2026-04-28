@@ -1,28 +1,4 @@
-# services:
-
-#     # UTAMA
-#   web-server:
-#     # image: php:8.2-apache
-#     build: .
-#     ports:
-#       - "8080:80"
-#     volumes:
-#       - ./website:/var/www/html
-
-#       # INI UNTUK DATA BASE
-#   my-database:
-#     image: mysql:latest
-#     environment:
-#       MYSQL_ROOT_PASSWORD: inikantin
-#       MYSQL_DATABASE: kantin
-#     ports:
-#       - "3307:3306"
-#     volumes:
-#       - ./mysql_data:/var/lib/mysql
-
-
 services:
-  # SERVER PHP & APACHE
   web-server:
     build: 
       context: ./docker/php/
@@ -44,7 +20,6 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       DB_PORT: ${DB_PORT}
 
-  # DATABASE MYSQL
   my-database:
     image: mysql:8.0
     restart: always
@@ -60,9 +35,7 @@ services:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - kantin-network
-    
 
-  # DATABASE MANAGER (Akses di localhost:8081)
   phpmyadmin:
     image: phpmyadmin:latest
     restart: always

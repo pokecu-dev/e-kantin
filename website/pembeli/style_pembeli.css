@@ -1,0 +1,225 @@
+
+body{
+    font-size: 16px;
+    font-family:Poppins, sans-serif;
+    background:#f5f5f5;
+    margin:0;
+    background-color: #F47B20;
+}
+
+h1 {
+    margin-top: 20px;
+    color: white ;
+}
+
+@media (min-width: 300px) {
+    body {
+        font-size: 12px;
+    }
+}
+
+@media (min-width: 600px) {
+    body {
+        font-size: 14px;
+    }
+}
+
+.container{
+    padding:20px;
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.menu-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
+    gap:15px;
+}
+
+.menu-card{
+    background:white;
+    border-radius:15px;
+    padding:10px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.1);
+}
+
+.menu-card img{
+    width:100%;
+    aspect-ratio:1/1;
+    object-fit:cover;
+    border-radius:12px;
+}
+
+.nama{
+    font-size:14px;
+    font-weight:600;
+    margin-top:6px;
+}
+
+.rating{
+    font-size:12px;
+    color:#777;
+}
+
+.harga{
+    color: #F47B20;
+    font-weight:700;
+    font-size:14px;
+}
+.slider {
+    border-radius: 20px;
+    margin-top: 30px;
+    margin-bottom: 40px;
+    width: 100%;
+
+    overflow-x: auto;   /* ✅ bukan hidden */
+
+    position: relative;
+}
+
+        .slides {
+            display: flex;
+            gap: 22px;
+            overflow-x: auto;
+            padding: 10px 20px;
+            scroll-snap-type: x mandatory;
+            scroll-padding: 20px;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+             flex-wrap: nowrap; /* 🔥 penting */
+}
+        
+
+.slide {
+    flex: 0 0 85%;   /* ✅ bikin 1 slide = 1 layar */
+    aspect-ratio: 40/ 10;
+/* 🔥 WAJIB biar putih kelihatan */
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+
+    scroll-snap-align: center;
+}
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            /* Biar gambar tidak gepeng */
+        }
+
+        .kantin-btn {
+            position: absolute;
+            top: 75%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* Pas di tengah */
+            background: #F47B20;
+            /* Oranye agak transparan */
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        /* Sembunyikan scrollbar untuk Chrome, Safari dan Opera */
+        .slides::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* DOTS (Pastikan di HTML ini berada di LUAR .slides) */
+        .dots {
+            display: flex;
+            gap: 8px;
+            position: absolute;
+            bottom: 10px; /* Jarak dari bawah slider putih */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10; /* Biar nggak ketindih gambar */
+        }
+
+        .dot {
+            height: 8px;
+            width: 8px;
+            background-color: #bbb;
+            /* Warna titik yang tidak aktif */
+            border-radius: 50%;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        /* Warna untuk titik yang sedang aktif */
+        .dotactive {
+            background-color: #F47B20;
+            width: 20px;
+            /* Membuat titik aktif jadi lebih panjang/lonjong */
+            border-radius: 5px;
+        }
+
+
+/* CSS UNTUK MENU (BAWAH) */
+.parent {
+    display: grid;
+    /* Ini kuncinya: otomatis nambah kolom kalau layar lebar, minimal ukuran kotak 180px */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+    gap: 15px;
+    width: 98%;
+    padding: 0 10px;
+    max-width: 1400px; /* Biar gak terlalu melebar banget di monitor gede */
+
+    justify-content: center;/* Biar posisinya di tengah layar */
+}
+.child {
+    background: white;
+    padding: 10px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    overflow: visible;
+}
+.child:hover {
+    transform: translateY(-5px); /* Efek ngangkat dikit pas di-hover */
+}
+.child img {
+    width: 100%;           /* Lebar penuh mengikuti kotak putih */
+    aspect-ratio: 1 / 1;   /* INI KUNCINYA biar jadi kotak sempurna */
+    object-fit: cover;     /* Biar fotonya dipotong rapi, gak gepeng */
+    border-radius: 15px;   /* Biar sudutnya melengkung halus */
+    margin-bottom: 10px;
+}
+.child h3 {
+    font-size: 16px;
+    margin: 10px 0 5px 0;
+}
+
+.child p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+}
+.add-btn {
+    display: flex;
+    background: #FF8A00;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.add-btn:hover {
+    transform: scale(1.1);
+    background: #FF8A00;
+}

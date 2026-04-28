@@ -1,0 +1,108 @@
+:root {
+    --primary: #FF8A00;
+    --dark: #1A1A1A;
+    --gray-text: #64748b;
+    --bg-body: #f8fafc;
+    --white: #ffffff;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+body {
+    font-size: 16px;
+    font-family: Poppins, sans-serif;
+    background: #f47b20;
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    body {
+        font-size: 18px;
+    }
+}
+
+@media (min-width: 1024px) {
+    body {
+        font-size: 20px;
+    }
+}
+
+/* CONTAINER */
+.container {
+    padding: 20px;
+    width: 90%;
+    max-width: 1200px; /* 🔥 biar ga kepanjangan di laptop */
+    margin: auto;     /* 🔥 center */
+}
+
+.menu-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
+    gap:15px;
+}
+
+/* BACK */
+.back a {
+    text-decoration: none;
+    font-size: 24px;
+    color: white;
+}
+
+/* GAMBAR */
+.gambar img {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* 🔥 tetap kotak */
+    object-fit: cover;
+    border-radius: 20px;
+    margin-top: 50px;
+    max-width: 100px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Membagi gambar dan info */
+    gap: 40px;
+}
+
+
+.info h2 {
+    margin: 10px 0 5px;
+    font-size: 18px;
+
+}
+
+.rating {
+    color: #F47B20;
+    font-size: 14px;
+}
+
+/* JUMLAH */
+.jumlah {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 🔥 biar di tengah */
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.jumlah button {
+    width: 35px;
+    height: 35px;
+    border: none;
+    background:  #F47B20;
+    color: white;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.jumlah input {
+    width: 40px;
+    text-align: center;
+    font-size: 16px;
+}
+
+/* HARGA */
+.harga {
+    margin-top: 15px;
+    font-weight: bold;
+    text-align: center;
+}
