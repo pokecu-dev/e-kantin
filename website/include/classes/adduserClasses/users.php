@@ -21,6 +21,7 @@
             $email = $this->sanitizeSTR($email);
             $role = $this->sanitizeSTR($role);
             
+            $pass = password_hash($pass,PASSWORD_DEFAULT);
 
             $sql = "INSERT INTO users (USERNAME,PASS,NAMA_LENGKAP,NO_TLP,EMAIL,ROLE) VALUES ('$usn','$pass','$nama_lengkap','$no_tlp','$email','$role')";
 

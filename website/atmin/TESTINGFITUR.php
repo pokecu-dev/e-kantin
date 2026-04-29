@@ -27,9 +27,11 @@
     </header>
     <main>
         <section>
-            <a href="login.php"><button>Login</button></a>
-            <a href="tambahmurid.php"><button>daftar</button></a>
-            <a href="logout.php"><button>log out</button></a>
+            <a href="./login.php"><button>Login</button></a>
+            <a href="./tambahmurid.php"><button>tambah murid</button></a>
+            <a href="./addAdmin.php"><button>tambah admin</button></a>
+            <a href="./addPenjual.php"><button>tambah penjual</button></a>
+            <a href="./../logout.php"><button>log out</button></a>
         </section>
 
         
@@ -38,7 +40,7 @@
             <tr>
                 <th>ID</th>
                 <th>USERNAME</th>
-                <th>PASS</th>
+                
                 <th>NAMA LENGKAP</th>
                 <th>NO TLP</th>
                 <th>EMAIL</th>
@@ -51,7 +53,6 @@
             <tr>
                 <td><?= $user['ID'] ?></td>
                 <td><?= $user['USERNAME'] ?></td>
-                <td><?= $user['PASS'] ?></td>
                 <td><?= $user['NAMA_LENGKAP'] ?></td>
                 <td><?= $user['NO_TLP'] ?></td>
                 <td><?= $user['EMAIL'] ?></td>

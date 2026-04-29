@@ -21,15 +21,15 @@ if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
 
     echo ' sebagai pembeli';
 */
-?>
 
-$nama = $_SESSION['nama_lengkap'];
+// $nama = $_SESSION['nama_lengkap'];
 
 // echo $nama . '<br> <br>';
 
 
 // echo ' sebagai pembeli';
->>>>>>> fb4dbdd744d49006de58bb4407a0c02e58e091cb
+?>
+
 
 <?php 
 require_once '../include/koneksi.php'; 
@@ -46,16 +46,13 @@ require_once '../include/koneksi.php';
     <link rel="stylesheet" href="style_pembeli.css?v=3">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
+    
 </head>
 
 <body>
-    <div style="padding: 10px;">
+    <!-- <div style="padding: 10px;">
         <a href="../logout.php"><button>Log Out</button></a>
-    </div>
+    </div> -->
 
     <div class="container">
         <div class="logo-mobile">
@@ -71,7 +68,8 @@ require_once '../include/koneksi.php';
                     <input type="text" name="search" placeholder="Cari menu..." class="search">
                     <button type="submit" class="btn-search">
                         <img src="../../source/icon/cari.svg" alt="" class="iconsch">
-                    </button>
+                        <img src="../source/icon" alt="" class="iconsch">
+                        </button>
                 </div>
             </form>
 
@@ -134,7 +132,7 @@ require_once '../include/koneksi.php';
     <br>
     <h2>tombol log out</h2>
     <!-- <a href="/logout.php"><button>log out</button></a> -->
-    <a href="../logout.php"><button>log out</button></a>
+    <a href="./../logout.php"><button>log out</button></a>
 
 
     <!-- <br>
