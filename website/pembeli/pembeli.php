@@ -23,14 +23,6 @@ if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
 */
 ?>
 
-$nama = $_SESSION['nama_lengkap'];
-
-// echo $nama . '<br> <br>';
-
-
-// echo ' sebagai pembeli';
->>>>>>> fb4dbdd744d49006de58bb4407a0c02e58e091cb
-
 <?php 
 require_once '../include/koneksi.php'; 
 ?>
@@ -43,24 +35,37 @@ require_once '../include/koneksi.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>KantinKita</title>
-    <link rel="stylesheet" href="style_pembeli.css?v=3">
+    <link rel="stylesheet" href="style_pembeli.css?v=4">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 </head>
 
 <body>
-    <div style="padding: 10px;">
-        <a href="../logout.php"><button>Log Out</button></a>
+
+    <div class="logo-mobile">
+        <img src="../../source/icon/logo.svg" alt="KantinKita">
     </div>
 
+    <div class="logo-desktop">
+        <img src="../../source/icon/logo1.svg" alt="KantinKita">
+    </div>
+    <!-- --------/LOGO------------ -->
+    <div class="top-nav">
+        <nav class="menu" >
+            <a href="penjual.php">
+                <img src="../../source/icon/home2.svg" alt=" home"> <span class="nav-teks">History</span>
+            </a>
+            <a href="Keranjang.php">
+                <img src="../../source/icon/pesanan1.svg" alt=""><span class="nav-teks">Edit</span>
+            </a>
+            <a href="profil.php">
+                <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
+            </a>
+        </nav>
+
+    </div>
     <div class="container">
-        <div class="logo-mobile">
-            <img src="../../source/icon/logo.svg" alt="KantinKita">
-        </div>
 
         <h1 class="teks">Cari Menu <b>Yang Kamu Inginkan!</b></h1>
 
@@ -70,11 +75,25 @@ require_once '../include/koneksi.php';
                 <div class="search-box">
                     <input type="text" name="search" placeholder="Cari menu..." class="search">
                     <button type="submit" class="btn-search">
-                        <img src="../../source/icon/cari.svg" alt="" class="iconsch">
-                    </button>
+                        <img src="../../source/icon/cari.svg" alt="Search"></button>
                 </div>
             </form>
 
+        </div>
+
+        <div class="kategori-section">
+            <div class="kat-item">
+                <img src="../../source/icon/makanan.svg" alt="Makanan">
+                Makanan
+            </div>
+            <div class="kat-item">
+                <img src="../../source/icon/minuman.svg" alt="Minuman">
+                Minuman
+            </div>
+            <div class="kat-item">
+                <img src="../../source/icon/snack.svg" alt="snack">
+                Snack
+            </div>
         </div>
     
         <div class="slider">
@@ -112,26 +131,9 @@ require_once '../include/koneksi.php';
             <?php endwhile; ?>
         </div>
 
-        <div class="dots">
-            <span class="dot dotactive"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </div>
-    </div>
-  
-
-
-    <div class="logo-mobile">
-        <img src="../../source/website1/icon/logo.svg" alt="KantinKita">
-    </div>
-
-    <div class="logo-desktop">
-        <img src="../../source/website1/icon/logo1.svg" alt="KantinKita">
     </div>
 
 
-    <br>
-    <br>
     <h2>tombol log out</h2>
     <!-- <a href="/logout.php"><button>log out</button></a> -->
     <a href="../logout.php"><button>log out</button></a>
@@ -149,22 +151,6 @@ require_once '../include/koneksi.php';
     <a href="../TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
      -->
 
-
-
-    <div class="top-nav">
-        <nav class="menu">
-            <a href="#">
-                <img src="../../source/website1/icon/home2.svg" alt=" home"> <span class="nav-teks">Beranda</span>
-            </a>
-            <a href="keranjang.php">
-                <img src="../../source/website1/icon/pesanan1.svg" alt=""><span class="nav-teks">Pesanan</span>
-            </a>
-            <a href="#">
-                <img src="../../source/website1/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
-            </a>
-        </nav>
-
-    </div>
 </body>
 
 </html>

@@ -104,7 +104,7 @@
         </nav>
     </div>
     <div class="container">
-        <h2 class="text">History Pesanan</h2>
+        <h2 class="text">Keranjang Pesanan</h2>
         <div class="parent">
             <div class="header-tabel">
                 <div>Produk</div>
@@ -115,9 +115,9 @@
             <div class="card">
                 <div class="produk">
                     <div class="div1">
-                        <img src="nasi-goreng.jpg">
+                        <img src="../../source/gambar_menu/nasikuning.jpg">
                         <div>
-                            <p>Nasi Goreng</p>
+                            <p>Nasi Kuning</p>
                             <small>Varian: Spesial</small>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
 
                 <div class="produk">
                     <div class="div1">
-                        <img src="nasi-goreng.jpg">
+                        <img src="../../source/gambar_menu/nasigoreng.jpg">
                         <div>
                             <p>Nasi Goreng</p>
                             <small>Varian: Spesial</small>
