@@ -6,7 +6,7 @@
     require_once __DIR__ . '/users.php';  
     // require_once __DIR__ . "/workspaces/e-kantin/website/include/classes/adduserClasses/users.php";
 
-    class Murid extends tes{
+    class Murid extends Users{
 
         public function add($usn, $pass, $nama_lengkap, $no_tlp, $email,$nisn,$id_kelas,$tempat_lahir,$tanggal_lahir,$alamat_rumah)
         {

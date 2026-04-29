@@ -15,7 +15,10 @@
 
             if($query->num_rows > 0){
                 $data = $query->fetch_assoc();
-                if ($password == $data["PASS"]) {
+                // if ($password == $data["PASS"]) {
+                //     return $data;
+                // }
+                if (password_verify($password,$data["PASS"])) {
                     return $data;
                 }
             }

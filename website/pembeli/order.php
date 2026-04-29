@@ -232,7 +232,7 @@ h2{
     </div>
 
     <form action="keranjang.php" method="POST" class="bottom-bar">
-        <input type="hidden" n ame="id_menu" value="<?php echo $data['ID_MENU']; ?>">
+        <input type="hidden" name="id_menu" value="<?php echo $data['ID_MENU']; ?>">
        <button type="submit">Tambah ke Keranjang</button>
     </form>
 

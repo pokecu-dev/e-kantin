@@ -158,7 +158,7 @@ $nama = $_SESSION['nama_lengkap'];
 
 <h2>tombol log out</h2>
 <!-- <a href="/logout.php"><button>log out</button></a> -->
-<a href="../logout.php"><button>log out</button></a>
+<a href="./../logout.php"><button>log out</button></a>
 
 <br>
 <p>tes up file</p>

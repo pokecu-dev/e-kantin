@@ -119,7 +119,7 @@ echo $dataUsers['ROLE'];
         EDIT USER
     </h2>
     <div class="container">
-        <form action="./pro_edit.php" method="post">
+        <form action="./process/pro_edit.php" method="post">
             <!-- data umum:D -->
             <div class="parent">
                 <div class="left-column">
@@ -186,23 +186,30 @@ echo $dataUsers['ROLE'];
 
                             <label>Alamat Rumah</label>
                             <textarea name="alamat_rumah" rows="3"><?= $datatable["ALAMAT_RUMAH"] ?></textarea>
-                         <button type="submit" class="btn">SUBMIT</button>
+                         <!-- <button type="submit" class="btn">SUBMIT</button> -->
                         </div>
 
 
                     <?php
                         break;
-                    case 'GURU';
+                    case 'GURU'; 
                     ?>
 
-                        <input type="text">
-                        <h1>hai</h1>
+                        <div class="card full-width">>
+                            <input type="text">
+                            <h1>hai</h1>
+                        </div>
+                        
 
                 <?php endswitch; ?>
+                <div class="card full-width">>
+                    
+                    <button type="submit" class="btn">SUBMIT</button>
                 </div>
             </div>
+            </div>
           
-
+            
 
         </form>
     </div>

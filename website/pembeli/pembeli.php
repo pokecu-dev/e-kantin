@@ -21,31 +21,36 @@ if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
 
     echo ' sebagai pembeli';
 */
+
+// $nama = $_SESSION['nama_lengkap'];
+
+// echo $nama . '<br> <br>';
+
+
+// echo ' sebagai pembeli';
 ?>
+
 
 <?php 
 require_once '../include/koneksi.php'; 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>KantinKita</title>
-    <link rel="stylesheet" href="style_pembeli.css?v=4">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
-
+    <title>Document</title>
+    <link rel="stylesheet" href="style_pembeli.css">
 </head>
-
 <body>
+    
 
-    <div class="logo-mobile">
-        <img src="../../source/icon/logo.svg" alt="KantinKita">
-    </div>
+
+
+    <!-- <div style="padding: 10px;">
+        <a href="../logout.php"><button>Log Out</button></a>
+    </div> -->
+
 
     <div class="logo-desktop">
         <img src="../../source/icon/logo1.svg" alt="KantinKita">
@@ -67,7 +72,7 @@ require_once '../include/koneksi.php';
     </div>
     <div class="container">
 
-        <h1 class="teks">Cari Menu <b>Yang Kamu Inginkan!</b></h1>
+      <h1 class="teks">Cari Menu <b>Yang Kamu Inginkan!</b></h1>
 
         <div class="mencari">
 
@@ -75,25 +80,11 @@ require_once '../include/koneksi.php';
                 <div class="search-box">
                     <input type="text" name="search" placeholder="Cari menu..." class="search">
                     <button type="submit" class="btn-search">
-                        <img src="../../source/icon/cari.svg" alt="Search"></button>
+                        <img src="../../source/icon/cari.svg" alt="" class="iconsch">
+                        </button>
                 </div>
             </form>
 
-        </div>
-
-        <div class="kategori-section">
-            <div class="kat-item">
-                <img src="../../source/icon/makanan.svg" alt="Makanan">
-                Makanan
-            </div>
-            <div class="kat-item">
-                <img src="../../source/icon/minuman.svg" alt="Minuman">
-                Minuman
-            </div>
-            <div class="kat-item">
-                <img src="../../source/icon/snack.svg" alt="snack">
-                Snack
-            </div>
         </div>
     
         <div class="slider">
@@ -131,12 +122,29 @@ require_once '../include/koneksi.php';
             <?php endwhile; ?>
         </div>
 
+        <div class="dots">
+            <span class="dot dotactive"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+    </div>
+  
+
+
+    <div class="logo-mobile">
+        <img src="../../source/website1/icon/logo.svg" alt="KantinKita">
+    </div>
+
+    <div class="logo-desktop">
+        <img src="../../source/website1/icon/logo1.svg" alt="KantinKita">
     </div>
 
 
+    <br>
+    <br>
     <h2>tombol log out</h2>
     <!-- <a href="/logout.php"><button>log out</button></a> -->
-    <a href="../logout.php"><button>log out</button></a>
+    <a href="./../logout.php"><button>log out</button></a>
 
 
     <!-- <br>
@@ -150,7 +158,6 @@ require_once '../include/koneksi.php';
     <br>
     <a href="../TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
      -->
-
 </body>
 
 </html>

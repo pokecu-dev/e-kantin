@@ -222,7 +222,7 @@ if ($_SESSION['role'] != "penjual")
 
     <h2>tombol log out</h2>
     <!-- <a href="/logout.php"><button>log out</button></a> -->
-    <a href="../logout.php"><button>log out</button></a>
+    <a href="./../logout.php"><button>log out</button></a>
 
 
 </body>
