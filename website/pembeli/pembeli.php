@@ -34,32 +34,45 @@ if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
 <?php 
 require_once '../include/koneksi.php'; 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>KantinKita</title>
-    <link rel="stylesheet" href="style_pembeli.css?v=3">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
-    
+    <title>Document</title>
+    <link rel="stylesheet" href="style_pembeli.css">
 </head>
-
 <body>
+    
+
+
+
     <!-- <div style="padding: 10px;">
         <a href="../logout.php"><button>Log Out</button></a>
     </div> -->
 
-    <div class="container">
-        <div class="logo-mobile">
-            <img src="../../source/icon/logo.svg" alt="KantinKita">
-        </div>
 
-        <h1 class="teks">Cari Menu <b>Yang Kamu Inginkan!</b></h1>
+    <div class="logo-desktop">
+        <img src="../../source/icon/logo1.svg" alt="KantinKita">
+    </div>
+    <!-- --------/LOGO------------ -->
+    <div class="top-nav">
+        <nav class="menu" >
+            <a href="penjual.php">
+                <img src="../../source/icon/home2.svg" alt=" home"> <span class="nav-teks">History</span>
+            </a>
+            <a href="Keranjang.php">
+                <img src="../../source/icon/pesanan1.svg" alt=""><span class="nav-teks">Edit</span>
+            </a>
+            <a href="profil.php">
+                <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
+            </a>
+        </nav>
+
+    </div>
+    <div class="container">
+
+      <h1 class="teks">Cari Menu <b>Yang Kamu Inginkan!</b></h1>
 
         <div class="mencari">
 
@@ -68,7 +81,6 @@ require_once '../include/koneksi.php';
                     <input type="text" name="search" placeholder="Cari menu..." class="search">
                     <button type="submit" class="btn-search">
                         <img src="../../source/icon/cari.svg" alt="" class="iconsch">
-                        <img src="../source/icon" alt="" class="iconsch">
                         </button>
                 </div>
             </form>
@@ -146,23 +158,6 @@ require_once '../include/koneksi.php';
     <br>
     <a href="../TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
      -->
-
-
-
-    <div class="top-nav">
-        <nav class="menu">
-            <a href="#">
-                <img src="../../source/website1/icon/home2.svg" alt=" home"> <span class="nav-teks">Beranda</span>
-            </a>
-            <a href="keranjang.php">
-                <img src="../../source/website1/icon/pesanan1.svg" alt=""><span class="nav-teks">Pesanan</span>
-            </a>
-            <a href="#">
-                <img src="../../source/website1/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
-            </a>
-        </nav>
-
-    </div>
 </body>
 
 </html>
