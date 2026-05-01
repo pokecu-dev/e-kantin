@@ -1,3 +1,13 @@
+     :root {
+    --bg-color: #f8fafc;
+    --primary-color: #F47B20;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --white: #ffffff;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+
 body {
     background-color: #FFFCFA;
     margin: 0;

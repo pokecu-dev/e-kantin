@@ -18,7 +18,7 @@
         body {
             justify-content: center;
 
-            background-color: rgb(240, 215, 200);
+            background-color: #F5F5F5;
             min-height: 100vh;
             display: flex;
 
@@ -46,8 +46,9 @@
             width: 100%;
             max-width: 420px;
             max-height: 85%;
-            background: #FFFCFA;
+            background: #FFFfff;
             color: black;
+            box-shadow: 0 2px 3px #aeaeae;
             border-radius: 20px;
             padding: 30px 45px;
             border: 1px solid #652f05;
@@ -92,7 +93,6 @@
             border: none;
             outline: none;
             border-bottom: 2px solid black;
-
             padding: 20px 45px 20px 20px;
         }
 
@@ -109,7 +109,7 @@
             box-shadow: 0 2px 5px #492509;
         }
 
-        .notif {
+        #notif {
             color: #d61010;
         }
 
@@ -160,7 +160,7 @@
 
     <!-- LOGO -->
     <div class="logo">
-        <img src="/source/website1/icon/logo1.svg" alt="logokita">
+        <img src="/source/icon/logo1.svg" alt="logokita">
     </div>
 
     <!-- --------/LOGO------------ -->

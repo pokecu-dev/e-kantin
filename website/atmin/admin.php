@@ -20,6 +20,18 @@ $nama = $_SESSION['nama_lengkap'];
 // echo ' sebagai pembeli';
 
 
+?>
+
+<?php
+
+require_once __DIR__ . "/../include/koneksi.php";
+
+if ($conn->error) {
+    echo $conn->connect_error;
+}
+
+$sql = "SELECT * FROM users";
+ $query = $conn->query("SELECT * FROM users ORDER BY ID DESC LIMIT 5");
 
 ?>
 
@@ -32,113 +44,291 @@ $nama = $_SESSION['nama_lengkap'];
     <title>Canteen Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Warna default (Abu-abu) untuk semua menu */
+        .nav-links a {
+            text-decoration: none;
+            color: #888;
+            /* Warna abu-abu */
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        /* Warna khusus (Merah) untuk menu yang sedang aktif */
+        .nav-links a.active {
+            color: #F47B20;
+            /* Warna merah brand KantinKita */
+            border-bottom: 2px solid #F47B20;
+            /* Opsional: tambah garis bawah agar lebih jelas */
+            padding-bottom: 5px;
+        }
+
+        :root {
+            --primary: #F47B20;
+            --bg: #f5f5f5;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Stats Card Styling */
+        .stats-container {
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .stats-wrapper {
+            display: flex;
+            gap: 15px;
+            padding-bottom: 10px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            min-width: 200px;
+            flex: 1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0;
+        }
+
+        .stat-card p {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 10px 0 0 0;
+            color: #111827;
+        }
+
+        /* User Table Card */
+        .table-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-view-all {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Indikator Dots */
+        .dots {
+            display: none;
+            /* Sembunyi di desktop */
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #d1d5db;
+            border-radius: 50%;
+        }
+
+        .dot.active {
+            background: var(--primary);
+        }
+
+        /* Responsivitas Mobile */
+        @media (max-width: 768px) {
+            .stats-wrapper {
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .stat-card {
+                min-width: 80%;
+                scroll-snap-align: center;
+            }
+
+            .dots {
+                display: flex;
+            }
+
+            .stats-wrapper::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        /* Styling untuk list user agar rapi */
+        .header-tabel,
+    .div1 {
+        display: grid;
+        /* 4 Kolom: kolom pertama lebih lebar (2fr), sisanya sama rata (1fr) */
+        grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        gap: 10px;
+        padding: 8px;
+        min-width: 700px;
+        max-height: fit-content;
+        border-bottom: 1px solid #492509;
+        align-items: start;
+    }
+
+    .parent {
+        background-color: #dac8b9;
+        padding: 15px;
+        border-radius: 10px;
+
+    }
+
+    .div1 {
+        line-height: 1.4;
+
+    }
+
+    .div1 p {
+        word-break: break-word;
+    }
+
+    /* Warna background */
+    .header-tabel {
+        background: #fff5eb;
+        font-weight: bold;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+
+    .card1 {}
+
+    .card2 {
+        overflow-x: auto;
+    }
+    p{
+        font-size: small;
+    }
+
+    .btn {
+        border: none;
+        outline: none;
+        font-size: 14px;
+        height: 40px;
+        border-radius: 5px;
+        color: white;
+        margin: 20px 0 15px;
+        background-color: #F47B20;
+        box-shadow: 0 2px 5px #492509;
+    }
+
+    </style>
 </head>
 
 <body>
-    <div class="dashboard-container">
-        <header class="main-header">
-            <div class="burger-menu" id="burger-toggle">
-                <i class="fa-solid fa-bars"></i>
+
+    <!-- Navigasi Utama -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
+
+            <!-- Burger Menu (Mobile Only) -->
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+
+            <ul class="nav-links">
+                <li><a href="admin.php" class="active">Beranda</a></li>
+                <li><a href="akun.php">Akun</a></li>
+                <li><a href="#">Menu</a></li>
+                <li><a href="#">Outlet</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Bagian Statistik (Card Horizontal) -->
+    <div class="stats-container">
+        <div class="stats-wrapper">
+            <div class="stat-card">
+                <h3>Active User</h3>
+                <p>124</p>
             </div>
-            <div class="logo">Canteen Admin</div>
-            <nav class="nav-menu">
-                <a href="#" class="active">Beranda</a>
-                <a href="#">Edit</a>
-                <a href="#">Profil</a>
-            </nav>
-            <div class="user-profile">
-                <i class="fa-regular fa-bell"></i>
-                <div class="avatar"></div>
+            <div class="stat-card">
+                <h3>Jumlah Kantin</h3>
+                <p>12</p>
             </div>
-        </header>
-
-        <main class="content">
-            <section class="summary-section">
-                <h1>Dashboard Ringkasan</h1>
-                <p class="subtitle">Selamat datang kembali, berikut status operasional kantin hari ini.</p>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="icon-box blue"><i class="fa-solid fa-store"></i></div>
-                        <div class="stat-info">
-                            <span>TOTAL KANTIN</span>
-                            <h2>24</h2>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="icon-box orange"><i class="fa-solid fa-utensils"></i></div>
-                        <div class="stat-info">
-                            <span>TOTAL MENU</span>
-                            <h2>158</h2>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="icon-box green"><i class="fa-solid fa-chart-line"></i></div>
-                        <div class="stat-info">
-                            <span>TOTAL PENJUALAN</span>
-                            <h2>42</h2>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="icon-box light-blue"><i class="fa-solid fa-users"></i></div>
-                        <div class="stat-info">
-                            <span>TOTAL PEMBELI</span>
-                            <h2>1,204</h2>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="main-grid">
-                <div class="orders-container">
-                    <div class="section-header">
-                        <h3>Pesanan Terbaru</h3>
-                        <a href="#" class="view-all">LIHAT SEMUA</a>
-                    </div>
-
-                    <div class="order-item">
-                        <div class="order-icon blue"><i class="fa-solid fa-bag-shopping"></i></div>
-                        <div class="order-details">
-                            <span class="order-id">Order #CK-9021</span>
-                            <span class="order-desc">Nasi Goreng Spesial • Kantin A</span>
-                        </div>
-                        <div class="order-price">
-                            <span class="price">Rp 25.000</span>
-                            <span class="status confirm">CONFIRMED</span>
-                        </div>
-                    </div>
-
-                    <div class="order-item">
-                        <div class="order-icon green"><i class="fa-solid fa-mug-hot"></i></div>
-                        <div class="order-details">
-                            <span class="order-id">Order #CK-9020</span>
-                            <span class="order-desc">Es Teh Manis • Kantin B</span>
-                        </div>
-                        <div class="order-price">
-                            <span class="price">Rp 5.000</span>
-                            <span class="status confirm">CONFIRMED</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="target-card">
-                    <h3>Target Bulanan</h3>
-                    <p>Pertumbuhan transaksi mencapai 72% dari target.</p>
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: 72%;"></div>
-                    </div>
-                    <div class="progress-labels">
-                        <span>72% Selesai</span>
-                        <span>Target: 5k Order</span>
-                    </div>
-                </div>
-            </section>
-        </main>
+            <div class="stat-card">
+                <h3>Jumlah Menu</h3>
+                <p>85</p>
+            </div>
+            <div class="stat-card">
+                <h3>Jumlah Penjual</h3>
+                <p>10</p>
+            </div>
+        </div>
+        <!-- Dot active hanya muncul di mobile via CSS -->
+        <div class="dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
     </div>
-</body>
 
-</html>
-<!-- <label>
+    <!-- Bagian Tabel Users -->
+    <div class="table-card">
+        <div class="table-header">
+            <h2>Daftar User</h2>
+            <a href="#" class="btn-view-all">Lihat Semua</a>
+        </div>
+
+        <div class="perent">
+            <div class="card2">
+                <div class="header-tabel">
+                    <p>ID</p>
+                    <p>USERNAME</p>
+                    <p>NAMA LENGKAP</p>
+                    <p>NO TLP</p>
+                    <p>EMAIL</p>
+                    <p>ROLE</p>
+                    <p>AKSI</p>
+                </div>
+                <?php
+                while ($user = $query->fetch_assoc()): ?>
+                    <div class="card">
+                        <div class="card1">
+                            <div class="div1">
+                                <p><?= $user['ID'] ?></p>
+                                <p><?= $user['USERNAME'] ?></p>
+                                <p><?= $user['NAMA_LENGKAP'] ?></p>
+                                <p><?= $user['NO_TLP'] ?></p>
+                                <p><?= $user['EMAIL'] ?></p>
+                               <p><?= $user['ROLE'] ?></p>
+                                <p>
+                                    <a href="edituser.php?id=<?= $user['ID'] ?>" class="btn-edit">Edit</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            </div>
+        </div>
+    </div>
+    <!-- <label>
         <input type="checkbox">
         <div class="toggle">
             <span class="top-line common"></span>
@@ -156,21 +346,21 @@ $nama = $_SESSION['nama_lengkap'];
         </div>
     </label> -->
 
-<h2>tombol log out</h2>
-<!-- <a href="/logout.php"><button>log out</button></a> -->
-<a href="./../logout.php"><button>log out</button></a>
+    <h2>tombol log out</h2>
+    <!-- <a href="/logout.php"><button>log out</button></a> -->
+    <a href="./../logout.php"><button>log out</button></a>
 
-<br>
-<p>tes up file</p>
-<form action="upfile.php" method="post" enctype="multipart/form-data">
-    <label for="myfile">pilih file:</label>
-    <input type="file" id="myfile" name="filename">
-    <input type="submit" value="unggah">
-</form>
+    <br>
+    <p>tes up file</p>
+    <form action="upfile.php" method="post" enctype="multipart/form-data">
+        <label for="myfile">pilih file:</label>
+        <input type="file" id="myfile" name="filename">
+        <input type="submit" value="unggah">
+    </form>
 
-<br>
-<a href="TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
-
+    <br>
+    <a href="TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
+<a href="cariProduk.php">cari</a>
 </body>
 
 </html>
