@@ -352,15 +352,52 @@ $sql = "SELECT * FROM users";
 
     <br>
     <p>tes up file</p>
-    <form action="upfile.php" method="post" enctype="multipart/form-data">
-        <label for="myfile">pilih file:</label>
-        <input type="file" id="myfile" name="filename">
-        <input type="submit" value="unggah">
+    <form id="upfile-form">
+        <label for="upfile">pilih file:</label>
+        <input type="file" id="upfile" name="upfile">
+        <button type="submit"">upload</button>
     </form>
+    <div id="notif" style="color: green;">hi</div>
 
     <br>
     <a href="TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
-<a href="cariProduk.php">cari</a>
+    <a href="cariProduk.php">cari</a>
+
+
+    <script>
+
+        document.getElementById("upfile-form").onsubmit = async function(events) {
+            
+            events.preventDefault();
+            const dataForm = new FormData(this);
+            const notif = document.getElementById("notif");
+            
+            try{
+
+
+                const respon = await fetch ('/../include/proses(universal)/upfile.php',{
+                    method: "POST",
+                    body: dataForm
+                });
+
+                const data = await respon.json();
+
+                notif.innerText = data.message;
+                
+                
+                
+
+
+            }
+            catch(error){
+                console.error("Detail Error:", error);
+                notif.innerText = error.message;
+            }
+        }
+
+
+    </script>
+
 </body>
 
 </html>

@@ -188,6 +188,7 @@ if ($query->num_rows > 0) {
                     <div class="card top">
                         <label class="top-card">Foto Profil</label>
                         <img src="../../source/fotopengguna/mbakyaya.jpg" alt="" class="foto">
+                        <img src="../../source/fotopengguna/<?= $dataUsers['FOTO_USERS'] ?>" alt="" class="foto">
                         <label></label>
                         <p style="font-weight: bold;  color: #475569;">
                             <?= $dataUsers['ROLE'] ?>

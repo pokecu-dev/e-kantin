@@ -14,6 +14,14 @@ RUN apt-get update && apt-get install -y \
 # 2. Install extension PHP untuk MySQL
 RUN docker-php-ext-install pdo pdo_mysql mysqli mbstring exif pcntl bcmath gd
 
+# --------- tambahan untuk php -------
+RUN cp "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+
+# Update limit upload dan post
+RUN sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 20M/g' "$PHP_INI_DIR/php.ini"
+RUN sed -i 's/post_max_size = 8M/post_max_size = 20M/g' "$PHP_INI_DIR/php.ini"
+# ------------
+
 # 3. Aktifkan Apache mod_rewrite untuk Laravel Routing
 RUN a2enmod rewrite
 
