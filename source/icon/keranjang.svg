@@ -1,0 +1,12 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gagang Keranjang -->
+  <path d="M7 9L10 3M17 9L14 3" stroke="#F47B20" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Badan Keranjang -->
+  <path d="M3 9H21L19 19C18.8 20.1 17.8 21 16.7 21H7.3C6.2 21 5.2 20.1 5 19L3 9Z" fill="#F47B20"/>
+  
+  <!-- Garis Variasi di Dalam Keranjang (Putih) -->
+  <rect x="8" y="12" width="2" height="5" rx="1" fill="white"/>
+  <rect x="11" y="12" width="2" height="5" rx="1" fill="white"/>
+  <rect x="14" y="12" width="2" height="5" rx="1" fill="white"/>
+</svg>
