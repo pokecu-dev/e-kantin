@@ -24,25 +24,28 @@ $query = $conn->query($sql);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <style>
-    * {
-        margin: 8px;
-    }
-
     .header-tabel,
     .div1 {
         display: grid;
         /* 4 Kolom: kolom pertama lebih lebar (2fr), sisanya sama rata (1fr) */
-        grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 0.5fr repeat(6, 1fr);
         gap: 10px;
         padding: 8px;
-        min-width: 700px;
-        border-bottom: 1px solid #492509;
-       
+        min-width: 600px;
+        word-break: break-word;
+        width: 100%;
+        margin: 0 8px 0 8px;
+
         align-items: start;
     }
 
+    .header-tabel {
+        border-bottom: #492509;
+
+    }
+
     .parent {
-        background-color: #dac8b9;
+        background-color: #ffffff;
         padding: 15px;
         border-radius: 10px;
 
@@ -50,7 +53,7 @@ $query = $conn->query($sql);
 
     .div1 {
         line-height: 1.4;
- max-height: fit-content;
+        max-height: fit-content;
     }
 
     .div1 p {
@@ -66,11 +69,17 @@ $query = $conn->query($sql);
         margin-bottom: 5px;
     }
 
+    .card1 {
+        background-color: #ffffff;
+        margin: 2px;
+        border-bottom: 1px solid #492509;
+        border-radius: 8px;
 
-    .card2 {
-        overflow-x: auto;
+        align-items: center;
+        justify-content: center;
     }
-    p{
+
+    p {
         font-size: small;
     }
 
@@ -86,6 +95,11 @@ $query = $conn->query($sql);
         box-shadow: 0 2px 5px #492509;
     }
 
+    .container {
+        margin: 20px 8px 0 8px;
+
+    }
+
     /* .div1 {
             display: flex;
             align-items: center;
@@ -97,68 +111,89 @@ $query = $conn->query($sql);
 
 
 <body>
-    <header>
-        <h1>
-            Welcome to E-canteen EsemKita
-        </h1>
-    </header>
-    <h2>BUAT TES TAMPIL DATA!</h2>
 
-<div class="search-box">
-        <h2>Cari User</h2>
-        <!-- Data dikirim ke file hasil_user.php -->
-        <form action="cariUser.php" method="GET">
-            <input type="text" name="query" placeholder="Masukkan Username atau ID..." required>
-            <button type="submit">Cari Sekarang</button>
-        </form>
-    </div>
-    <main>
-        
-        <section>
-            <a href="./login.php"><button class="btn">Login</button></a>
-            <a href="./tambahmurid.php"><button class="btn">tambah murid</button></a>
-            <a href="./addAdmin.php"><button class="btn">tambah admin</button></a>
-            <a href="./addPenjual.php"><button class="btn">tambah penjual</button></a>
-            <a href="./../logout.php"><button class="btn">log out</button></a>
-        </section>
+    <!-- Navigasi Utama -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
+
+            <!-- Burger Menu (Mobile Only) -->
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+
+            <ul class="nav-links">
+                <li><a href="admin.php">Beranda</a></li>
+                <li><a href="akun.php" class="active">Akun</a></li>
+                <li><a href="menu.php">Menu</a></li>
+                <li><a href="#">Outlet</a></li>
+                <li><a href="./../logout.php">Log Out</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
 
 
 
-        <div class="parent">
-            <div class="card2">
-                <div class="header-tabel">
-                    <p>ID</p>
-                    <p>USERNAME</p>
-                    <p>NAMA LENGKAP</p>
-                    <p>NO TLP</p>
-                    <p>EMAIL</p>
-                    <p>ROLE</p>
-                    <p>AKSI</p>
-                </div>
+        <div class="search-box">
+            <h2>Cari User</h2>
+            <!-- Data dikirim ke file hasil_user.php -->
+            <form action="cariUser.php" method="GET">
+                <input type="text" name="query" placeholder="Masukkan Username atau ID..." required>
+                <button type="submit">Cari Sekarang</button>
+            </form>
+        </div>
+        <main>
 
-                <?php while ($user = $query->fetch_assoc()): ?>
+            <section>
+                <a href="./login.php"><button class="btn">Login</button></a>
+                <a href="./tambahmurid.php"><button class="btn">tambah murid</button></a>
+                <a href="./addAdmin.php"><button class="btn">tambah admin</button></a>
+                <a href="./addPenjual.php"><button class="btn">tambah penjual</button></a>
+                <a href="./../logout.php"><button class="btn">log out</button></a>
+            </section>
 
-                    <div class="card">
-                        <div class="card1">
-                            <div class="div1">
-                                <p><?= $user['ID'] ?></p>
-                                <p><?= $user['USERNAME'] ?></p>
-                                <p><?= $user['NAMA_LENGKAP'] ?></p>
-                                <p><?= $user['NO_TLP'] ?></p>
-                                <p><?= $user['EMAIL'] ?></p>
-                                <p><?= $user['ROLE'] ?></p>
-                                <p>
-                                    <a href="edituser.php?id=<?= $user['ID'] ?>">edit</a>
-                                </p>
 
+
+            <div class="parent">
+                <div class="card2">
+                    <div class="header-tabel">
+                        <p>ID</p>
+                        <p>USERNAME</p>
+                        <p>NAMA LENGKAP</p>
+                        <p>NO TLP</p>
+                        <p>EMAIL</p>
+                        <p>ROLE</p>
+                        <p>AKSI</p>
+                    </div>
+
+                    <?php while ($user = $query->fetch_assoc()): ?>
+
+                        <div class="card">
+                            <div class="card1">
+                                <div class="div1">
+                                    <p><?= $user['ID'] ?></p>
+                                    <p><?= $user['USERNAME'] ?></p>
+                                    <p><?= $user['NAMA_LENGKAP'] ?></p>
+                                    <p><?= $user['NO_TLP'] ?></p>
+                                    <p><?= $user['EMAIL'] ?></p>
+                                    <p><?= $user['ROLE'] ?></p>
+                                    <p>
+                                        <a href="edituser.php?id=<?= $user['ID'] ?>">edit</a>
+                                    </p>
+
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <?php endwhile; ?>
+                    <?php endwhile; ?>
+                </div>
             </div>
-        </div>
-    </main>
-
+        </main>
+    </div>
 </body>
 
 </html>

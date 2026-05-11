@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__ . "/../include/koneksi.php";
 session_start();
 if ($_SESSION['role'] != 'ADMIN') {
@@ -7,16 +6,23 @@ if ($_SESSION['role'] != 'ADMIN') {
     exit;
 }
 
+
+$dataUsers = [
+    'NAMA_LENGKAP' => '',
+    'USERNAME' => '',
+    'ROLE' => '',
+    'FOTO_USERS' => '', // sesuaikan dengan file default kamu
+    'PASS' => '',
+    'NO_TLP' => '',
+    'EMAIL' => ''
+];
+
 $id = $conn->real_escape_string($_GET['id']);
-
 $sql = "select * from users where ID='$id'";
-
 $query = $conn->query($sql);
 if ($query->num_rows > 0) {
     $dataUsers = $query->fetch_assoc();
 }
-// echo $dataUsers['ROLE'];
-
 ?>
 
 <!DOCTYPE html>
@@ -25,256 +31,280 @@ if ($query->num_rows > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Edit Profil - <?= $dataUsers['NAMA_LENGKAP'] ?></title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --bg-body: #ffffff;
+            --bg-card: #fcfcfc;
+            /* Putih Pucat */
+            --primary: #F47B20;
+            --primary-hover: #f0781c;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+            /* Bayangan Halus */
+        }
+
         * {
-            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
 
-        h2 {
-            margin: 8px;
-
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 40px 20px;
+            line-height: 1.6;
         }
 
         .container {
-            margin: 10px;
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
-        /* 
-        .container {
-            display: flex;
-            background: white;
-        } */
-
-        .parent {
+        .main-grid {
             display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 30px;
+            align-items: start;
+        }
 
-            gap: 25px;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        .category-title {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--primary);
+            margin-bottom: 10px;
+            padding-left: 5px;
         }
 
         .card {
-            background-color: white;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e2e8f0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            background-color: var(--bg-card);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 25px;
         }
 
-        /* .right-column {
-        
-            grid-area: right;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-        } */
-
-        .left-column {
-            justify-content: center;
-            align-items: center;
-            max-height: 300px;
-            /* margin-top: 50px; */
+        .profile-card {
+            text-align: center;
         }
 
-        input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            box-sizing: border-box;
-        }
-
-        label {
-            font-weight: 600;
-            color: #475569;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .left-column {
-                margin: 0;
-            }
-
-            .parent {
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            /* Hilangkan margin yang memaksa elemen naik/turun */
-            .left-column {
-                margin-top: 0;
-                max-height: none;
-            }
-
-            /* Pastikan kolom kanan juga jadi 1 baris ke bawah */
-            .right-column {
-                grid-template-columns: 1fr;
-            }
-
-            /* Tombol biar tidak terlalu mepet */
-            .btn {
-                margin-top: 10px;
-            }
-        }
-
-        .btn {
-            width: 100%;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            height: 40px;
-            border-radius: 20px;
-            color: white;
-            margin: 20px 0 15px;
-            background-color: #F47B20;
-            box-shadow: 0 2px 5px #492509;
-        }
-
-        .top {
-            align-items: center;
-            display: flex;
-            justify-content: center;
+        .foto-container {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 15px;
         }
 
         .foto {
-            width: 18vh;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: var(--shadow-md);
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #f6ebe3;
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        label span {
+            display: none;
+            color: #94a3b8;
+            font-weight: 400;
+            font-size: 0.75rem;
+        }
+
+        /* Style untuk tulisan BEFORE */
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background-color: #fff;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(244, 123, 32, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
-
-    <!-- Navigasi Utama -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
-
-            <!-- Burger Menu (Mobile Only) -->
-            <input type="checkbox" id="check">
-            <label for="check" class="checkbtn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </label>
-
-            <ul class="nav-links">
-                <li><a href="admin.php" class="active">Beranda</a></li>
-                <li><a href="#">Akun</a></li>
-                <li><a href="#">Menu</a></li>
-                <li><a href="#">Outlet</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <h2>
-        EDIT USER
-    </h2>
     <div class="container">
         <form action="./process/pro_edit.php" method="post">
-            <!-- data umum:D -->
-            <div class="parent">
+            <div class="main-grid">
+
+                <!-- KOLOM KIRI -->
                 <div class="left-column">
-                    <div class="card top">
-                        <label class="top-card">Foto Profil</label>
-                        <img src="../../source/fotopengguna/mbakyaya.jpg" alt="" class="foto">
-                        <img src="../../source/fotopengguna/<?= $dataUsers['FOTO_USERS'] ?>" alt="" class="foto">
-                        <label></label>
-                        <p style="font-weight: bold;  color: #475569;">
-                            <?= $dataUsers['ROLE'] ?>
-                        </p>
+                    <span class="category-title">Identitas</span>
+                    <div class="card profile-card">
+                        <div class="foto-container">
+                            <img src="../../source/fotopengguna/<?= $dataUsers['FOTO_USERS'] ?>" alt="Profile" class="foto">
+                        </div>
+                        <h4 style="margin-bottom: 5px;"><?= $dataUsers['USERNAME'] ?></h4>
+                        <span class="role-badge"><?= $dataUsers['ROLE'] ?></span>
                     </div>
+
+                    <span class="category-title">Kredensial</span>
                     <div class="card">
-                        <label>Username</label>
-                        <input type="text" name="usn" value="<?= $dataUsers['USERNAME'] ?>">
-                        <label>Password</label>
-                        <input type="text" name="pass" value="<?= $dataUsers['PASS'] ?>">
+                        <div class="form-group">
+                            <label>Username <span>(BEFORE: <?= $dataUsers['USERNAME'] ?>)</span></label>
+                            <input type="text" name="usn" value="<?= $dataUsers['USERNAME'] ?>">
+                        </div>
+                        <div class="form-group">
+                            <label>Password <span>(BEFORE: <?= $dataUsers['PASS'] ?>)</span></label>
+                            <input type="text" name="pass" value="<?= $dataUsers['PASS'] ?>">
+                        </div>
                     </div>
                 </div>
+
+                <!-- KOLOM KANAN -->
                 <div class="right-column">
-                    <div class="card full-width">
-                        <label>Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" value="<?= $dataUsers['NAMA_LENGKAP'] ?>">
-
-                        <label>Nomor telpon</label>
-                        <input type="text" name="no_tlp" value="<?= $dataUsers['NO_TLP'] ?>">
-
-                        <label>Email</label>
-                        <input type="email" name="email" value="<?= $dataUsers['EMAIL'] ?>">
+                    <span class="category-title">Informasi Pribadi</span>
+                    <div class="card">
+                        <div class="form-group">
+                            <label>Nama Lengkap <span>(BEFORE: <?= $dataUsers['NAMA_LENGKAP'] ?>)</span></label>
+                            <input type="text" name="nama_lengkap" value="<?= $dataUsers['NAMA_LENGKAP'] ?>">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>Nomor Telepon <span>(BEFORE: <?= $dataUsers['NO_TLP'] ?>)</span></label>
+                                <input type="text" name="no_tlp" value="<?= $dataUsers['NO_TLP'] ?>">
+                            </div>
+                            <div class="form-group">
+                                <label>Email <span>(BEFORE: <?= $dataUsers['EMAIL'] ?>)</span></label>
+                                <input type="email" name="email" value="<?= $dataUsers['EMAIL'] ?>">
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- data setiap role:D -->
                     <?php
                     switch ($dataUsers['ROLE']):
                         case 'MURID':
-                            $sql = "SELECT * FROM MURID WHERE ID_USER='$id'";
-                            $query = $conn->query($sql);
-                            $datatable = $query->fetch_assoc();
-                            $kelastmp = $datatable['ID_KELAS'];
-                            $sql = "SELECT * FROM KELAS WHERE ID='$kelastmp'";
-                            $query = $conn->query($sql);
-                            $hasiltmp = $query->fetch_assoc();
-                            $kelastmp = $hasiltmp['KELAS'];
+                            $sql_m = "SELECT * FROM MURID WHERE ID_USER='$id'";
+                            $q_m = $conn->query($sql_m);
+                            $datatable = $q_m->fetch_assoc();
 
-
+                            $id_k = $datatable['ID_KELAS'];
+                            $q_k_name = $conn->query("SELECT KELAS FROM KELAS WHERE ID='$id_k'");
+                            $row_k = $q_k_name->fetch_assoc();
+                            $kelastmp = $row_k ? $row_k['KELAS'] : '';
                     ?>
-                            <div class="card full-width">
-                                <label>NISN</label>
-                                <input type="text" name="nisn" value="<?= $datatable['NISN'] ?>">
+                            <span class="category-title">Informasi Akademik</span>
+                            <div class="card">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div class="form-group">
+                                        <label>NISN <span>(BEFORE: <?= $datatable['NISN'] ?>)</span></label>
+                                        <input type="text" name="nisn" value="<?= $datatable['NISN'] ?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kelas <span>(BEFORE: <?= $kelastmp ?>)</span></label>
+                                        <input list="kelas_list" name="id_kelas" value="<?= $kelastmp ?>" placeholder="Pilih Kelas...">
+                                        <datalist id="kelas_list">
+                                            <?php
+                                            $query_all_k = $conn->query("SELECT * FROM kelas");
+                                            while ($k = $query_all_k->fetch_assoc()):
+                                            ?>
+                                                <option value="<?= $k['KELAS'] ?>"></option>
+                                            <?php endwhile; ?>
+                                        </datalist>
+                                    </div>
+                                </div>
 
-                                <label>Kelas</label>
-                                <input list="kelas_list" name="id_kelas" placeholder="Cari kelas...(x,xi,xii)">
-                                <datalist id="kelas_list">
-                                    <?php
-                                    $sql = "SELECT * FROM kelas";
-                                    $query = $conn->query($sql);
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div class="form-group">
+                                        <label>Tempat Lahir <span>(BEFORE: <?= $datatable["TEMPAT_LAHIR"] ?>)</span></label>
+                                        <input type="text" name="tempat_lahir" value="<?= $datatable["TEMPAT_LAHIR"] ?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tanggal Lahir <span>(BEFORE: <?= $datatable["TANGGAL_LAHIR"] ?>)</span></label>
+                                        <input type="date" name="tanggal_lahir" value="<?= $datatable["TANGGAL_LAHIR"] ?>">
+                                    </div>
+                                </div>
 
-                                    while ($kelas = $query->fetch_assoc()):
-                                    ?>
-                                        <option value="<?= $kelas['KELAS'] ?>">
-                                            <?= $kelas['KELAS'] ?>
-                                        </option>
-
-                                    <?php endwhile; ?>
-                                </datalist>
+                                <div class="form-group">
+                                    <label>Alamat Rumah <span>(BEFORE: <?= $datatable["ALAMAT_RUMAH"] ?>)</span></label>
+                                    <textarea name="alamat_rumah"><?= $datatable["ALAMAT_RUMAH"] ?></textarea>
+                                </div>
                             </div>
-                            <div class="card full-width">
-                                <label>Tempat Lahir</label>
-                                <input type="text" name="tempat_lahir" value="<?= $datatable["TEMPAT_LAHIR"] ?>">
-
-                                <label>Tanggal Lahir</label>
-                                <input type="date" name="tanggal_lahir" value="<?= $datatable["TANGGAL_LAHIR"] ?>">
-
-                                <label>Alamat Rumah</label>
-                                <textarea name="alamat_rumah" rows="3"><?= $datatable["ALAMAT_RUMAH"] ?></textarea>
-                                <!-- <button type="submit" class="btn">SUBMIT</button> -->
-
                         <?php
                             break;
-                        case 'GURU';
+                        case 'GURU':
                         ?>
-                                <input type="text">
-                                <h1>hai</h1>
+                            <span class="category-title">Data Guru</span>
+                            <div class="card">
+                                <input type="text" placeholder="Input khusus guru...">
+                                <h4 style="margin-top: 10px; color: var(--primary);">Hai, Panel Guru Aktif</h4>
+                            </div>
                     <?php endswitch; ?>
-                    
 
-                        <button type="submit" class="btn">SUBMIT</button>
-                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fa fa-save"></i> SUBMIT PERUBAHAN
+                    </button>
                 </div>
             </div>
-
-
-
         </form>
     </div>
 </body>

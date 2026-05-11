@@ -1,5 +1,5 @@
      :root {
-    --bg-color: #f8fafc;
+    --bg-color: #f5f5f5;
     --primary-color: #F47B20;
     --text-main: #1e293b;
     --text-muted: #64748b;
@@ -7,15 +7,21 @@
     --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
+html{
+    width: 100%;
+}
+
 
 body {
-    background-color: #FFFCFA;
+    background-color: var(--bg-color);
     margin: 0;
     padding: 0;
     min-height: 100vh;
     display: flex;
+    width: 100%;
     flex-direction: column;
-    color: white;
+    color: #202a39;
+    
 }
 
 
@@ -40,7 +46,7 @@ body {
     top: 0;
     width: 100%;
     height: 60px;
-    background: #FFFCFA;
+    background: var(--white);
     display: flex;
     align-items: center;
     padding: 0 0px;
@@ -63,6 +69,17 @@ body {
     align-items: center;
 }
 
+.top-nav span {
+    margin-left: 10px;
+    font-size: 20px;
+    text-align: center;
+    margin: 10px ;
+    justify-content: center;
+}
+.top-nav img{
+    
+    width: 20px;
+}
 .nav-teks {
     font-family: 'Poppins', sans-serif;
     padding: 5px 0 0 4px;
@@ -79,7 +96,7 @@ body {
 }
 
 .top-nav a:hover {
-    color: #F47B20;
+    color: var(--primary-color);
 }
 
 .logo-mobile img {
@@ -87,6 +104,36 @@ body {
     height: 40px;
     padding: 20px 0 0 20px;
 
+}
+
+.dropdown-container {
+    position: relative;
+    display: inline-block;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    min-width: 120px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 10;
+    border-radius: 4px;
+}
+.dropdown-container:hover .dropdown-content {
+    display: block;
+}
+.dropdown-content a {
+    color: black;
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
 }
 
 @media (min-width: 768px) {
@@ -101,7 +148,9 @@ body {
 }
 
 @media (max-width: 780px) {
-
+.dropdown-content{
+    display: none;
+}
     .logo-desktop {
         display: none;
     }
@@ -109,22 +158,23 @@ body {
     .logo-mobile {
         display: flex;
         align-items: center;
-        padding: 30px 0 20px 25px;
+        padding: 15px 0 18px 20px;
         width: auto;
-        height: 40px;
+        max-width: 30px;
+        /* height: 20px; */
     }
 
     .logo-mobile img {
-        height: 20vw;
+        height: 10vw;
         width: auto;
-        max-height: 65px;
-        min-height: 45px;
+        max-height: 50px;
+        padding: 0;
+        min-height: 30px;
     }
 
 
     .top-nav {
         position: fixed;
-        align-items: center;
         bottom: 0;
         left: 0;
         right: 0;
@@ -132,30 +182,42 @@ body {
         width: 100%;
         display: flex;
         height: 70px;
-        flex-direction: row;
-        justify-content: space-evenly;
-        /* margin: 0; */
+        width: 100%;
+        /* Hapus justify-content di sini karena kita ingin menu yang mengatur penyebaran */
         padding: 0;
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
         border-radius: 20px 20px 0 0;
+        display: flex;
+        justify-content: center;
+        background: var(--white);
+        margin: 0;
+        margin-bottom: 0; 
+        padding-bottom: env(safe-area-inset-bottom);
     }
-    
 
     .menu {
         margin: 0;
-        align-items: center;
+        margin: 0 ; /* Paksa hapus margin desktop */
+        padding: 0 ;
+        gap: 0;
         display: flex;
-        justify-content: center;
+        width: 90%; /* WAJIB: Agar menu memenuhi seluruh lebar navbar */
+        justify-content: space-around; /* Menyebarkan item secara merata */
+        align-items: center;
     }
 
     .menu a {
-        margin: 30px;
+        margin: 0; /* Hapus margin statis agar tidak merusak kalkulasi space-around */
+        padding: 10px;
+        flex: 1; /* Opsional: Membuat area klik tiap menu sama besar */
+        display: flex;
+        justify-content: center;
+        line-height: 0; 
+  
+        align-items: center;
     }
 
     .top-nav span {
         display: none;
-
-
     }
-
 }

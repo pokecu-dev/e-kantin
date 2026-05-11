@@ -15,23 +15,25 @@
 }
 body{
     background-color: var(--bg-color);
+  
 }
 
 /* Navbar Utama sebagai Card */
 .navbar {
     background: var(--white);
     height: 80px;
-    width: 98%; /* Memberikan kesan melayang/card */
-    margin: 10px auto; /* Memberikan jarak dari tepi atas */
-    border-radius: 15px; /* Membuat sudut membulat */
+    width: 100vw; 
+    /* margin: 10px auto; Memberikan jarak dari tepi atas */
+    border-radius: 0 0 15px 15px; /* Membuat sudut membulat */
     display: flex;
     align-items: center;
     padding: 0 30px;
+    margin: 0;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     
     /* Efek Sticky agar tetap di atas saat scroll */
     position: sticky;
-    top: 10px;
+    top: 0;
     z-index: 1000;
 }
 
@@ -48,7 +50,7 @@ body{
 }
 
 .logo img {
-    height: clamp(35px, 5vw, 55px); 
+    height: clamp(30px, 5vw, 40px); 
     width: auto;
     object-fit: contain;
 }

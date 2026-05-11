@@ -74,8 +74,7 @@ if (isset($_POST['add_to_cart'])) {
 
         .produk {
 
-            border-bottom: 1px solid #492509;
-git 
+            border-bottom: 1px solid #492509; 
         }
 
 
