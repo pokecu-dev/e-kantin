@@ -6,7 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    <h2>EDIT PRODUK</h2>
-    <label for=""></label>
+    halo dunia
 </body>
 </html>

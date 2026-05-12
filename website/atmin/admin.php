@@ -31,7 +31,7 @@ if ($conn->error) {
 }
 
 $sql = "SELECT * FROM users";
- $query = $conn->query("SELECT * FROM users ORDER BY ID DESC LIMIT 5");
+$query = $conn->query("SELECT * FROM users ORDER BY ID DESC LIMIT 5");
 
 ?>
 
@@ -45,6 +45,12 @@ $sql = "SELECT * FROM users";
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #F47B20;
+            --bg: #f5f5f5;
+            --white: #ffffff;
+        }
+
         /* Warna default (Abu-abu) untuk semua menu */
         .nav-links a {
             text-decoration: none;
@@ -56,30 +62,29 @@ $sql = "SELECT * FROM users";
 
         /* Warna khusus (Merah) untuk menu yang sedang aktif */
         .nav-links a.active {
-            color: #F47B20;
+            color: var(--primary);
             /* Warna merah brand KantinKita */
             border-bottom: 2px solid #F47B20;
             /* Opsional: tambah garis bawah agar lebih jelas */
             padding-bottom: 5px;
         }
 
-        :root {
-            --primary: #F47B20;
-            --bg: #f5f5f5;
-            --white: #ffffff;
-        }
+
 
         body {
             background-color: var(--bg);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+
         }
 
         /* Stats Card Styling */
         .stats-container {
             margin-bottom: 30px;
             overflow: hidden;
+            margin-top: 20px;
+            padding: 0 20px;
         }
 
         .stats-wrapper {
@@ -115,6 +120,7 @@ $sql = "SELECT * FROM users";
             background: var(--white);
             border-radius: 12px;
             padding: 20px;
+            margin: 0 20px 0 20px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
@@ -176,63 +182,62 @@ $sql = "SELECT * FROM users";
 
         /* Styling untuk list user agar rapi */
         .header-tabel,
-    .div1 {
-        display: grid;
-        /* 4 Kolom: kolom pertama lebih lebar (2fr), sisanya sama rata (1fr) */
-        grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1fr;
-        gap: 10px;
-        padding: 8px;
-        min-width: 700px;
-        max-height: fit-content;
-        border-bottom: 1px solid #492509;
-        align-items: start;
-    }
+        .div1 {
+            display: grid;
+            grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 8px;
+            min-width: 700px;
+            max-height: fit-content;
+            border-bottom: 1px solid #492509;
+            align-items: start;
+        }
 
-    .parent {
-        background-color: #dac8b9;
-        padding: 15px;
-        border-radius: 10px;
+        .parent {
+            background-color: #dac8b9;
+            padding: 15px;
+            border-radius: 10px;
 
-    }
+        }
 
-    .div1 {
-        line-height: 1.4;
+        .div1 {
+            line-height: 1.4;
 
-    }
+        }
 
-    .div1 p {
-        word-break: break-word;
-    }
+        .div1 p {
+            word-break: break-word;
+        }
 
-    /* Warna background */
-    .header-tabel {
-        background: #fff5eb;
-        font-weight: bold;
-        border-radius: 5px;
-        margin-bottom: 5px;
-    }
+        /* Warna background */
+        .header-tabel {
+            background: #fff5eb;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
 
-    .card1 {}
+        .card1 {}
 
-    .card2 {
-        overflow-x: auto;
-    }
-    p{
-        font-size: small;
-    }
+        .card2 {
+            overflow-x: auto;
+        }
 
-    .btn {
-        border: none;
-        outline: none;
-        font-size: 14px;
-        height: 40px;
-        border-radius: 5px;
-        color: white;
-        margin: 20px 0 15px;
-        background-color: #F47B20;
-        box-shadow: 0 2px 5px #492509;
-    }
+        p {
+            font-size: small;
+        }
 
+        .btn {
+            border: none;
+            outline: none;
+            font-size: 14px;
+            height: 40px;
+            border-radius: 5px;
+            color: white;
+            margin: 20px 0 15px;
+            background-color: #F47B20;
+            box-shadow: 0 2px 5px #492509;
+        }
     </style>
 </head>
 
@@ -254,8 +259,9 @@ $sql = "SELECT * FROM users";
             <ul class="nav-links">
                 <li><a href="admin.php" class="active">Beranda</a></li>
                 <li><a href="akun.php">Akun</a></li>
-                <li><a href="#">Menu</a></li>
+                <li><a href="menu.php">Menu</a></li>
                 <li><a href="#">Outlet</a></li>
+                <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
     </nav>
@@ -317,7 +323,7 @@ $sql = "SELECT * FROM users";
                                 <p><?= $user['NAMA_LENGKAP'] ?></p>
                                 <p><?= $user['NO_TLP'] ?></p>
                                 <p><?= $user['EMAIL'] ?></p>
-                               <p><?= $user['ROLE'] ?></p>
+                                <p><?= $user['ROLE'] ?></p>
                                 <p>
                                     <a href="edituser.php?id=<?= $user['ID'] ?>" class="btn-edit">Edit</a>
                                 </p>
@@ -328,28 +334,6 @@ $sql = "SELECT * FROM users";
             </div>
         </div>
     </div>
-    <!-- <label>
-        <input type="checkbox">
-        <div class="toggle">
-            <span class="top-line common"></span>
-            <span class="middle-line common"></span>
-            <span class="bottom-line common"></span>
-        </div>
-        <div class="slide">
-            <h1>menu</h1>
-            <li><a href="#">dashboard</a></li>
-            <li><a href="#">dashboard</a></li>
-            <li><a href="#">dashboard</a></li>
-            <li><a href="#">dashboard</a></li>
-            <li><a href="#">dashboard</a></li>
-            <li><a href="#">dashboard</a></li>
-        </div>
-    </label> -->
-
-    <h2>tombol log out</h2>
-    <!-- <a href="/logout.php"><button>log out</button></a> -->
-    <a href="./../logout.php"><button>log out</button></a>
-
     <br>
     <p>tes up file</p>
     <form id="upfile-form">
@@ -357,46 +341,42 @@ $sql = "SELECT * FROM users";
         <input type="file" id="upfile" name="upfile">
         <button type="submit"">upload</button>
     </form>
-    <div id="notif" style="color: green;">hi</div>
+    <!-- <div id=" notif" style="color: green;">hi</div> -->
 
-    <br>
-    <a href="TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
-    <a href="cariProduk.php">cari</a>
-
-
-    <script>
-
-        document.getElementById("upfile-form").onsubmit = async function(events) {
-            
-            events.preventDefault();
-            const dataForm = new FormData(this);
-            const notif = document.getElementById("notif");
-            
-            try{
+            <br>
+            <a href="TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
+            <a href="cariProduk.php">cari</a>
 
 
-                const respon = await fetch ('/../include/proses(universal)/upfile.php',{
-                    method: "POST",
-                    body: dataForm
-                });
+            <script>
+                document.getElementById("upfile-form").onsubmit = async function(events) {
 
-                const data = await respon.json();
+                    events.preventDefault();
+                    const dataForm = new FormData(this);
+                    const notif = document.getElementById("notif");
 
-                notif.innerText = data.message;
-                
-                
-                
+                    try {
 
 
-            }
-            catch(error){
-                console.error("Detail Error:", error);
-                notif.innerText = error.message;
-            }
-        }
+                        const respon = await fetch('/../include/proses(universal)/upfile.php', {
+                            method: "POST",
+                            body: dataForm
+                        });
+
+                        const data = await respon.json();
+
+                        notif.innerText = data.message;
 
 
-    </script>
+
+
+
+                    } catch (error) {
+                        console.error("Detail Error:", error);
+                        notif.innerText = error.message;
+                    }
+                }
+            </script>
 
 </body>
 

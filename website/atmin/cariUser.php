@@ -37,6 +37,7 @@ if (!empty($search_user)) {
 
 <head>
     <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Data User</title>
     <style>
         body {
@@ -45,14 +46,14 @@ if (!empty($search_user)) {
             padding: 30px;
         }
 
-        .container {
+        /* .container {
             background: white;
             max-width: 1100px;
             margin: auto;
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
+        } */
 
         h3 {
             color: #333;
@@ -61,29 +62,49 @@ if (!empty($search_user)) {
             padding-bottom: 10px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
+        .header-tabel,
+        .div1 {
+            display: grid;
+            /* 4 Kolom: kolom pertama lebih lebar (2fr), sisanya sama rata (1fr) */
+            grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 8px;
+            min-width: 700px;
+            border-bottom: 1px solid #492509;
+
+            align-items: start;
         }
 
-        th {
-            background: #f8f9fa;
-            color: #555;
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
+        .parent {
+            background-color: #dac8b9;
             padding: 15px;
-            border-bottom: 2px solid #dee2e6;
-            text-align: left;
+            border-radius: 10px;
+
         }
 
-        td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-            color: #444;
+        .header-tabel {
+            background: #fff5eb;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-bottom: 5px;
         }
+
+        p {
+            font-size: small;
+        }
+
+        .div1 {
+            line-height: 1.4;
+            max-height: fit-content;
+        }
+
+        .div1 p {
+            word-break: break-word;
+            margin: 0;
+        }
+        .card2 {
+        overflow-x: auto;
+    }
 
         tr:hover {
             background-color: #f9f9f9;
@@ -113,7 +134,7 @@ if (!empty($search_user)) {
 
         .role-badge {
             background: #e1f5fe;
-            color: #01579b;
+            color: #e49408;
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 11px;
@@ -131,42 +152,43 @@ if (!empty($search_user)) {
         </form>
         <h3>Hasil Pencarian: "<?= htmlspecialchars($search_user) ?>"</h3>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Nama Lengkap</th>
-                    <th>No. Telp</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th style="text-align: center;">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (count($user_results) > 0): ?>
-                    <?php foreach ($user_results as $row): ?>
-                        <tr>
-                            <td><?= $row['ID'] ?></td>
-                            <td><strong><?= htmlspecialchars($row['USERNAME']) ?></strong></td>
-                            <td><?= htmlspecialchars($row['NAMA_LENGKAP']) ?></td>
-                            <td><?= htmlspecialchars($row['NO_TLP']) ?></td>
-                            <td><?= htmlspecialchars($row['EMAIL']) ?></td>
-                            <td><span class="role-badge"><?= $row['ROLE'] ?></span></td>
-                            <td style="text-align: center;">
-                                <!-- Link edit mengarah ke file edit dengan membawa parameter ID -->
-                                <a href="edit_user.php?id=<?= $row['ID'] ?>" class="btn-edit">EDIT</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="7" style="text-align:center; color:#999; padding: 30px;">Data user tidak ditemukan.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
+
+        <div class="parent">
+            <div class="card2">
+                <div class="header-tabel">
+                    <p>ID</p>
+                    <p>USERNAME</p>
+                    <p>NAMA LENGKAP</p>
+                    <p>NO TLP</p>
+                    <p>EMAIL</p>
+                    <p>ROLE</p>
+                    <p>AKSI</p>
+                </div>
+
+                <div class="card">
+                    <?php if (count($user_results) > 0): ?>
+                        <?php foreach ($user_results as $row): ?>
+                            <div class="div1">
+                                <p><?= $row['ID'] ?></td>
+                                <p><strong><?= htmlspecialchars($row['USERNAME']) ?></strong></p>
+                                <p><?= htmlspecialchars($row['NAMA_LENGKAP']) ?></p>
+                                <p><?= htmlspecialchars($row['NO_TLP']) ?></p>
+                                <p><?= htmlspecialchars($row['EMAIL']) ?></p>
+                                <p><span class="role-badge"><?= $row['ROLE'] ?></span></p>
+                                <p style="text-align: center;">
+                                    <!-- <-- Link edit mengarah ke file edit dengan membawa parameter ID -->
+                                    <a href="edit_user.php?id=<?= $row['ID'] ?>" class="btn-edit">EDIT</a>
+                                </p>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div>
+                            <p style="text-align:center; color:#999; padding: 30px;">Data user tidak ditemukan.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
 
 </body>
 

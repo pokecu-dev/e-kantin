@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
-    // echo $_SESSION['status'];
+     echo $_SESSION['status'];
     header("location: ../index.php");
     exit();
 }
@@ -28,10 +28,14 @@ if ($_SESSION['role'] != "penjual")
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
+
+        * {
+            font-family:'Poppins', sans-serif ;
+        }
+        /* body {
             color: black;
             font-family: 'Poppins', sans-serif;
-        }
+        } */
 
         .container {
             margin: 50px 5px 0 5px;
@@ -146,20 +150,29 @@ if ($_SESSION['role'] != "penjual")
         <img src="../../source/website1/icon/logo1.svg" alt="KantinKita">
     </div>
     <!-- --------/LOGO------------ -->
-    <div class="top-nav">
+    <div class="top-nav" style="text-align: center; margin-bottom: 0px;">
         <nav class="menu">
-            <a href="penjual.php">
-                <img src="../../source/website1/icon/pesanan2.svg" alt=" home"> <span class="nav-teks">History</span>
+            <a href="penjual.php" style="margin: 0 5px; text-decoration: none ; color:#F47B20">
+                <img src="../../source/website1/icon/pesanan2.svg" alt=""> 
+                <span>History</span>
             </a>
-            <a href="edit1.php">
-                <img src="../../source/website1/icon/edit1.svg" alt=""><span class="nav-teks">Edit</span>
+            <a href="edit1.php" class="active" style="margin: 0 5px; text-decoration: none;">
+                <img src="../../source/website1/icon/edit1.svg" alt="">
+                <span>Edit</span>
             </a>
-            <a href="#">
-                <img src="../../source/website1/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
-            </a>
-        </nav>
+            <div class="dropdown-container">
+                <a href="profil.php" style="margin: 0 5px; text-decoration: none;">
+                    <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profile</span>
+                </a>
+                <div class="dropdown-content">
+                    <a href="profil.php">Profile</a>
+                    <a href="./../logout.php">Keluar</a>
+                </div>
+            </div>
 
+        </nav>
     </div>
+
     <!------------------------- PESANAN -------------------------->
     <div class="container">
         <h2 class="text">Daftar Pesanan</h2>
@@ -220,11 +233,7 @@ if ($_SESSION['role'] != "penjual")
     <br>
     <br>
 
-    <h2>tombol log out</h2>
-    <!-- <a href="/logout.php"><button>log out</button></a> -->
-    <a href="./../logout.php"><button>log out</button></a>
-
-
+   
 </body>
 
 </html>
