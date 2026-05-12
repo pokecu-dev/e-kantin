@@ -2,22 +2,64 @@
 session_start();
 require_once '../include/koneksi.php';
 
-// Cek apakah ada kiriman data dari tombol Tambah Ke Keranjang
-if (isset($_POST['add_to_cart'])) {
-    $id_menu = $_POST['id_menu'];
-    $qty = $_POST['qty'];
-    $id_user = $_SESSION['id_user']; 
-    $cek_keranjang = mysqli_query($conn, "SELECT * FROM keranjang WHERE id_menu = '$id_menu' AND id_user = '$id_user'");
-    
-    if (mysqli_num_rows($cek_keranjang) > 0) {
-        mysqli_query($conn, "UPDATE keranjang SET qty = qty + $qty WHERE id_menu = '$id_menu' AND id_user = '$id_user'");
-    } else {
-        mysqli_query($conn, "INSERT INTO keranjang (id_user, id_menu, qty) VALUES ('$id_user', '$id_menu', '$qty')");
-    }
-    
-    header("Location: keranjang.php");
+if (!isset($_SESSION['id_user'])) {
+    header('Location: ./login.php');
     exit();
 }
+
+// add to cart
+if (isset($_POST['add_to_cart'])) {
+    $id_menu = (int)($_POST['id_menu'] ?? 0);
+    $qty = (int)($_POST['qty'] ?? 1);
+    $id_user = (int)$_SESSION['id_user'];
+
+    if ($id_menu > 0 && $qty > 0) {
+        $cek_keranjang = mysqli_query($conn, "SELECT * FROM keranjang WHERE id_menu = '$id_menu' AND id_user = '$id_user'");
+        if (mysqli_num_rows($cek_keranjang) > 0) {
+            mysqli_query($conn, "UPDATE keranjang SET qty = qty + $qty WHERE id_menu = '$id_menu' AND id_user = '$id_user'");
+        } else {
+            mysqli_query($conn, "INSERT INTO keranjang (id_user, id_menu, qty) VALUES ('$id_user', '$id_menu', '$qty')");
+        }
+    }
+
+    header('Location: keranjang.php');
+    exit();
+}
+
+$id_user_aktif = (int)$_SESSION['id_user'];
+
+// checkout -> create transaksi -> redirect to receipt
+if (isset($_POST['checkout'])) {
+    // Ambil kantin dari item keranjang (pakai kantin yang sama; asumsi 1 kantin per transaksi)
+    $kantin_res = mysqli_query($conn, "
+        SELECT m.ID_KANTIN
+        FROM keranjang k
+        JOIN tb_menu m ON k.id_menu = m.id_menu
+        WHERE k.id_user = $id_user_aktif
+        LIMIT 1
+    ");
+    $kantin_row = mysqli_fetch_assoc($kantin_res);
+    $id_kantin = $kantin_row ? (int)$kantin_row['ID_KANTIN'] : 0;
+
+    $tgl = date('Y-m-d');
+    $waktu = date('H:i:s');
+
+    $ins = mysqli_query($conn, "INSERT INTO transaksi (id_kantin, id_user, tgl, waktu) VALUES ('$id_kantin', '$id_user_aktif', '$tgl', '$waktu')");
+
+    if ($ins) {
+        $transaksi_id = (int)mysqli_insert_id($conn);
+        header('Location: Sruckdigital.php?trx=' . $transaksi_id);
+        exit();
+    }
+}
+
+// list items in cart
+$query = mysqli_query($conn, "
+    SELECT k.*, m.NAMA_MENU, m.HARGA, m.FOTO_MENU
+    FROM keranjang k
+    JOIN tb_menu m ON k.id_menu = m.id_menu
+    WHERE k.id_user = $id_user_aktif
+");
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +74,6 @@ if (isset($_POST['add_to_cart'])) {
         body {
             color: black;
             font-family: 'Poppins', sans-serif;
-
         }
 
         .container {
@@ -43,8 +84,6 @@ if (isset($_POST['add_to_cart'])) {
             background-color: #dac8b9;
             padding: 15px;
             border-radius: 10px;
-
-
         }
 
         .text {
@@ -73,11 +112,8 @@ if (isset($_POST['add_to_cart'])) {
         }
 
         .produk {
-
             border-bottom: 1px solid #492509;
-git 
         }
-
 
         /* Styling gambar */
         .div1 {
@@ -110,40 +146,39 @@ git
         }
 
         .jumlah {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        gap: 10px;
-        margin-top: 0px;
-    }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 0px;
+        }
 
-    .jumlah button {
-        width: 35px;
-        height: 35px;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        background:  #F47B20;
-        color: white;
-        font-size: 20px;
-        border-radius: 12px;
-        cursor: pointer;
-        line-height: 0;
-    }
+        .jumlah button {
+            width: 35px;
+            height: 35px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: #F47B20;
+            color: white;
+            font-size: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            line-height: 0;
+        }
 
-    .jumlah input {
-        width: 40px;
-        height: 35px;
-        text-align: center;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-    }
+        .jumlah input {
+            width: 40px;
+            height: 35px;
+            text-align: center;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
     </style>
 </head>
 
@@ -161,8 +196,10 @@ git
             </a>
         </nav>
     </div>
+
     <div class="container">
         <h2 class="text">Keranjang Saya</h2>
+
         <div class="parent">
             <div class="header-tabel">
                 <div>Produk</div>
@@ -170,58 +207,52 @@ git
                 <div>Jumlah</div>
                 <div>Subtotal</div>
             </div>
+
             <div class="card">
+                <?php if (mysqli_num_rows($query) > 0) : ?>
+                    <?php while ($data = mysqli_fetch_array($query)) : ?>
+                        <div class="produk">
+                            <div class="div1">
+                                <img src="../../source/gambar_menu/<?php echo $data['FOTO_MENU']; ?>">
+                                <div>
+                                    <p><?php echo $data['NAMA_MENU']; ?></p>
+                                </div>
+                            </div>
 
-    <?php
-   $id_user_aktif = $_SESSION['id_user'];
-   $query = mysqli_query($conn, "
-        SELECT k.*, m.NAMA_MENU, m.HARGA, m.FOTO_MENU 
-        FROM keranjang k
-        JOIN tb_menu m ON k.id_menu = m.id_menu
-        WHERE k.id_user = $id_user_aktif
-    ");
+                            <div class="harga-tabel">
+                                Rp <?php echo number_format($data['HARGA'], 0, ',', '.'); ?>
+                            </div>
 
-     if(mysqli_num_rows($query) > 0) {
+                            <div class="jumlah">
+                                <button type="button" class="btn-qty" onclick="ubahQty('kurang', <?php echo (int)$data['id_keranjang']; ?>)">-</button>
+                                <input type="number" name="qty" value="<?php echo (int)$data['qty']; ?>" readonly>
+                                <button type="button" class="btn-qty" onclick="ubahQty('tambah', <?php echo (int)$data['id_keranjang']; ?>)">+</button>
+                            </div>
 
-        while($data = mysqli_fetch_array($query)) {
+                            <div class="subtotal">
+                                <?php 
+                                    $subtotal = (int)$data['HARGA'] * (int)$data['qty'];
+                                    echo "Rp " . number_format($subtotal, 0, ',', '.');
+                                ?>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else : ?>
+                    <p style='text-align:center; padding:20px;'>Wah, keranjangmu masih kosong nih!</p>
+                <?php endif; ?>
 
-    ?>
-
-        <div class="produk">
-            <div class="div1">
-                <img src="../../source/gambar_menu/<?php echo $data['FOTO_MENU']; ?>">
-                <div>
-                    <p><?php echo $data['NAMA_MENU']; ?></p>
-                </div>
+                <!-- Checkout (tampilan tidak diubah, tapi saat submit akan membuat transaksi & redirect) -->
+                <?php if (mysqli_num_rows($query) > 0) : ?>
+                    <form method="POST">
+                        <div style="display:flex; justify-content:flex-end; padding:15px;">
+                            <button type="submit" name="checkout" class="btn" style="margin:0;">Checkout</button>
+                        </div>
+                    </form>
+                <?php endif; ?>
             </div>
-
-            <div class="harga-tabel">
-                Rp <?php echo number_format($data['HARGA'], 0, ',', '.'); ?>
-            </div>
-
-           <div class="jumlah">
-                <button type="button" class="btn-qty" onclick="ubahQty('kurang', <?php echo $data['id_keranjang']; ?>)">-</button>
-                <input type="number" name="qty" value="<?php echo $data['qty']; ?>" readonly>
-                <button type="button" class="btn-qty" onclick="ubahQty('tambah', <?php echo $data['id_keranjang']; ?>)">+</button>
-            </div>
-
-            <div class="subtotal">
-                <?php 
-                    $subtotal = $data['HARGA'] * $data['qty'];
-                    echo "Rp " . number_format($subtotal, 0, ',', '.'); 
-                ?>
-            </div>
-            
-            <?php }
-            } else {
-                // Tampilan jika keranjang masih kosong
-                echo "<p style='text-align:center; padding:20px;'>Wah, keranjangmu masih kosong nih!</p>";
-            }
-            ?>
         </div>
-
     </div>
-
 </body>
+
 </html>
-        
+

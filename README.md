@@ -79,7 +79,9 @@ ctrl + c untuk membuat php/apache berhenti
 ukuran media (note untuk fe:D)
 
 HP (Portrait): Default (Tidak perlu media query)
-HP (Landscape): @media (min-width: 480px) { ... }
+HP (Landscape): @media (min-width: 480px) { ... }  
+
+
 Tablet: @media (min-width: 768px) { ... }
 Laptop/Desktop Kecil: @media (min-width: 1024px) { ... }
 Desktop Besar/Monitor: @media (min-width: 1200px) { ... }
@@ -88,10 +90,12 @@ sc:gemini ai
 
 
 
+
 /script_data/ -> berisi script impor dan ekspor db
 berisi 2 tipe extensi,bash dan powershell
 - gunakan bash( .sh) jika memakai terminal wsl/linux/macos
 - gunakan powershell( .ps1) jika memakai powershell
+
 
 fe:sesudah pull jalanin impor,
 
