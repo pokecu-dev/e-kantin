@@ -60,14 +60,14 @@ require_once '../include/koneksi.php';
         }
 
         .kat-btn img {
-            width: 35px;
+            width: 40px;
             height: auto;
             margin-right: 8px;
         }
 
         .kat-btn span {
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 400;
         }
 
         /* --- Grid System (Product Cards) --- */
@@ -180,11 +180,11 @@ require_once '../include/koneksi.php';
     <!-- Logo Section -->
     <header>
        <div class="logo-mobile">
-        <img src="../../source/website1/icon/logo1.svg" alt="KantinKita">
+        <img src="../../source/icon/logo1.svg" alt="KantinKita">
     </div>
 
     <div class="logo-desktop">
-        <img src="../../source/website1/icon/logo1.svg" alt="KantinKita">
+        <img src="../../source/icon/logo1.svg" alt="KantinKita">
     </div>
     </header>
 
@@ -192,11 +192,11 @@ require_once '../include/koneksi.php';
     <div class="top-nav" style="text-align: center; margin-bottom: 0px;">
         <nav class="menu">
             <a href="penjual.php" style="margin: 0 5px; text-decoration: none;">
-                <img src="../../source/website1/icon/pesanan2.svg" alt="" > 
+                <img src="../../source/icon/pesanan2.svg" alt="" > 
                 <span>History</span>
             </a>
             <a href="edit1.php" class="active" style="margin: 0 5px; text-decoration: none; color:#F47B20">
-                <img src="../../source/website1/icon/edit1.svg" alt="" >
+                <img src="../../source/icon/edit1.svg" alt="" >
                 <span>Edit</span>
             </a>
             <div class="dropdown-container">
@@ -216,15 +216,15 @@ require_once '../include/koneksi.php';
     <div class="container">
         <div class="kategori">
             <button class="kat-btn">
-                <img src="./../source/website1/icon/makanan.svg" alt="Makanan"> 
+                <img src="./../source/icon/makanan.svg" alt="Makanan"> 
                 <span>Makanan</span>
             </button>
             <button class="kat-btn">
-                <img src="./../source/website1/icon/minuman.svg" alt="Minuman"> 
+                <img src="./../source/icon/minuman.svg" alt="Minuman"> 
                 <span>Minuman</span>
             </button>
              <button class="kat-btn">
-                <img src="./../source/website1/icon/snack.svg" alt="Camilan"> 
+                <img src="./../source/icon/snack.svg" alt="Camilan"> 
                 <span>Camilan</span>
             </button>
         </div>

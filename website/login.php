@@ -199,7 +199,7 @@
                 </div>
                 <br>
 
-                <button type="submit" class="btn">Login</button>
+                <button type="submit" class="btn" id="btn">Login</button>
             </form>
 
             <div id="notif">
@@ -210,12 +210,14 @@
     </main>
 
     <script>
+        
+
         document.getElementById('form_login').onsubmit = async (event) => {
 
             event.preventDefault();
             const notif = document.getElementById("notif");
-            const form_data = new FormData(this);
-            const notiftes = document.getElementById('notiftes');
+            const form_data = new FormData(event.target);
+            // const notiftes = document.getElementById('notiftes');
 
             try {
                 // notiftes.innerText = 'woi'

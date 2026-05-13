@@ -140,21 +140,21 @@ if (!$data) {
 <body>
 
 <div class="logo-mobile">
-        <img src="../../source/website1/icon/logo.svg" alt="KantinKita">
+        <img src="../../source/icon/logo.svg" alt="KantinKita">
     </div>
 
     <div class="logo-desktop">
-        <img src="../../source/website1/icon/logo1.svg" alt="KantinKita">
+        <img src="../../source/icon/logo1.svg" alt="KantinKita">
     </div>
     <!-- --------/LOGO------------ -->
     <div class="top-nav" style="text-align: center; margin-bottom: 0px;">
         <nav class="menu">
             <a href="penjual.php" style="margin: 0 5px; text-decoration: none ; color:#F47B20">
-                <img src="../../source/website1/icon/pesanan2.svg" alt=""> 
+                <img src="../../source/icon/pesanan2.svg" alt=""> 
                 <span>History</span>
             </a>
             <a href="edit1.php" class="active" style="margin: 0 5px; text-decoration: none;">
-                <img src="../../source/website1/icon/edit1.svg" alt="">
+                <img src="../../source/icon/edit1.svg" alt="">
                 <span>Edit</span>
             </a>
             <div class="dropdown-container">

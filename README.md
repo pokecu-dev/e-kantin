@@ -71,7 +71,6 @@ jangan lupa untuk extension devcontainer
 
 
 kalau php tidak jalan,jalanin 
-apache2-foreground
 ctrl + c untuk membuat php/apache berhenti
 
 
