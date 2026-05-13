@@ -349,7 +349,7 @@ $query = $conn->query("SELECT * FROM users ORDER BY ID DESC LIMIT 5");
 
 
             <script>
-                document.getElementById("upfile-form").onsubmit = async function(events) {
+                document.getElementById("upfile-form").onsubmit = async (events) => {
 
                     events.preventDefault();
                     const dataForm = new FormData(this);
@@ -366,9 +366,6 @@ $query = $conn->query("SELECT * FROM users ORDER BY ID DESC LIMIT 5");
                         const data = await respon.json();
 
                         notif.innerText = data.message;
-
-
-
 
 
                     } catch (error) {

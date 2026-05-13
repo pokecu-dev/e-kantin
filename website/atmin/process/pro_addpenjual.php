@@ -1,34 +1,53 @@
 <?php
 
     require_once __DIR__ . "/../../include/koneksi.php";
-    require_once __DIR__ . "/../../include/classes/adduserClasses/penjual.php";
-    // deklarasi
-    $usn = $_POST['usn'];
-    $pass = $_POST['pass'];
-    $nama_lengkap = $_POST['nama_lengkap'];
-    $no_tlp = $_POST['no_tlp'];
-    $email = $_POST['email'];
-
+    require_once __DIR__ . "/../../include/classes/adduserClasses/users.php";
     
-
-    $usn = strtolower($usn);
+    if($_SERVER['REQUEST_METHOD'] == "POST"){
         
-    // new obj dari murid.php
-    $adminobj = new penjual($conn);
-    // add admin
-    $hasil = $adminobj->add(
-        $usn,
-        $pass,
-        $nama_lengkap,
-        $no_tlp,
-        $email
-    );
+        // deklarasi
+        
+        $usn = $_POST['usn'];
+        $pass = $_POST['pass'];
+        $nama_lengkap = $_POST['nama_lengkap'];
+        $no_tlp = $_POST['no_tlp'];
+        $email = $_POST['email'];
+        
+        
+        header('content-type: application/json');
 
-    if ($hasil) {
-        echo "berhasil tambah penjual YEYYYYYYYYY";
-    }
-    else{
-        echo "cieee gagall <br> nih info kenapa bisa gagal: " . $conn->error;
+        try{
+
+            $usn = strtolower($usn);
+
+            // new obj dari users.php
+            $adminobj = new Users($conn);
+            // add admin
+
+            $hasil = $adminobj->AddUsers(
+                $usn,
+                $pass,
+                $nama_lengkap,
+                $no_tlp,
+                $email,
+                "PENJUAL"
+            );
+            if($hasil){
+                echo json_encode([
+                    'status'=>'success',
+                    'message'=>'berhasil menambahkan admin!'
+                ]);
+            }
+
+            else {
+                echo json_encode(['status' => 'error','message' => 'ada kesalahan!']);
+            }
+
+        }
+        catch(Exception $e){
+            echo json_encode(['status' => 'error','message' => 'gagal' . $e->getMessage()]);
+
+        }
     }
 
     

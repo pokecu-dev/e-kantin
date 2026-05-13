@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="./process/pro_addpenjual.php" method="POST">
+    <form data-ajax="true" data-action="./process/pro_addpenjual.php" data-notif="notif">
         
         <label>Username</label><br>
         <input type="text" name="usn"><br><br>
@@ -26,6 +26,9 @@
         <button type="submit">submit</button>
 
     </form>
+
+    <div id="notif"></div>
+    <script src="./../shared/js/script.js"></script>
 </body>
 </html>
 

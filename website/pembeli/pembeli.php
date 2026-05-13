@@ -356,20 +356,7 @@ require_once '../include/koneksi.php';
                 </div>
             <?php endwhile; ?>
         </div>
-
-
-
-    <!-- <br>
-    <p>tes up file</p>
-    <form action="upfile.php" method="post" enctype="multipart/form-data">
-        <label for="myfile">pilih file:</label>
-        <input type="file" id="myfile" name="filename">
-        <input type="submit" value="unggah">
-    </form>
-
-    <br>
-    <a href="../TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
-     -->
+        
 </body>
 
 </html>

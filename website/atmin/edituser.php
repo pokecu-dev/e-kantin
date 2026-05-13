@@ -17,7 +17,8 @@ $dataUsers = [
     'EMAIL' => ''
 ];
 
-$id = $conn->real_escape_string($_GET['id']);
+// $id = $conn->real_escape_string($_GET['id']);
+$id = $_GET['id'];
 $sql = "select * from users where ID='$id'";
 $query = $conn->query($sql);
 if ($query->num_rows > 0) {
@@ -193,7 +194,7 @@ if ($query->num_rows > 0) {
 
 <body>
     <div class="container">
-        <form action="./process/pro_edit.php" method="post">
+        <form data-ajax="true" data-action="./process/pro_edit.php" data-notif="notif">
             <div class="main-grid">
 
                 <!-- KOLOM KIRI -->
@@ -210,12 +211,13 @@ if ($query->num_rows > 0) {
                     <span class="category-title">Kredensial</span>
                     <div class="card">
                         <div class="form-group">
+                            <input type="hidden" name="id" value="<?= $id ?>">
                             <label>Username <span>(BEFORE: <?= $dataUsers['USERNAME'] ?>)</span></label>
                             <input type="text" name="usn" value="<?= $dataUsers['USERNAME'] ?>">
                         </div>
                         <div class="form-group">
                             <label>Password <span>(BEFORE: <?= $dataUsers['PASS'] ?>)</span></label>
-                            <input type="text" name="pass" value="<?= $dataUsers['PASS'] ?>">
+                            <input type="text" name="pass">
                         </div>
                     </div>
                 </div>
@@ -240,66 +242,7 @@ if ($query->num_rows > 0) {
                         </div>
                     </div>
 
-                    <?php
-                    switch ($dataUsers['ROLE']):
-                        case 'MURID':
-                            $sql_m = "SELECT * FROM MURID WHERE ID_USER='$id'";
-                            $q_m = $conn->query($sql_m);
-                            $datatable = $q_m->fetch_assoc();
-
-                            $id_k = $datatable['ID_KELAS'];
-                            $q_k_name = $conn->query("SELECT KELAS FROM KELAS WHERE ID='$id_k'");
-                            $row_k = $q_k_name->fetch_assoc();
-                            $kelastmp = $row_k ? $row_k['KELAS'] : '';
-                    ?>
-                            <span class="category-title">Informasi Akademik</span>
-                            <div class="card">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                    <div class="form-group">
-                                        <label>NISN <span>(BEFORE: <?= $datatable['NISN'] ?>)</span></label>
-                                        <input type="text" name="nisn" value="<?= $datatable['NISN'] ?>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Kelas <span>(BEFORE: <?= $kelastmp ?>)</span></label>
-                                        <input list="kelas_list" name="id_kelas" value="<?= $kelastmp ?>" placeholder="Pilih Kelas...">
-                                        <datalist id="kelas_list">
-                                            <?php
-                                            $query_all_k = $conn->query("SELECT * FROM kelas");
-                                            while ($k = $query_all_k->fetch_assoc()):
-                                            ?>
-                                                <option value="<?= $k['KELAS'] ?>"></option>
-                                            <?php endwhile; ?>
-                                        </datalist>
-                                    </div>
-                                </div>
-
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                                    <div class="form-group">
-                                        <label>Tempat Lahir <span>(BEFORE: <?= $datatable["TEMPAT_LAHIR"] ?>)</span></label>
-                                        <input type="text" name="tempat_lahir" value="<?= $datatable["TEMPAT_LAHIR"] ?>">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Tanggal Lahir <span>(BEFORE: <?= $datatable["TANGGAL_LAHIR"] ?>)</span></label>
-                                        <input type="date" name="tanggal_lahir" value="<?= $datatable["TANGGAL_LAHIR"] ?>">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Alamat Rumah <span>(BEFORE: <?= $datatable["ALAMAT_RUMAH"] ?>)</span></label>
-                                    <textarea name="alamat_rumah"><?= $datatable["ALAMAT_RUMAH"] ?></textarea>
-                                </div>
-                            </div>
-                        <?php
-                            break;
-                        case 'GURU':
-                        ?>
-                            <span class="category-title">Data Guru</span>
-                            <div class="card">
-                                <input type="text" placeholder="Input khusus guru...">
-                                <h4 style="margin-top: 10px; color: var(--primary);">Hai, Panel Guru Aktif</h4>
-                            </div>
-                    <?php endswitch; ?>
-
+                    <div id="notif"></div>
                     <button type="submit" class="btn-submit">
                         <i class="fa fa-save"></i> SUBMIT PERUBAHAN
                     </button>
@@ -307,6 +250,8 @@ if ($query->num_rows > 0) {
             </div>
         </form>
     </div>
+
+    <script src="./../shared/js/script.js"></script>
 </body>
 
 </html>

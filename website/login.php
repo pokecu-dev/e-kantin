@@ -210,7 +210,7 @@
     </main>
 
     <script>
-        document.getElementById('form_login').onsubmit = async function(event) {
+        document.getElementById('form_login').onsubmit = async (event) => {
 
             event.preventDefault();
             const notif = document.getElementById("notif");
