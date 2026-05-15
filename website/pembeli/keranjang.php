@@ -51,9 +51,11 @@ $query = mysqli_query($conn, "
         k.*,
         m.NAMA_MENU,
         m.HARGA,
-        m.FOTO_MENU
+        m.FOTO_MENU,
+        ka.NAMA_KANTIN
     FROM keranjang k
     JOIN tb_menu m ON k.id_menu = m.id_menu
+    JOIN list_kantin ka ON m.ID_KANTIN = ka.ID
     WHERE k.id_user = $id_user_aktif
 ");
 ?>
@@ -69,14 +71,36 @@ $query = mysqli_query($conn, "
 
     <style>
 
-        body{
+        .body{
             font-family: 'Poppins', sans-serif;
             background: #f5f5f5;
             color: #222;
         }
 
         .container{
-            margin: 40px 15px;
+            margin: 120px 15px 40px;
+        }
+
+        .back {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 20px;
+            margin-top: 20px; 
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-back img {
+            width: 24px;
+            height: 24px;
+            display: block;
+        }
+
+        .back h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
         }
 
         .text{
@@ -89,7 +113,7 @@ $query = mysqli_query($conn, "
             border-radius: 16px;
         }
 
-        .header-tabel,
+       
         .produk{
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -98,6 +122,11 @@ $query = mysqli_query($conn, "
         }
 
         .header-tabel{
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            align-items: center;
+            gap: 15px;
+
             background: #fff5eb;
             padding: 15px;
             border-radius: 10px;
@@ -107,7 +136,7 @@ $query = mysqli_query($conn, "
 
         .produk{
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 16px;
             margin-bottom: 15px;
         }
@@ -135,6 +164,12 @@ $query = mysqli_query($conn, "
             font-weight: 600;
         }
 
+        .nama-kantin{
+            font-size:14px;
+            color:#777;
+            margin:4px 0;
+        }
+
         .jumlah{
             display: flex;
             align-items: center;
@@ -158,10 +193,16 @@ $query = mysqli_query($conn, "
             height: 35px;
             text-align: center;
             font-size: 16px;
+            border: none;
+            background: #f3f3f3;
+            border-radius: 10px;
+            outline: none;
         }
+        
 
         .subtotal{
             font-weight: 700;
+            text-align: right;
         }
 
         .checkout-box{
@@ -184,35 +225,60 @@ $query = mysqli_query($conn, "
             margin-top: 15px;
         }
 
+        @media (max-width: 768px){
+
+            .header-tabel{
+                display: none;
+            }
+
+            .produk{
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .subtotal,
+            .harga-tabel{
+                text-align: left;
+            }
+
+        }
+
     </style>
 </head>
 
 <body>
 
+    <div class="logo-mobile">
+            <img src="../../source/icon/logo1.svg" alt="KantinKita">
+        </div>
+
+        <div class="logo-desktop">
+            <img src="../../source/icon/logo1.svg" alt="KantinKita">
+        </div>
+
 <div class="top-nav">
-    <nav class="menu">
-
-        <a href="pembeli.php">
-            <img src="../../source/website1/icon/home1.svg">
-            <span class="nav-teks">Beranda</span>
-        </a>
-
-        <a href="#">
-            <img src="../../source/website1/icon/pesanan2.svg">
-            <span class="nav-teks">Keranjang</span>
-        </a>
-
-        <a href="#">
-            <img src="../../source/website1/icon/user1.svg">
-            <span class="nav-teks">Profil</span>
-        </a>
-
-    </nav>
+    <nav class="menu" >
+            <a href="penjual.php">
+                <img src="../../source/icon/home1.svg" alt=" home"> <span class="nav-teks">Beranda</span>
+            </a>
+            <a href="keranjang.php">
+                <img src="../../source/icon/pesanan2.svg" alt=""><span class="nav-teks">Keranjang</span>
+            </a>
+            <a href="profil.php">
+                <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
+            </a>
+        </nav>
 </div>
 
 <div class="container">
 
-    <h2 class="text">Keranjang Saya</h2>
+    <div class="back">
+        <a href="pembeli.php" class="btn-back">
+            <img src="../../source/icon/kembali.svg" alt="Kembali">
+        </a>
+
+        <h2>Keranjang Saya</h2>
+    </div>
 
     <div class="parent">
 
@@ -244,6 +310,10 @@ $query = mysqli_query($conn, "
 
                         <div>
                             <p><?php echo $data['NAMA_MENU']; ?></p>
+
+                            <p class="nama-kantin">
+                                <?php echo $data['NAMA_KANTIN']; ?>
+                            </p>
                         </div>
 
                     </div>

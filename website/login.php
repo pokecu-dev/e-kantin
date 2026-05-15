@@ -231,7 +231,7 @@
 
                     if (data.role === 'PENJUAL') {
                         window.location.href = 'penjual/penjual.php';
-                    } else if (data.role === 'MURID' || data.role === 'GURU') {
+                    } else if (data.role === 'PEMBELI') {
                         window.location.href = 'pembeli/pembeli.php'
                     } else if (data.role === "ADMIN") {
                         window.location.href = 'atmin/admin.php'

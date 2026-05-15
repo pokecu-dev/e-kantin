@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../include/koneksi.php';
 
 if (!isset($_GET['id'])) {
@@ -8,7 +9,7 @@ if (!isset($_GET['id'])) {
 
 $id = $_GET['id'];
 
-$query = mysqli_query($conn, "SELECT * FROM tb_menu WHERE ID_MENU='$id'");
+$query = mysqli_query($conn, "SELECT * FROM tb_menu WHERE id_menu='$id'");
 $data = mysqli_fetch_assoc($query);
 
 if (!$data) {
@@ -271,102 +272,98 @@ if (!$data) {
                 <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
             </a>
         </nav>
-</div>
+    </div>
 
-<div class="back">
+    <div class="back">
         <a href="pembeli.php" class="btn-back">
             <img src="../../source/icon/kembali.svg" alt="Kembali">
         </a>
-        <path d="..." stroke="currentColor" ... />
         <h2>Detail Menu</h2>
     </div>
 
-<div class="container">
+    <div class="container">
 
-    <div class="gambar">
-        <img src="/source/gambar_menu/<?php echo $data['FOTO_MENU']; ?>">
-    </div>
-
-    <div class="info"> 
-        <h2><?php echo $data['NAMA_MENU']; ?></h2>
-    </div>
-
-    <div class="row-info">
-        <div class="stock">
-             Stock: <span id="stok"><?= $data['STOK']; ?></span>
-        </div>
-        <div class="id-kantin">
-            ID Kantin: <span id="id-kantin"><?= $data['ID_KANTIN']; ?></span>
+        <div class="gambar">
+            <img src="/source/gambar_menu/<?php echo $data['FOTO_MENU']; ?>">
         </div>
 
-        <div class="rating">
-            5,5 ★★★
+        <div class="info"> 
+            <h2><?php echo $data['NAMA_MENU']; ?></h2>
         </div>
 
-    </div>
+        <div class="row-info">
+            <div class="stock">
+                Stock: <span id="stok"><?= $data['STOK']; ?></span>
+            </div>
 
-    <div class="description-box">
-        <h3>Deskripsi</h3>
-        <p><?php echo nl2br($data['DESK']); ?></p>
-    </div>
+            <div class="rating">
+                5,5 ★★★
+            </div>
 
-    <form action="keranjang.php" method="POST">
-    <input type="hidden" name="id_menu" value="<?php echo $data['ID_MENU']; ?>">
-
-    <div class="row-harga-qty">
-        
-        <div class="harga">
-            Rp <?php echo number_format($data['HARGA'], 0, ',', '.'); ?>
         </div>
 
-        <div class="jumlah">
-            <button type="button" onclick="UpdateQTY(-1)">-</button>
-            <input type="number"  name="qty" id="qty" value="1" min="1" max="<?php echo $data['STOK']; ?>" readonly>
-            <button type="button" onclick="UpdateQTY(1)">+</button>
+        <div class="description-box">
+            <h3>Deskripsi</h3>
+            <p><?php echo nl2br($data['DESK']); ?></p>
         </div>
 
-    </div>
+        <form action="keranjang.php" method="POST">
+        <input type="hidden" name="id_menu" value="<?php echo $data['ID_MENU']; ?>">
 
-    <!-- Baris baru untuk layout Checkout/Keranjang -->
-    <div class="footer-keranjang">
-      <button type="submit" name="add_to_cart"class="icon-badge">
-            <span>Tambah Ke Keranjang</span>
-        </button>
+        <div class="row-harga-qty">
+            
+            <div class="harga">
+                Rp <?php echo number_format($data['HARGA'], 0, ',', '.'); ?>
+            </div>
 
-        <button type="submit" id="btnCheckout">
-            Checkout
-        </button>
-    </div>
-    <script>
+            <div class="jumlah">
+                <button type="button" onclick="UpdateQTY(-1)">-</button>
+                <input type="number"  name="qty" id="qty" value="1" min="1" max="<?php echo $data['STOK']; ?>" readonly>
+                <button type="button" onclick="UpdateQTY(1)">+</button>
+            </div>
 
-    const inputQTY = document.getElementById("qty");
-    const getstock =() => parseInt(document.getElementById("stok").innerText);
+        </div>
 
-    function UpdateQTY(step){
+        <!-- Baris baru untuk layout Checkout/Keranjang -->
+        <div class="footer-keranjang">
+        <button type="submit" name="add_to_cart"class="icon-badge">
+                <span>Tambah Ke Keranjang</span>
+            </button>
 
-        let currentStock = getstock();
-        
-        let newVal = parseInt(inputQTY.value) + step;
+            <button type="submit" id="btnCheckout">
+                Checkout
+            </button>
+        </div>
+        <script>
 
-        if(newVal >= 1 && currentStock >= newVal){
-            inputQTY.value = newVal;
-        } else if (newVal > currentStock) {
-            alert("Maaf, stok tidak mencukupi!");
+        const inputQTY = document.getElementById("qty");
+        const getstock =() => parseInt(document.getElementById("stok").innerText);
+
+        function UpdateQTY(step){
+
+            let currentStock = getstock();
+            
+            let newVal = parseInt(inputQTY.value) + step;
+
+            if(newVal >= 1 && currentStock >= newVal){
+                inputQTY.value = newVal;
+            } else if (newVal > currentStock) {
+                alert("Maaf, stok tidak mencukupi!");
+            }
         }
-    }
-        
-    inputQTY.oninput = function(){
-        let value = parseInt(this.value);
-        let currentStock = getstock();
+            
+        inputQTY.oninput = function(){
+            let value = parseInt(this.value);
+            let currentStock = getstock();
 
-        if(this.value === "" || isNaN(value) || value < 1){
-            this.value = 1;
-        }
-        else if(value > currentStock){
-            this.value = currentStock;
-        }
+            if(this.value === "" || isNaN(value) || value < 1){
+                this.value = 1;
+            }
+            else if(value > currentStock){
+                this.value = currentStock;
+            }
 
-    }
+        }
 
 </script>
 
