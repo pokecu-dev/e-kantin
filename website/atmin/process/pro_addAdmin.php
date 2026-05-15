@@ -26,7 +26,8 @@
                 $nama_lengkap,
                 $no_tlp,
                 $email,
-                "ADMIN"
+                "ADMIN",
+                '1'
             );
 
             if($hasil){

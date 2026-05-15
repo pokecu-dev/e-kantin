@@ -14,17 +14,29 @@
             $nama_lengkap = $_POST['nama_lengkap'];
             $no_tlp = $_POST['no_tlp'];
             $email = $_POST['email'];
+            $status = $_POST['status'];
 
             $pass = password_hash($pass,PASSWORD_DEFAULT);
 
-            $sql = "UPDATE users SET USERNAME='$username', PASS='$pass', NAMA_LENGKAP='$nama_lengkap', NO_TLP='$no_tlp', EMAIL='$email' WHERE ID='$id'";
+            $sql = "UPDATE users SET USERNAME= ? , PASS = ? , NAMA_LENGKAP = ? , NO_TLP = ? , EMAIL = ? , STATUS = ? WHERE ID = ? ";
+            
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssssssi",$username,$pass,$nama_lengkap,$no_tlp,$email,$status,$id);
+            if($stmt->execute()){
 
-            $query = $conn->query($sql);
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'berhasil!,mohon refresh halaman!'
+                ]);
+            }
+            else{
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'gagal memperbarui data' . $stmt->error
+                ]);
+            }
+            $stmt->close();
 
-            echo json_encode([
-                'status' => 'success',
-                'message' => 'berhasil!,mohon refresh halaman!'
-            ]);
         }
         catch(Exception $e){
             echo json_encode(['status' => 'error','message' => 'gagal' . $e->getMessage()]);

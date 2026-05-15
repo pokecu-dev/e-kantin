@@ -168,6 +168,7 @@ $query = $conn->query($sql);
                         <p>NO TLP</p>
                         <p>EMAIL</p>
                         <p>ROLE</p>
+                        <p>STATUS</p>
                         <p>AKSI</p>
                     </div>
 
@@ -182,6 +183,7 @@ $query = $conn->query($sql);
                                     <p><?= $user['NO_TLP'] ?></p>
                                     <p><?= $user['EMAIL'] ?></p>
                                     <p><?= $user['ROLE'] ?></p>
+                                    <p><?= $user['STATUS'] ?></p>
                                     <p>
                                         <a href="edituser.php?id=<?= $user['ID'] ?>">edit</a>
                                     </p>

@@ -19,11 +19,17 @@ $dataUsers = [
 
 // $id = $conn->real_escape_string($_GET['id']);
 $id = $_GET['id'];
+$id = $conn->real_escape_string($id);
 $sql = "select * from users where ID='$id'";
-$query = $conn->query($sql);
-if ($query->num_rows > 0) {
-    $dataUsers = $query->fetch_assoc();
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i",$id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $dataUsers = $result->fetch_assoc();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -242,10 +248,22 @@ if ($query->num_rows > 0) {
                         </div>
                     </div>
 
-                    <div id="notif"></div>
+                    <span class="category-title">Status Akun</span>
+                    <div class="card">
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select name="status">
+                                
+                                <option value="1" <?= $dataUsers['STATUS']=='1'?'selected':'' ?>>1 atau aktif</option>
+                                <option value="0" <?= $dataUsers['STATUS']=='0'?'selected':'' ?>>0 atau nonaktif</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <button type="submit" class="btn-submit">
                         <i class="fa fa-save"></i> SUBMIT PERUBAHAN
                     </button>
+                    <div id="notif"></div>
                 </div>
             </div>
         </form>
