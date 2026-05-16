@@ -44,6 +44,36 @@ INSERT INTO `detail_menu_kantin` VALUES (1,1,'nasi goreng mawut',6000),(2,1,'bak
 UNLOCK TABLES;
 
 --
+-- Table structure for table `keranjang`
+--
+
+DROP TABLE IF EXISTS `keranjang`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `keranjang` (
+  `id_keranjang` int NOT NULL AUTO_INCREMENT,
+  `id_user` int NOT NULL,
+  `id_menu` int NOT NULL,
+  `qty` int NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id_keranjang`),
+  UNIQUE KEY `id_user` (`id_user`,`id_menu`),
+  KEY `id_menu` (`id_menu`),
+  CONSTRAINT `keranjang_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`ID`),
+  CONSTRAINT `keranjang_ibfk_2` FOREIGN KEY (`id_menu`) REFERENCES `tb_menu` (`ID_MENU`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `keranjang`
+--
+
+LOCK TABLES `keranjang` WRITE;
+/*!40000 ALTER TABLE `keranjang` DISABLE KEYS */;
+INSERT INTO `keranjang` VALUES (35,11,8,1),(36,11,1,4),(42,12,1,6),(43,12,2,2);
+/*!40000 ALTER TABLE `keranjang` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `list_kantin`
 --
 
@@ -172,4 +202,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-15 16:03:55
+-- Dump completed on 2026-05-16 14:22:24

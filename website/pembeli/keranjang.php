@@ -9,38 +9,38 @@ if (!isset($_SESSION['id_user'])) {
 }
 
 // PROSES TAMBAH KE KERANJANG (ADD TO CART)
-if (isset($_POST['add_to_cart'])) {
+// if (isset($_POST['add_to_cart'])) {
 
-    $id_menu = (int)($_POST['id_menu'] ?? 0);
-    $qty = (int)($_POST['qty'] ?? 1);
-    $id_user = (int)$_SESSION['id_user'];
+//     $id_menu = (int)($_POST['id_menu'] ?? 0);
+//     $qty = (int)($_POST['qty'] ?? 1);
+//     $id_user = (int)$_SESSION['id_user'];
 
-    if ($id_menu > 0 && $qty > 0) {
+//     if ($id_menu > 0 && $qty > 0) {
 
-        $cek_keranjang = mysqli_query($conn,
-            "SELECT * FROM keranjang 
-            WHERE id_menu='$id_menu' 
-            AND id_user='$id_user'"
-        );
+//         $cek_keranjang = mysqli_query($conn,
+//             "SELECT * FROM keranjang 
+//             WHERE id_menu='$id_menu' 
+//             AND id_user='$id_user'"
+//         );
 
-        if (mysqli_num_rows($cek_keranjang) > 0) {
-            mysqli_query($conn,
-                "UPDATE keranjang 
-                SET qty = qty + $qty 
-                WHERE id_menu='$id_menu' 
-                AND id_user='$id_user'"
-            );
-        } else {
-            mysqli_query($conn,
-                "INSERT INTO keranjang(id_user,id_menu,qty)
-                VALUES('$id_user','$id_menu','$qty')"
-            );
-        }
-    }
+//         if (mysqli_num_rows($cek_keranjang) > 0) {
+//             mysqli_query($conn,
+//                 "UPDATE keranjang 
+//                 SET qty = qty + $qty 
+//                 WHERE id_menu='$id_menu' 
+//                 AND id_user='$id_user'"
+//             );
+//         } else {
+//             mysqli_query($conn,
+//                 "INSERT INTO keranjang(id_user,id_menu,qty)
+//                 VALUES('$id_user','$id_menu','$qty')"
+//             );
+//         }
+//     }
 
-    header('Location: keranjang.php');
-    exit();
-}
+//     header('Location: keranjang.php');
+//     exit();
+// }
 
 // AMBIL DATA BARANG DI KERANJANG USER AKTIF
 $id_user_aktif = (int)$_SESSION['id_user'];
@@ -324,13 +324,14 @@ $query = mysqli_query($conn, "
 
                     <div class="jumlah">
                         <!-- Mengirim data objek tombol (this) agar fungsi JS tidak bingung baris mana yang diklik -->
-                        <button type="button" onclick="UpdateQTY(this, -1)">-</button>
+                        <button type="button" data-id="<?= $data['id_menu'] ?>" onclick="UpdateQTY(this, -1)">-</button>
                         <input type="number" name="qty" class="qty-input" value="<?php echo $data['qty']; ?>" min="1" max="<?php echo $data['STOK']; ?>" readonly>
-                        <button type="button" onclick="UpdateQTY(this, 1)">+</button>
+                        <button type="button" data-id="<?= $data['id_menu'] ?>" onclick="UpdateQTY(this, 1)">+</button>
                     </div>
 
                     <div class="subtotal">
-                        Rp <?php echo number_format($subtotal, 0, ',', '.'); ?>
+                        <p id="subtotal">Rp <?php echo number_format($subtotal, 0, ',', '.'); ?></p>
+                        
                     </div>
 
                 </div>
@@ -338,6 +339,10 @@ $query = mysqli_query($conn, "
             <?php } ?>
 
             <div class="checkout-box">
+                <div class="grand-total-container" style="margin-top: 20px; font-weight: bold; font-size: 20px;">
+                    Total Belanja: <span id="total-belanja">Rp 0</span>
+                </div>
+                
                 <h3>Total Belanja</h3>
                 <h2>
                     Rp <?php echo number_format($total, 0, ',', '.'); ?>
@@ -357,21 +362,81 @@ $query = mysqli_query($conn, "
 </div>
 
 <script>
-function UpdateQTY(btn, step) {
-    // Cari container produk terdekat dari tombol yang diklik
-    let produkDiv = btn.closest('.produk');
-    let inputQTY = produkDiv.querySelector('.qty-input');
-    let maxStock = parseInt(produkDiv.querySelector('.stok-maks').innerText);
-    
-    let newVal = parseInt(inputQTY.value) + step;
 
-    // Cek batas minimum (1) dan batas maksimum stok toko
-    if (newVal >= 1 && newVal <= maxStock) {
-        inputQTY.value = newVal;
-    } else if (newVal > maxStock) {
-        alert("Maaf, stok tidak mencukupi!");
+    document.addEventListener("DOMContentLoaded", function() {
+        totalBelanja();
+    });
+
+    function UpdateQTY(btn, step) {
+        // Cari container produk terdekat dari tombol yang diklik
+        let produkDiv = btn.closest('.produk');
+        let inputQTY = produkDiv.querySelector('.qty-input');
+        let maxStock = parseInt(produkDiv.querySelector('.stok-maks').innerText);
+        
+        let newVal = parseInt(inputQTY.value) + step;
+
+        subtotalVal = newVal;
+        const hargaKotorStr = produkDiv.querySelector('.harga-tabel');
+        let harga = hargaKotorStr.innerText.slice(3).replace(/\./g,''); //regex "/\./g" , /.../ -> adalah format regex, \ -> mengubah chara khusus regex menjadi chara biasa, . -> simbol yang di cari, g -> flag yang berarti global
+        // singkat nya fungsi regex di atas untuk mencari ".",format replace(chara_before, chara_setelah_replace) jarang jarang make comment:v
+
+        harga = Number(harga);
+
+        const subtotal = produkDiv.querySelector('#subtotal');
+        
+
+        
+        // Cek batas minimum (1) dan batas maksimum stok toko
+        if (newVal >= 1 && newVal <= maxStock) {
+            inputQTY.value = newVal;
+            newValST = newVal * harga;
+            newValST = newValST.toLocaleString('id-ID');
+            console.log(newValST);
+            subtotal.innerText = `Rp ${newValST}`;
+            totalBelanja(); 
+
+            let idmenu = btn.getAttribute('data-id');
+
+            fetch('./up_keranjangDB.php',{
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/x-www-form-urlencoded' 
+                },
+                body: `id_menu=${idmenu}&qty=${newVal}`
+            })
+            .then(Response => Response.json())
+            .then(data => {
+                console.log("Mantap berhasil:", data);
+            })
+            .catch(error => {
+                console.error("Waduh error:", error);
+            });
+            
+
+        } else if (newVal > maxStock) {
+            alert("Maaf, stok tidak mencukupi!");
+        }
     }
-}
+
+    function totalBelanja(){
+        let semuaSubTotal = document.querySelectorAll('.subtotal');
+        let grandtotal = 0;
+        const totalHarga = document.getElementById('total-belanja');
+
+        semuaSubTotal.forEach(function(elemen){
+            let angkaStr = elemen.innerText.slice(3).replace(/\./g,'');
+            let angka = Number(angkaStr);
+
+            grandtotal += angka;
+        });
+
+        let formatRibuan = grandtotal.toLocaleString('id-ID');
+
+        totalHarga.innerText = `Rp ${formatRibuan}`;
+
+
+    }
+
 </script>
 
 </body>

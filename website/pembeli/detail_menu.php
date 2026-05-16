@@ -371,7 +371,7 @@ if (!$data) {
             <p><?php echo nl2br($data['DESK']); ?></p>
         </div>
 
-        <form action="keranjang.php" method="POST">
+        <form id="form-data">
             <input type="hidden" name="id_menu" value="<?php echo $data['ID_MENU']; ?>">
 
             <div class="row-harga-qty">
@@ -386,8 +386,10 @@ if (!$data) {
                 </div>
             </div>
 
-            <div class="footer-keranjang">
-                <button type="submit" name="add_to_cart" class="icon-badge">
+            <div id="notif"></div>
+
+            <div class="footer-keranjang"> 
+                <button type="submit"  class="icon-badge"> <!--name="add_to_cart" --> 
                     Tambah Ke Keranjang
                 </button>
                 <button type="submit" name="buy_now" id="btnCheckout">
@@ -399,31 +401,62 @@ if (!$data) {
     </div>
 </div>
 
+<script src="./../shared/js/script.js"></script>
 <script>
-const inputQTY = document.getElementById("qty");
-const getstock = () => parseInt(document.getElementById("stok").innerText);
 
-function UpdateQTY(step) {
-    let currentStock = getstock();
-    let newVal = parseInt(inputQTY.value) + step;
 
-    if (newVal >= 1 && newVal <= currentStock) {
-        inputQTY.value = newVal;
-    } else if (newVal > currentStock) {
-        alert("Maaf, stok tidak mencukupi!");
+    const inputQTY = document.getElementById("qty");
+    const getstock = () => parseInt(document.getElementById("stok").innerText);
+
+    function UpdateQTY(step) {
+        let currentStock = getstock();
+        let newVal = parseInt(inputQTY.value) + step;
+
+        if (newVal >= 1 && newVal <= currentStock) {
+            inputQTY.value = newVal;
+        } else if (newVal > currentStock) {
+            alert("Maaf, stok tidak mencukupi!");
+        }
     }
-}
+
+    inputQTY.oninput = function() {
+        let value = parseInt(this.value);
+        let currentStock = getstock();
+
+        if (this.value === "" || isNaN(value) || value < 1) {
+            this.value = 1;
+        } else if (value > currentStock) {
+            this.value = currentStock;
+        }
+    }
+
+    // ajax
+    document.getElementById('form-data').onsubmit = async (e) => {
+        e.preventDefault();
+        const notif = document.getElementById('notif');
+        const dataform = new FormData(e.target);
+
+        try{
+            const response = await fetch('keranjangDB.php',{
+                method:'POST',
+                body: dataform
+            })
+            console.log(1);
+
+            const data = await response.json();
+            console.log(2);
+            if(data.status === 'success'){
+                window.location.href = './keranjang.php'; 
+            }
+            console.log(data.message);
+
+        }
+        catch(e){
+            notif.innerText = "error:" + e.message;
+        }
+        
+    }
     
-inputQTY.oninput = function() {
-    let value = parseInt(this.value);
-    let currentStock = getstock();
-
-    if (this.value === "" || isNaN(value) || value < 1) {
-        this.value = 1;
-    } else if (value > currentStock) {
-        this.value = currentStock;
-    }
-}
 </script>
 
 </body>
