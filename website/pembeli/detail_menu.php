@@ -7,9 +7,10 @@ if (!isset($_GET['id'])) {
     exit;
 }
 
-$id = $_GET['id'];
+$id = (int)$_GET['id'];
 
-$query = mysqli_query($conn, "SELECT * FROM tb_menu WHERE id_menu='$id'");
+// Perbaikan: Di database rata-rata nama kolomnya ID_MENU (huruf besar)
+$query = mysqli_query($conn, "SELECT * FROM tb_menu WHERE ID_MENU='$id'");
 $data = mysqli_fetch_assoc($query);
 
 if (!$data) {
@@ -18,288 +19,351 @@ if (!$data) {
 }
 ?>
 
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Detail Menu</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-    * {
-        box-sizing: border-box;
-    }
-    .container {
-        padding: 15px;
-        width: 95%;
-        max-width: 500px; 
-        background: #ffffff;  
-        border-radius: 20px;
-        margin:20px  auto;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-
-    .top-bar {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 15px;
-        color: white;
-        font-weight: 600;
-    }
-
-    .menu-container{
-        display:grid;
-        grid-template-columns:repeat(auto-fit, minmax(250px,1fr));
-        gap:15px;
-    }   
+    <title>Detail Menu - <?php echo $data['NAMA_MENU']; ?></title>
+    <link rel="stylesheet" href="style.css">
     
-    .back {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 15px 20px;
-        margin-top: 20px; 
-        position: relative;
-        z-index: 10;
-    }
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    .btn-back img {
-        width: 24px;
-        height: 24px;
-        display: block;
-    }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f5;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
 
-    .back h2 {
-        margin: 0;
-        font-size: 18px;
-        color: #333;
-    }
+        .container {
+            padding: 30px;
+            width: 95%;
+            max-width: 1100px; 
+            background: #ffffff;  
+            border-radius: 24px;
+            margin: 120px auto 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 50px;
+            align-items: flex-start;
+        }
 
-    .gambar {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        padding: 10px;
-    }
+        .back {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 0;
+            max-width: 1100px;
+            margin: 100px auto -100px;
+            width: 95%;
+        }
 
-    .gambar img {
-        width: 100%;
-        max-width: 400px;
-        height: auto;
-        display: block;
-        aspect-ratio: 1 / 1;
-        object-fit: cover;
-        border-radius: 25px;
-        border: 3px solid #6f4f36;
-        margin: 0 auto;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
+        .btn-back img {
+            width: 24px;
+            height: 24px;
+            display: block;
+        }
 
-    .info h2 {
-        margin: 10px 0 5px;
-        font-size: 18px;
-        text-align: center;
-    }
+        .back h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
 
-    .row-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 5px;
-    }
+        .gambar {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
 
-    .stock {
-        font-size: 14px;
-        color: #333;
-    }
+        .gambar img {
+            width: 100%;
+            max-width: 450px;
+            height: 400px;
+            display: block;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
 
-    .id-kantin {
-        font-size: 14px;
-        color: #333;
-    }
-    
-    .rating {
-        color: #F47B20;
-        font-size: 18px;
-    }
+        .info {
+            flex: 1;
+        }
 
-    .description-box {
-        margin-top: 15px;
-        background:  #ffffff;
-        padding: 15px;
-        border-radius: 12px;
-        font-size: 14px;
-        color: black;
-        border: 1px solid #f47b20;
-        line-height: 1.5;
-    }
+        .info h2 {
+            font-size: 36px;
+            font-weight: 700;
+            text-align: left;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #111;
+        }
 
-    .qty-box {
-        margin-top: 20px;
-    }
+        .row-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
 
-    .row-harga-qty {
-        display: flex;
-        justify-content: space-between;
-        gap: 15px;
-        justify-content: center; 
-        align-items: center;
-        margin-top: 15px;
-    }
+        .stock {
+            font-size: 15px;
+            color: #666;
+            background: #fdf2e9;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
 
-    .jumlah {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        gap: 10px;
-        margin-top: 0px;
-    }
+        .rating {
+            color: #F47B20;
+            font-size: 20px;
+            font-weight: 600;
+        }
 
-    .jumlah button {
-        width: 35px;
-        height: 35px;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        background:  #F47B20;
-        color: white;
-        font-size: 20px;
-        border-radius: 12px;
-        cursor: pointer;
-        line-height: 0;
-    }
+        .description-box {
+            margin-top: 20px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            font-size: 14px;
+            color: #444;
+            border: 1px solid #fedec6;
+        }
 
-    .jumlah input {
-        width: 40px;
-        height: 35px;
-        text-align: center;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-    }
+        .description-box h3 {
+            margin-top: 0;
+            color: #222;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
 
-    .harga {
-        font-size: 18px;
-        color: #333;
-    }
+        .description-box p {
+            line-height: 1.8;
+            margin: 0;
+            color: #333;
+        }
 
-    .harga::after {
-        content: "|";
-        margin-left: 10px;
-        color: rgba(0,0,0,0.3); 
-    }
+        .row-harga-qty {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 35px;
+            padding-top: 15px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #ddd;
+        }
 
-   .footer-keranjang {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: #fff;
-        padding: 10px 15px;
-        border-top: 1px solid #eee;
-        margin-top: 25px;
-    }
+        .harga {
+            font-size: 32px;
+            font-weight: 700;
+            color: #F47B20;
+        }
 
-    .icon-badge {
-        position: relative;
-        display: flex;
-        align-items: center;
-        background: transparent;
-        gap: 8px;
-        cursor: pointer;
-        color: #1A1A1A;
-        border: 1px solid #F47B20;
-    }
+        .jumlah {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f5f5f5;
+            padding: 4px;
+            border-radius: 12px;
+        }
 
-    .badge {
-        position: absolute;
-        top: -5px;
-        right: -5px;
-        background: #F47B20;
-        color: white;
-        font-size: 10px;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-    }
+        .jumlah button {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #F47B20;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-    #btnCheckout {
-        background: #F47B20;
-        color: white;
-        border: none;
-        padding: 10px 25px;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 14px;
-    }
+        .jumlah button:hover {
+            background: #d66413;
+        }
 
-    #btnCheckout:active {
-        transform: scale(0.98);
-    }
+        .jumlah input {
+            width: 45px;
+            height: 36px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            outline: none;
+        }
 
- </style>
+        .jumlah input::-webkit-outer-spin-button,
+        .jumlah input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .footer-keranjang {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 25px;
+            gap: 15px;
+        }
+
+        .icon-badge,
+        #btnCheckout {
+            flex: 1;
+            padding: 15px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border: 2px solid #F47B20;
+            color: #F47B20;
+        }
+
+        .icon-badge {
+            background: white;
+            border: 2px solid #F47B20;
+            color: #F47B20;
+        }
+
+        .icon-badge:hover {
+            background: #fff5eb;
+            transform: scale(0.97);
+        }
+
+        #btnCheckout {
+            background: #F47B20;
+            color: white; 
+        }
+
+        #btnCheckout:hover {
+            background: #F47B20;
+            transform: scale(0.97);
+        }
+
+        #btnCheckout:active {
+            background: #F47B20 !important;
+            color: white !important;
+            border-color: #F47B20 !important;
+            transform: scale(0.97);
+        }
+
+        @media(max-width: 768px) {
+            .back {
+                margin: 20px auto -10px;
+            }
+
+            .container {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+                margin: 20px auto 100px;
+            }
+
+            .gambar, .info {
+                width: 100%;
+            }
+
+            .gambar img {
+                height: 250px;
+                max-width: none;
+                border-radius: 16px;
+                width: 100%;
+
+                object-fit: contain;     
+                background-color: #fff; 
+                padding: 10px;          
+                border: 1px solid #eee;
+            }
+
+            .info h2 {
+                font-size: 28px;
+                margin-top: 10px;
+            }
+
+            .row-harga-qty {
+                margin-top: 25px;
+            }
+
+            .harga {
+                font-size: 26px;
+            }
+
+            .footer-keranjang {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .icon-badge, #btnCheckout {
+                width: 100%;
+                height: 50px;
+                border-radius: 16px;
+            }
+        }
+    </style>
 </head> 
 <body>  
 
 <div class="logo-mobile">
-        <img src="../../source/icon/logo1.svg" alt="KantinKita">
-    </div>
+    <img src="../../source/icon/logo1.svg" alt="KantinKita">
+</div>
 
-    <div class="logo-desktop">
-        <img src="../../source/icon/logo1.svg" alt="KantinKita">
-    </div>
-    <!-- --------/LOGO------------ -->
-    <div class="top-nav">
-        <nav class="menu" >
-            <a href="penjual.php">
-                <img src="../../source/icon/home2.svg" alt=" home"> <span class="nav-teks">Beranda</span>
-            </a>
-            <a href="keranjang.php">
-                <img src="../../source/icon/pesanan1.svg" alt=""><span class="nav-teks">Keranjang</span>
-            </a>
-            <a href="profil.php">
-                <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
-            </a>
-        </nav>
-    </div>
+<div class="logo-desktop">
+    <img src="../../source/icon/logo1.svg" alt="KantinKita">
+</div>
 
-    <div class="back">
-        <a href="pembeli.php" class="btn-back">
-            <img src="../../source/icon/kembali.svg" alt="Kembali">
+<div class="top-nav">
+    <nav class="menu">
+        <a href="pembeli.php">
+            <img src="../../source/icon/home2.svg" alt="home"> <span class="nav-teks">Beranda</span>
         </a>
-        <h2>Detail Menu</h2>
+        <a href="keranjang.php">
+            <img src="../../source/icon/pesanan1.svg" alt=""><span class="nav-teks">Keranjang</span>
+        </a>
+        <a href="profil.php">
+            <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
+        </a>
+    </nav>
+</div>
+
+<div class="back">
+    <a href="pembeli.php" class="btn-back">
+        <img src="../../source/icon/kembali.svg" alt="Kembali">
+    </a>
+    <h2>Detail Menu</h2>
+</div>
+
+<div class="container">
+
+    <div class="gambar">
+        <img src="../../source/gambar_menu/<?php echo $data['FOTO_MENU']; ?>" alt="<?php echo $data['NAMA_MENU']; ?>">
     </div>
 
-    <div class="container">
-
-        <div class="gambar">
-            <img src="/source/gambar_menu/<?php echo $data['FOTO_MENU']; ?>">
-        </div>
-
-        <div class="info"> 
-            <h2><?php echo $data['NAMA_MENU']; ?></h2>
-        </div>
+    <div class="info">
+        <h2><?php echo $data['NAMA_MENU']; ?></h2>
 
         <div class="row-info">
             <div class="stock">
-                Stock: <span id="stok"><?= $data['STOK']; ?></span>
+                Stok: <span id="stok"><?= $data['STOK']; ?></span>
             </div>
-
             <div class="rating">
-                5,5 ★★★
+               ★ 5.0 
             </div>
-
         </div>
 
         <div class="description-box">
@@ -308,66 +372,59 @@ if (!$data) {
         </div>
 
         <form action="keranjang.php" method="POST">
-        <input type="hidden" name="id_menu" value="<?php echo $data['ID_MENU']; ?>">
+            <input type="hidden" name="id_menu" value="<?php echo $data['ID_MENU']; ?>">
 
-        <div class="row-harga-qty">
-            
-            <div class="harga">
-                Rp <?php echo number_format($data['HARGA'], 0, ',', '.'); ?>
+            <div class="row-harga-qty">
+                <div class="harga">
+                    Rp <?php echo number_format($data['HARGA'], 0, ',', '.'); ?>
+                </div>
+
+                <div class="jumlah">
+                    <button type="button" onclick="UpdateQTY(-1)">-</button>
+                    <input type="number" name="qty" id="qty" value="1" min="1" max="<?php echo $data['STOK']; ?>" readonly>
+                    <button type="button" onclick="UpdateQTY(1)">+</button>
+                </div>
             </div>
 
-            <div class="jumlah">
-                <button type="button" onclick="UpdateQTY(-1)">-</button>
-                <input type="number"  name="qty" id="qty" value="1" min="1" max="<?php echo $data['STOK']; ?>" readonly>
-                <button type="button" onclick="UpdateQTY(1)">+</button>
+            <div class="footer-keranjang">
+                <button type="submit" name="add_to_cart" class="icon-badge">
+                    Tambah Ke Keranjang
+                </button>
+                <button type="submit" name="buy_now" id="btnCheckout">
+                    Beli Sekarang
+                </button>
             </div>
+        </form>
 
-        </div>
-
-        <!-- Baris baru untuk layout Checkout/Keranjang -->
-        <div class="footer-keranjang">
-        <button type="submit" name="add_to_cart"class="icon-badge">
-                <span>Tambah Ke Keranjang</span>
-            </button>
-
-            <button type="submit" id="btnCheckout">
-                Checkout
-            </button>
-        </div>
-        <script>
-
-        const inputQTY = document.getElementById("qty");
-        const getstock =() => parseInt(document.getElementById("stok").innerText);
-
-        function UpdateQTY(step){
-
-            let currentStock = getstock();
-            
-            let newVal = parseInt(inputQTY.value) + step;
-
-            if(newVal >= 1 && currentStock >= newVal){
-                inputQTY.value = newVal;
-            } else if (newVal > currentStock) {
-                alert("Maaf, stok tidak mencukupi!");
-            }
-        }
-            
-        inputQTY.oninput = function(){
-            let value = parseInt(this.value);
-            let currentStock = getstock();
-
-            if(this.value === "" || isNaN(value) || value < 1){
-                this.value = 1;
-            }
-            else if(value > currentStock){
-                this.value = currentStock;
-            }
-
-        }
-
-</script>
-
+    </div>
 </div>
+
+<script>
+const inputQTY = document.getElementById("qty");
+const getstock = () => parseInt(document.getElementById("stok").innerText);
+
+function UpdateQTY(step) {
+    let currentStock = getstock();
+    let newVal = parseInt(inputQTY.value) + step;
+
+    if (newVal >= 1 && newVal <= currentStock) {
+        inputQTY.value = newVal;
+    } else if (newVal > currentStock) {
+        alert("Maaf, stok tidak mencukupi!");
+    }
+}
+    
+inputQTY.oninput = function() {
+    let value = parseInt(this.value);
+    let currentStock = getstock();
+
+    if (this.value === "" || isNaN(value) || value < 1) {
+        this.value = 1;
+    } else if (value > currentStock) {
+        this.value = currentStock;
+    }
+}
+</script>
 
 </body>
 </html>
