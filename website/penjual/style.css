@@ -1,153 +1,253 @@
-     :root {
+:root {
     --bg-color: #f5f5f5;
     --primary-color: #F47B20;
     --text-main: #1e293b;
     --text-muted: #64748b;
     --white: #ffffff;
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+
+    --shadow:
+        0 4px 12px rgba(0,0,0,0.08);
+
+    --shadow-hover:
+        0 10px 25px rgba(0,0,0,0.12);
 }
 
-html{
+/* =========================
+   RESET
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    font-family: 'Poppins', sans-serif;
+}
+
+html,
+body {
     width: 100%;
+    overflow-x: hidden;
 }
-
 
 body {
     background-color: var(--bg-color);
-    margin: 0;
-    padding: 0;
+
     min-height: 100vh;
+
     display: flex;
-    width: 100%;
     flex-direction: column;
-    color: #202a39;
-    
+
+    color: var(--text-main);
 }
 
+/* =========================
+   LOGO DESKTOP
+========================= */
 
 .logo-desktop {
     display: flex;
-    padding: 30px 0 0 10px;
+    align-items: center;
+
+    padding: 20px 0 0 20px;
 }
-
-
 
 .logo-desktop img {
     width: auto;
-    height: 40px;
-    z-index: 1000;
+    height: 42px;
+    margin: 15px;
     position: fixed;
+    margin-top: 45px;
+    z-index: 1001;
 }
 
+/* =========================
+   LOGO MOBILE
+========================= */
 
+.logo-mobile {
+    display: none;
+}
+
+.logo-mobile img {
+    width: auto;
+
+    height: clamp(40px, 6vw, 52px);
+
+    display: block;
+}
+
+/* =========================
+   NAVBAR
+========================= */
 
 .top-nav {
     position: fixed;
+
     top: 0;
+    left: 0;
+
     width: 100%;
-    height: 60px;
-    background: var(--white);
+
+    height: 68px;
+
+    background: rgba(255,255,255,0.92);
+
+    backdrop-filter: blur(12px);
+
     display: flex;
     align-items: center;
-    padding: 0 0px;
-    flex-shrink: 0;
+
     z-index: 999;
-    /* border-radius: 0 0 16px 16px; */
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+
+    box-shadow:
+        0 2px 10px rgba(0,0,0,0.06);
 }
+
+/* =========================
+   MENU
+========================= */
 
 .menu {
     display: flex;
-    gap: 20px;
-    margin-left: auto;
-    margin-right: 20px;
+    align-items: center;
 
+    gap: 10px;
+
+    margin-left: auto;
+    margin-right: 24px;
 }
 
 .menu a {
     display: flex;
     align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    text-decoration: none;
+
+    color: #94a3b8;
+
+    padding: 10px 16px;
+
+    border-radius: 14px;
+
+    transition: 0.25s ease;
+
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.menu a:hover {
+    background: #f1f5f9;
+
+    color: var(--primary-color);
+
+    transform: translateY(-1px);
+}
+
+.menu img {
+    width: 20px;
+    height: 20px;
+
+    object-fit: contain;
 }
 
 .top-nav span {
-    margin-left: 10px;
-    font-size: 20px;
-    text-align: center;
-    margin: 10px ;
-    justify-content: center;
+    font-size: 15px;
+    font-weight: 500;
 }
-.top-nav img{
-    
-    width: 20px;
-}
+
 .nav-teks {
-    font-family: 'Poppins', sans-serif;
-    padding: 5px 0 0 4px;
-    /* font-weight: 400px; */
-
+    padding-top: 2px;
 }
 
-.top-nav a {
-    padding: 10px;
-    font-size: 22px;
-    color: #aaa;
-    /* transition: 0.3s; */
-    text-decoration: none;
-}
+/* =========================
+   ACTIVE
+========================= */
 
 
-.logo-mobile img {
-    width: auto;
-    height: 40px;
-    padding: 20px 0 0 20px;
-
-}
+/* =========================
+   DROPDOWN
+========================= */
 
 .dropdown-container {
     position: relative;
-    display: inline-block;
 }
+
 .dropdown-content {
-    display: none;
     position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: white;
-    min-width: 120px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-    z-index: 10;
-    border-radius: 4px;
+
+    top: 120%;
+    right: 0;
+
+    min-width: 160px;
+
+    background: white;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    display: none;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.12);
+
+    animation: fadeDropdown .2s ease;
 }
-.dropdown-container:hover .dropdown-content {
-    display: block;
-}
+
 .dropdown-content a {
-    color: black;
-    padding: 10px;
-    text-decoration: none;
     display: block;
+
+    padding: 14px 16px;
+
+    color: #334155;
+
+    text-decoration: none;
+
     font-size: 14px;
+
+    transition: .2s;
 }
 
 .dropdown-content a:hover {
-    background-color: #f1f1f1;
+    background: #f8fafc;
+
+    color: var(--primary-color);
 }
 
-@media (min-width: 768px) {
-    .logo-mobile {
-        display: none;
+.dropdown-container:hover .dropdown-content {
+    display: block;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes fadeDropdown {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
     }
 
-    .logo-desktop {
-        display: flex;
-        align-items: center;
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
+
+/* =========================
+   TABLET
+========================= */
 
 @media (max-width: 780px) {
-.dropdown-content{
-    display: none;
-}
+
+    .dropdown-content {
+        display: none !important;
+    }
+
     .logo-desktop {
         display: none;
     }
@@ -155,66 +255,97 @@ body {
     .logo-mobile {
         display: flex;
         align-items: center;
-        padding: 15px 0 18px 20px;
-        width: auto;
-        max-width: 30px;
-        /* height: 20px; */
+
+        padding: 14px 16px;
     }
 
-    .logo-mobile img {
-        height: 10vw;
-        width: auto;
-        max-height: 50px;
-        padding: 0;
-        min-height: 30px;
-    }
-
+    /* =========================
+       MOBILE NAVBAR
+    ========================= */
 
     .top-nav {
-        position: fixed;
+        top: auto;
+
         bottom: 0;
         left: 0;
-        right: 0;
-        top: auto;
-        width: 100%;
-        display: flex;
-        height: 70px;
-        width: 100%;
-        /* Hapus justify-content di sini karena kita ingin menu yang mengatur penyebaran */
-        padding: 0;
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-        border-radius: 20px 20px 0 0;
-        display: flex;
+
+        height: 72px;
+
+        border-radius: 22px 22px 0 0;
+
+        padding-bottom:
+            env(safe-area-inset-bottom);
+
         justify-content: center;
-        background: var(--white);
-        margin: 0;
-        margin-bottom: 0; 
-        padding-bottom: env(safe-area-inset-bottom);
     }
 
     .menu {
+        width: 100%;
+
         margin: 0;
-        margin: 0 ; /* Paksa hapus margin desktop */
-        padding: 0 ;
+        padding: 0 10px;
+
+        justify-content: space-around;
+
         gap: 0;
-        display: flex;
-        width: 90%; /* WAJIB: Agar menu memenuhi seluruh lebar navbar */
-        justify-content: space-around; /* Menyebarkan item secara merata */
-        align-items: center;
     }
 
     .menu a {
-        margin: 0; /* Hapus margin statis agar tidak merusak kalkulasi space-around */
-        padding: 10px;
-        flex: 1; /* Opsional: Membuat area klik tiap menu sama besar */
-        display: flex;
-        justify-content: center;
-        line-height: 0; 
-  
-        align-items: center;
+        flex-direction: column;
+
+        flex: 1;
+
+        gap: 5px;
+
+        padding: 8px 4px;
+
+        min-height: 60px;
+
+        border-radius: 16px;
+
+        font-size: 11px;
+    }
+
+    .menu img {
+        width: 22px;
+        height: 22px;
     }
 
     .top-nav span {
-        display: none;
+      display: none;
+    }
+
+    .nav-teks {
+        padding: 0;
+    }
+
+    .menu a:hover {
+        transform: none;
+    }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 480px) {
+
+    .top-nav {
+        height: 68px;
+    }
+
+    .menu a {
+        min-height: 55px;
+
+        font-size: 10px;
+    }
+
+    .menu img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .top-nav span {
+        font-size: 10px;
     }
 }

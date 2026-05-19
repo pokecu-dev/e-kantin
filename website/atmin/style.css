@@ -23,14 +23,11 @@ body{
 .navbar {
     background: var(--white);
     height: 80px;
-    
-    /* 1. UBAH width: 100% MENJADI left & right 0 */
+
     position: fixed;
     top: 0;
     left: 0;
-    right: 0; /* Mengunci lebar navbar berdasarkan viewport dasar, bukan sisa ruang scrollbar */
-    
-    /* border-radius: 0 0 15px 15px; */ /* Membuat sudut membulat */
+    right: 0; 
     display: flex;
     align-items: center;
     padding: 0 30px;
@@ -132,4 +129,7 @@ body{
         pointer-events: auto;
         transform: translateY(0);
     }
+}
+.container{
+    margin-top: 60px;
 }

@@ -34,6 +34,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    /* ===== EDIT FORM MODAL STYLE ===== */
+
+body{
+    font-family: 'Poppins', sans-serif;
+    background: transparent;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* LABEL */
+label{
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* INPUT GLOBAL */
+input[type="text"],
+input[type="number"],
+select,
+textarea{
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s;
+    background: #fff;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+    border-color: #F47B20;
+    box-shadow: 0 0 0 3px rgba(244,123,32,0.15);
+}
+
+/* TEXTAREA */
+textarea{
+    min-height: 90px;
+    resize: none;
+}
+
+/* ===== BUTTON GROUP (stok & harga + / -) ===== */
+button{
+    cursor: pointer;
+}
+
+.jumlah{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* wrapper tombol +/- */
+.jumlah button,
+button[type="button"]{
+    background: #F47B20;
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.jumlah button:hover,
+button[type="button"]:hover{
+    background: #d96516;
+}
+
+/* input angka dalam row */
+.jumlah input{
+    text-align: center;
+}
+
+/* wrapper +/- harga */
+#harga,
+#stok{
+    text-align: center;
+    font-weight: 600;
+}
+
+/* SUBMIT BUTTON */
+button[type="submit"]{
+    margin-top: 10px;
+    background: #F47B20;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+button[type="submit"]:hover{
+    background: #d96516;
+    transform: translateY(-1px);
+}
+
+/* SELECT STYLE */
+select{
+    cursor: pointer;
+}
+
+/* NOTIF */
+#notif{
+    margin-top: 10px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px){
+    form{
+        gap: 10px;
+    }
+
+    input, select, textarea{
+        font-size: 13px;
+    }
+}
+</style>
 <body>
 
     <form data-ajax="true" data-action="./pro_editproduk.php" data-notif="notif">

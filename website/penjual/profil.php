@@ -7,12 +7,18 @@ if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
     exit();
 }
 
-
 require_once __DIR__ . "/../include/koneksi.php";
-// 2. Ambil data menggunakan ID dari Session (Sangat Aman)
+
+// Ambil data User SEKALIGUS data Kantinnya menggunakan LEFT JOIN
 $id_user = $_SESSION['id_user'];
-$query = mysqli_query($conn, "SELECT * FROM users WHERE ID = '$id_user'");
-$data = mysqli_fetch_array($query);
+$query_profile = mysqli_query($conn, "
+    SELECT u.*, k.NAMA_KANTIN 
+    FROM users u 
+    LEFT JOIN list_kantin k ON u.ID = k.id_penjual 
+    WHERE u.ID = '$id_user'
+");
+
+$data = mysqli_fetch_array($query_profile);
 
 if (!$data) {
     echo "Data tidak ditemukan.";
@@ -320,13 +326,10 @@ if (!$data) {
         <!-- PROFILE CARD -->
 
         <div class="profile-card">
-
-            <div class="profile-image">
-                <?php
-                $foto = !empty($data['FOTO_USERS']) ? "../../source/fotopengguna/" . $data['FOTO_USERS'] : "../../source/fotopengguna/default.jpg";
-                ?>
-                <img src="<?php echo $foto; ?>" class="profile-pic" alt="User Avatar">
-            </div>
+<div class="profile-image">
+    <?php $foto = "../../source/fotopengguna/" . $data['FOTO_USERS']; ?>
+    <img src="<?php echo $foto; ?>" class="profile-pic" alt="User Avatar">
+</div>
             <h2><?php echo $data['NAMA_LENGKAP']; ?></h2>
             <p>@<?php echo $data['USERNAME']; ?></p>
 
@@ -375,9 +378,8 @@ if (!$data) {
 
                 <div class="input-group">
                     <label>Canteen Name</label>
-
                     <div class="input-box">
-                        Kantin Bakso Bu Joko
+                        <p><?= htmlspecialchars($data['NAMA_KANTIN'] ?? 'Belum Memiliki Kantin') ?></p>
                     </div>
                 </div>
 

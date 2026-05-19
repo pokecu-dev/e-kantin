@@ -34,6 +34,17 @@ $id_login = $_SESSION['id_user'];
             padding: 0;
         }
 
+        /* Chrome, Edge, Safari */
+        ::-webkit-scrollbar {
+            width: 0px;
+            height: 0px;
+        }
+
+        /* Firefox */
+        * {
+            scrollbar-width: none;
+        }
+
         body {
 
             font-family: 'Poppins', sans-serif;
@@ -52,67 +63,128 @@ $id_login = $_SESSION['id_user'];
             color: #F47B20;
         }
 
+        .container {
+
+            margin: 40px 0 0 0;
+        }
+
         /* --- Category Section --- */
+        /* =========================
+   CATEGORY
+========================= */
+
         .kategori {
             display: flex;
-            gap: 10px;
-            padding: 10px 0;
+            width: 100%;
+            /* Gunakan 100% saja, hilangkan 100vw ganda */
+            gap: 12px;
+            max-width: 600px;
+            padding: 10px 16px 18px;
+            /* Ditambah padding kanan-kiri biar pas di-scroll gak mepet layar */
             overflow-x: auto;
-            /* Memungkinkan scroll jika kategori banyak */
             scrollbar-width: none;
-
         }
 
         .kategori::-webkit-scrollbar {
             display: none;
         }
 
+        /* =========================
+   BUTTON
+========================= */
         .kat-btn {
-            padding: clamp(5px, 0.8vw, 10px) clamp(10px, 1.2vw, 16px);
-
-            border-radius: 10px;
-
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 6px;
-
+            /* Gunakan clamp untuk gap: min 6px, ideal 1vw, max 10px */
+            gap: clamp(6px, 1vw, 10px);
             background: #fff;
-            border: 1px solid #eee;
-
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            cursor: pointer;
             flex: 0 0 auto;
+            transition: 0.25s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 
-            width: fit-content;
-        }
-
-        .kat-btn img {
-            .kat-btn img {
-                width: clamp(18px, 2vw, 28px);
-                height: clamp(18px, 2vw, 28px);
-            }
-
-            object-fit: contain;
-        }
-
-        .kat-btn span {
-            .kat-btn span {
-                font-size: clamp(11px, 1vw, 14px);
-            }
-
-            font-weight: 500;
-
-            white-space: nowrap;
+            /* PENTING: Padding dinamis agar button membesar/mengecil proporsional */
+            padding: clamp(8px, 1.2vw, 12px) clamp(12px, 1.8vw, 20px);
         }
 
         .kat-btn:hover {
             border-color: #F47B20;
             background: #fff7ed;
+            transform: translateY(-2px);
         }
 
-        /* --- Grid System (Product Cards) --- */
+        /* =========================
+   ICON (RESPONSIF & LEBIH GEDE)
+========================= */
+        .kat-btn img {
+            /* - Di HP paling kecil (320px), ukurannya mulai dari 24px
+       - Di layar sedang/gede, dia naik fleksibel mengikuti 6% lebar layar (6vw)
+       - Di desktop, dia stop membesar di angka 36px biar gak over-size
+    */
+            width: clamp(45px, 6vw, 50px);
+            height: clamp(45px, 6vw, 50px);
+
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        /* =========================
+   TEXT (IKUT MENYESUAIKAN)
+========================= */
+        .kat-btn span {
+            /* Teksnya juga kita buat fleksibel nemenin icon-nya */
+            font-size: clamp(13px, 2.5vw, 16px);
+            font-weight: 500;
+            color: #1e293b;
+            white-space: nowrap;
+        }
+
+        /* =========================
+   ACTIVE
+========================= */
+        .kat-btn.active {
+            background: #F47B20;
+            border-color: #F47B20;
+        }
+
+        .kat-btn.active span {
+            color: white;
+        }
+
+        /* =========================
+   MOBILE
+========================= */
+
+        @media (max-width: 768px) {
+
+            .kategori {
+                gap: 10px;
+
+                padding-bottom: 14px;
+            }
+
+            .kat-btn {
+                padding: 8px 12px;
+
+                border-radius: 14px;
+            }
+
+            .kat-btn img {
+                width: 18px;
+                height: 18px;
+            }
+
+            .kat-btn span {
+                font-size: 12px;
+            }
+        }
+
         .parent {
             display: grid;
             grid-template-columns: repeat(auto-fit,
-                    minmax(220px, 280px));
+                    minmax(180px, 240px));
             gap: 20px;
             padding: 20px;
             max-width: 1500px;
@@ -213,6 +285,45 @@ $id_login = $_SESSION['id_user'];
             .kategori {
                 justify-content: center;
             }
+
+            .container {
+                margin: 0px 0 0 0;
+            }
+        }
+
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            width: min(450px, 92%);
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            border: none;
+            background: transparent;
+            font-size: 26px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -254,8 +365,8 @@ $id_login = $_SESSION['id_user'];
         </nav>
     </div>
 
-    <!-- Main Content -->
-    <div class="container">
+
+    <!-- <div class="container">
         <div class="kategori">
             <button class="kat-btn">
                 <img src="./../source/icon/makanan.svg" alt="Makanan">
@@ -270,50 +381,105 @@ $id_login = $_SESSION['id_user'];
                 <span>Camilan</span>
             </button>
         </div>
-    </div>
+    </div> -->
+    <div class="container">
+        <!-- Menu Grid -->
+        <div class="parent">
 
-    <!-- Menu Grid -->
-    <div class="parent">
-        <?php
-        // 4. Query Data dengan Prepared Statement
-        $query_menu = "SELECT m.* FROM tb_menu m 
-                       JOIN penjual_kantin pk ON m.id_kantin = pk.id_kantin 
-                       WHERE pk.id_user = ?";
+            <?php
+            // 4. Query Mengambil Produk Berdasarkan Kantin Milik Penjual yang Login
+            // Kita gabungkan tb_menu (m) dan list_kantin (k) lewat ID Kantin yang sama
+            $query_menu = "SELECT m.* FROM tb_menu m 
+               JOIN list_kantin k ON m.id_kantin = k.id 
+               WHERE k.id_penjual = ?";
 
-        if ($stmt = mysqli_prepare($conn, $query_menu)) {
-            mysqli_stmt_bind_param($stmt, "i", $id_login);
-            mysqli_stmt_execute($stmt);
-            $result_menu = mysqli_stmt_get_result($stmt);
+            if ($stmt = mysqli_prepare($conn, $query_menu)) {
+                // Ikat $id_login (dari session $_SESSION['id_user']) ke tanda tanya (?)
+                mysqli_stmt_bind_param($stmt, "i", $id_login);
+                mysqli_stmt_execute($stmt);
+                $result_menu = mysqli_stmt_get_result($stmt);
 
-            if (mysqli_num_rows($result_menu) > 0) {
-                while ($row = mysqli_fetch_assoc($result_menu)) {
-        ?>
-                    <div class="child">
-                        <img src="../../source/gambar_menu/<?= htmlspecialchars($row['FOTO_MENU'] ?? 'default.jpg') ?>"
-                            alt="<?= htmlspecialchars($row['NAMA_MENU']) ?>">
+                if (mysqli_num_rows($result_menu) > 0) {
+                    while ($row = mysqli_fetch_assoc($result_menu)) {
+            ?>
+                        <div class="child">
+                            <img src="../../source/gambar_menu/<?= htmlspecialchars($row['FOTO_MENU'] ?? 'default.jpg') ?>"
+                                alt="<?= htmlspecialchars($row['NAMA_MENU']) ?>">
 
-                        <h3><?= htmlspecialchars($row['NAMA_MENU']) ?></h3>
+                            <h3><?= htmlspecialchars($row['NAMA_MENU']) ?></h3>
 
-                        <div style="color: #F47B20; font-size: 12px; margin: 5px 0;">
-                            <i class="fas fa-star"></i> 5.0
+                            <div style="color: #F47B20; font-size: 12px; margin: 5px 0;">
+                                <i class="fas fa-star"></i> 5.0
+                            </div>
+
+                            <p class="harga">Rp <?= number_format($row['HARGA'], 0, ',', '.') ?></p>
+                            <a href="#" class="edit-btn js-edit-btn" data-id="<?= urlencode($row['ID_MENU']) ?>">
+                                <i class="fas fa-edit" style="margin-right: 5px;"></i> Edit
+                            </a>
                         </div>
-
-                        <p class="harga">Rp <?= number_format($row['HARGA'], 0, ',', '.') ?></p>
-
-                        <a href="editproduk.php?id=<?= urlencode($row['ID_MENU']) ?>" class="edit-btn">
-                            <i class="fas fa-edit" style="margin-right: 5px;"></i> Edit
-                        </a>
-                    </div>
-        <?php
+            <?php
+                    }
+                } else {
+                    echo "<p style='grid-column: 1/-1; text-align: center; color: #999; padding: 50px;'>Belum ada produk di kantin kamu.</p>";
                 }
-            } else {
-                echo "<p style='grid-column: 1/-1; text-align: center; color: #999; padding: 50px;'>Belum ada produk di kantin kamu.</p>";
+                mysqli_stmt_close($stmt);
             }
-            mysqli_stmt_close($stmt);
-        }
-        ?>
+            ?>
+        </div>
     </div>
-
+    <!-- EDIT MODAL -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-box">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <div id="modalContent">
+                <!-- isi dari editproduk.php bakal masuk sini -->
+            </div>
+        </div>
+    </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const modal = document.getElementById("editModal");
+        const modalContent = document.getElementById("modalContent");
+        const closeModal = document.getElementById("closeModal");
+
+        // open modal
+        document.querySelectorAll(".js-edit-btn").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                e.preventDefault();
+
+                const id = btn.dataset.id;
+
+                try {
+                    const res = await fetch(`editproduk.php?id=${id}`);
+                    const html = await res.text();
+
+                    modalContent.innerHTML = html;
+                    modal.classList.add("active");
+
+                    document.body.style.overflow = "hidden";
+
+                } catch (err) {
+                    console.error("Gagal load modal:", err);
+                }
+            });
+        });
+
+        // close modal
+        const close = () => {
+            modal.classList.remove("active");
+            modalContent.innerHTML = "";
+            document.body.style.overflow = "";
+        };
+
+        closeModal.addEventListener("click", close);
+
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) close();
+        });
+
+    });
+</script>
 
 </html>

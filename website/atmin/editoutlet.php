@@ -57,8 +57,7 @@ body {
    LAYOUT UTAMA DASHBOARD (Grid 2 Kolom)
    ========================================== */
 .dashboard-wrapper {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
+    display: column;
     gap: 30px;
     max-width: 1400px;
     margin: 30px auto;
@@ -525,27 +524,7 @@ body {
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo"> <img src="../../source/icon/logo1.svg" alt="Logo"></div>
-
-            <input type="checkbox" id="check">
-            <label for="check" class="checkbtn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </label>
-
-            <ul class="nav-links">
-                <li><a href="admin.php">Beranda</a></li>
-                <li><a href="akun.php" class="active">Akun</a></li>
-                <li><a href="menu.php">Produk</a></li>
-                <li><a href="oulet">Outlet</a></li>
-                <li><a href="./../logout.php">Log Out</a></li>
-            </ul>
-        </div>
-    </nav>
-
+  
     <div class="dashboard-wrapper">
         
         <main class="main-content">
@@ -711,7 +690,7 @@ body {
             </section>
         </main>
 
-        <aside class="sidebar-content">
+        <!-- <aside class="sidebar-content">
             
             <div class="sidebar-card">
                 <div class="sidebar-header">
@@ -746,7 +725,7 @@ body {
                 </div>
 
                 <hr class="divider">
-<!-- 
+
                 <div class="outlet-info">
                     <h4>INFORMASI KONTAK OUTLET</h4>
                     <div class="info-item">
@@ -770,14 +749,14 @@ body {
                             <p class="info-text">Senin - Jumat (08:00 - 17:00)</p>
                         </div>
                     </div>
-                </div> -->
+                </div> 
             </div>
 
             <button class="target-button">
                 <h3>Target Bulanan</h3>
                 <p>Klik untuk detail laporan target</p>
             </button>
-<!-- 
+
             <div class="sidebar-card info-kontak-card">
                 <h3>Info Kontak</h3>
                 <div class="info-item">
@@ -801,9 +780,9 @@ body {
                         <p class="info-text">07:00 - 20:00 WIB</p>
                         <p class="info-subtext">Senin - Sabtu</p>
                     </div>
-                </div> -->
+                </div>
             </div>
-        </aside>
+        </aside> -->
 
     </div>
 

@@ -20,7 +20,7 @@ $dataUsers = [
 // $id = $conn->real_escape_string($_GET['id']);
 $id = $_GET['id'];
 $id = $conn->real_escape_string($id);
-$sql = "select * from users where ID='$id'";
+$sql = "select * from users where ID=?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i",$id);
 $stmt->execute();
@@ -62,6 +62,9 @@ if ($result->num_rows > 0) {
             font-family: 'Inter', sans-serif;
         }
 
+        html{
+         width: 100%;
+        }
         body {
             /* background-color: var(--bg-body);
             color: var(--text-main);
