@@ -66,8 +66,8 @@
         }
 
         .iconsch {
-            width: 20px;
-            height: 20px;
+            width: 80px;
+            height: 50px;
         }
 
         .btn-search {
@@ -107,7 +107,7 @@
 
         .menu-card img{
             width:100%;
-            aspect-ratio:1/1;
+            aspect-ratio: 16 / 10;
             object-fit:cover;
             border-radius:12px;
         }
@@ -137,7 +137,7 @@
             margin-bottom: 40px;
             width: 100%;
 
-            overflow-x: auto;  
+            overflow-x: hidden;  
 
             position: relative;
         }
@@ -152,17 +152,19 @@
             scroll-padding: 20px;
             scrollbar-width: none; 
             -ms-overflow-style: none;
+            box-sizing: border-box;
             flex-wrap: nowrap; 
         }
                 
         .slide {
             flex: 0 0 85%;  
-            aspect-ratio: 20/ 10;
+            max-width: 480px;
+            aspect-ratio: 21 / 10; 
             box-sizing: border-box;
             position: relative;
             overflow: hidden;
-
             scroll-snap-align: center;
+            border-radius: 15px;
         }
 
         .slide img {
@@ -296,6 +298,9 @@
             <a href="Keranjang.php">
                 <img src="../../source/icon/pesanan1.svg" alt=""><span class="nav-teks">Keranjang</span>
             </a>
+            <a href="Pesanan.php">
+                <img src="../../source/icon/proses.svg" alt=""><span class="nav-teks">Pesanan</span>
+            </a>
             <a href="profil.php">
                 <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
             </a>
@@ -308,16 +313,27 @@
 
         <div class="mencari">
 
-            <form action="search_menu.php" method="GET">
-                <div class="search-box">
-                    <input type="text" name="search" placeholder="Cari menu..." class="search">
-                    <button type="submit" class="btn-search">
-                        <img src="../../source/icon/search.svg" alt="" class="iconsch">
-                        </button>
-                </div>
-            </form>
+        <form action="pembeli.php" method="GET">
+            <div class="search-box">
 
-        </div>
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Cari menu..."
+                    class="search"
+                    value="<?php echo $_GET['search'] ?? ''; ?>">
+
+                <button type="submit" class="btn-search">
+                    <img src="../../source/icon/search.svg" class="iconsch">
+                </button>
+
+            </div>
+        </form>
+
+    </div>
+
+        
+
     
         <div class="slider">
             <div class="slides">
@@ -327,7 +343,7 @@
                 while ($row = mysqli_fetch_assoc($result_kantin)) {
                 ?>
                     <div class="slide">
-                        <img src="../../source/foto_kantin/<?php echo $row['foto_kantin']; ?>" alt="Gambar Kantin">
+                        <img src="../../source/foto_kantin/<?php echo $row['FOTO_KANTIN']; ?>" alt="Gambar Kantin">
 
                         <button class="kantin-btn">Kantin <?php echo $no++; ?></button>
                     </div>
@@ -338,10 +354,30 @@
         </div>
 
         <div class="parent" >
-            <?php 
-            $result_menu = mysqli_query($conn, "SELECT * FROM tb_menu");
-            while ($row = mysqli_fetch_assoc($result_menu)): 
-            ?>
+            <?php
+
+                if(isset($_GET['search']) && $_GET['search'] != ''){
+
+                    $search = mysqli_real_escape_string($conn,$_GET['search']);
+
+                    $result_menu = mysqli_query(
+                        $conn,
+                        "SELECT * FROM tb_menu
+                        WHERE REPLACE(NAMA_MENU,' ','')
+                        LIKE '%".str_replace(' ','',$search)."%'"
+                    );
+
+                }else{
+
+                    $result_menu = mysqli_query(
+                        $conn,
+                        "SELECT * FROM tb_menu"
+                    );
+
+                }
+
+                while($row=mysqli_fetch_assoc($result_menu)):
+                ?>
                 <div class="child">
                    <a href="detail_menu.php?id=<?php echo $row['ID_MENU']; ?>" class="menu-link">
 

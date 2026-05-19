@@ -25,7 +25,7 @@ if (!$data) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Menu - <?php echo $data['NAMA_MENU']; ?></title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./pembeli/style.css">
     
     <style>
         * {
@@ -316,7 +316,7 @@ if (!$data) {
             }
         }
     </style>
-</head>  
+</head> 
 <body>  
 
 <div class="logo-mobile">
@@ -335,9 +335,6 @@ if (!$data) {
         <a href="keranjang.php">
             <img src="../../source/icon/pesanan1.svg" alt=""><span class="nav-teks">Keranjang</span>
         </a>
-        <a href="Pesanan.php">
-            <img src="../../source/icon/proses.svg" alt=""><span class="nav-teks">Pesanan</span>
-            </a>
         <a href="profil.php">
             <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
         </a>
@@ -449,7 +446,7 @@ if (!$data) {
             const data = await response.json();
             console.log(2);
             if(data.status === 'success'){
-                window.location.href = './beli.php'; 
+                window.location.href = './keranjang.php'; 
             }
             console.log(data.message);
 

@@ -7,6 +7,8 @@ if (!isset($_GET['id'])) {
     exit;
 }
 
+$iduser = $_SESSION['id_user'];
+
 $id = (int)$_GET['id'];
 
 // Perbaikan: Di database rata-rata nama kolomnya ID_MENU (huruf besar)
@@ -316,7 +318,7 @@ if (!$data) {
             }
         }
     </style>
-</head>  
+</head> 
 <body>  
 
 <div class="logo-mobile">
@@ -335,9 +337,6 @@ if (!$data) {
         <a href="keranjang.php">
             <img src="../../source/icon/pesanan1.svg" alt=""><span class="nav-teks">Keranjang</span>
         </a>
-        <a href="Pesanan.php">
-            <img src="../../source/icon/proses.svg" alt=""><span class="nav-teks">Pesanan</span>
-            </a>
         <a href="profil.php">
             <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
         </a>
@@ -365,7 +364,7 @@ if (!$data) {
                 Stok: <span id="stok"><?= $data['STOK']; ?></span>
             </div>
             <div class="rating">
-               ★ 5.0 
+               ★ <span id="rate"><?= $data['RATING'] ?></span> 
             </div>
         </div>
 
@@ -382,11 +381,7 @@ if (!$data) {
                     Rp <?php echo number_format($data['HARGA'], 0, ',', '.'); ?>
                 </div>
 
-                <div class="jumlah">
-                    <button type="button" onclick="UpdateQTY(-1)">-</button>
-                    <input type="number" name="qty" id="qty" value="1" min="1" max="<?php echo $data['STOK']; ?>" readonly>
-                    <button type="button" onclick="UpdateQTY(1)">+</button>
-                </div>
+                
             </div>
 
             <div id="notif"></div>
@@ -400,67 +395,48 @@ if (!$data) {
                 </button>
             </div>
         </form>
+        
+        <div id="rating">
 
+            <br>
+            <h2>tulis rating mu gan:D</h2>
+            <!-- ini bagian rating wak,kalau udah buat tb transaksi nanti revisi dikit alur logika nya:D -->
+            <div id="form-rate">
+                <form action="pro_tesrate.php" method="post">
+                    <input type="hidden" name="id_menu" value="<?= $data['ID_MENU'] ?>">
+                    <input type="hidden" name="id_user" value="<?= $iduser ?>">
+                    <input type="hidden" name="id_kantin" value="<?= $data['ID_KANTIN'] ?>">    
+                    <label>rating coy:D</label>
+                    <input type="number" name="rating" max="5" min="0" value="0">
+                    <br>
+                    <label>komentar gan:D</label>
+                    <textarea name="desk" id="desk"></textarea>
+                    <button type="submit" name="submit">kirim:D</button>
+                    
+                </form>
+            </div>
+            <br>
+            
+            <h2>rating</h2>
+
+            <?php 
+                $sql = "SELECT rating.*, users.NAMA_LENGKAP 
+                            FROM rating 
+                            INNER JOIN users ON rating.ID_USER = users.ID 
+                            WHERE rating.ID_MENU = '$id'";
+                $query = $conn->query($sql);
+
+                while($row = $query->fetch_assoc()):
+            ?>
+                <p>user:<?= $row['NAMA_LENGKAP'] ?></p>
+                <p>rate: <?= $row['RATING'] ?></p>
+                <p>komentar:<?= $row['DESK'] ?></p>
+                <br>
+            <?php endwhile ?>
+        </div>
     </div>
 </div>
 
-<script src="./../shared/js/script.js"></script>
-<script>
-
-
-    const inputQTY = document.getElementById("qty");
-    const getstock = () => parseInt(document.getElementById("stok").innerText);
-
-    function UpdateQTY(step) {
-        let currentStock = getstock();
-        let newVal = parseInt(inputQTY.value) + step;
-
-        if (newVal >= 1 && newVal <= currentStock) {
-            inputQTY.value = newVal;
-        } else if (newVal > currentStock) {
-            alert("Maaf, stok tidak mencukupi!");
-        }
-    }
-
-    inputQTY.oninput = function() {
-        let value = parseInt(this.value);
-        let currentStock = getstock();
-
-        if (this.value === "" || isNaN(value) || value < 1) {
-            this.value = 1;
-        } else if (value > currentStock) {
-            this.value = currentStock;
-        }
-    }
-
-    // ajax
-    document.getElementById('form-data').onsubmit = async (e) => {
-        e.preventDefault();
-        const notif = document.getElementById('notif');
-        const dataform = new FormData(e.target);
-
-        try{
-            const response = await fetch('keranjangDB.php',{
-                method:'POST',
-                body: dataform
-            })
-            console.log(1);
-
-            const data = await response.json();
-            console.log(2);
-            if(data.status === 'success'){
-                window.location.href = './beli.php'; 
-            }
-            console.log(data.message);
-
-        }
-        catch(e){
-            notif.innerText = "error:" + e.message;
-        }
-        
-    }
-    
-</script>
 
 </body>
 </html>
