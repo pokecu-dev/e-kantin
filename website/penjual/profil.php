@@ -21,192 +21,380 @@ if (!$data) {
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Saya - KantinKita</title>
+    <title>Profile Kantin</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --orange-main: #F47B20;
-            --white: #FFFFFF;
-            --gray-bg: #F0F2F5;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
         }
 
-        /* * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; width: 100%; }
-        body { background-color: var(--gray-bg); color: #333; line-height: 1.6; } */
-*{
-    font-family: 'Poppins', sans-serif; 
-}
-        /* Bagian Atas: Dominan Oranye */
-        .hero-profile {
-            background: linear-gradient(135deg, var(--orange-main), #f4d120);
-            height: 220px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            border-bottom-left-radius: 50px;
-            border-bottom-right-radius: 50px;
-            text-align: center;
+        body {
+            background: #f5f5f5;
+            color: #333;
+            font-family: 'Poppins', sans-serif;
         }
 
-        .avatar-wrapper {
+        /* ================= NAVBAR ================= */
+
+        /* ================= HERO ================= */
+
+        .hero {
+            width: 100%;
+            height: 250px;
+            /* background:
+                linear-gradient(rgba(0, 0, 0, 0.35),
+                    rgba(0, 0, 0, 0.35)),
+                url('https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=1400&auto=format&fit=crop'); */
+            background-size: cover;
+            background-position: center;
+            margin-top: -100px;
             position: relative;
-            margin-bottom: 10px;
+            z-index: -1;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
         }
 
-        .profile-pic {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            border: 4px solid var(--white);
-            object-fit: cover;
-            background-color: #eee;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        /* ================= CONTENT ================= */
+
+        .container {
+            width: 92%;
+            max-width: 1250px;
+            margin: -80px auto 40px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
         }
 
-        /* Bagian Konten: Dominan Putih */
-        .main-container {
-            max-width: 500px;
-            margin: -40px auto 40px;
-            padding: 0 15px;
-        }
+        /* ================= PROFILE CARD ================= */
 
-        .info-card {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        }
-
-        .info-card h3 {
-            color: var(--orange-main);
-            margin-bottom: 25px;
-            font-size: 1.2rem;
+        .profile-card {
+            width: 320px;
+            background: white;
+            border-radius: 28px;
+            padding: 35px 25px;
             text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 10px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
         }
 
-        .detail-item {
-            margin-bottom: 20px;
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            margin: auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid #fff;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
         }
 
-        .detail-item label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #999;
-            text-transform: uppercase;
-            margin-bottom: 5px;
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .detail-item p {
-            background: #F9FAFB;
-            padding: 12px 15px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            color: #444;
-            border-left: 3px solid var(--orange-main);
+        .profile-card h2 {
+            margin-top: 20px;
+            font-size: 24px;
         }
 
-        .btn-group {
+        .username {
+            color: #888;
+            margin-top: 6px;
+            font-size: 14px;
+        }
+
+        .badge {
+            margin: 20px auto;
+            background: #fff1e7;
+            color: #F47B20;
+            width: fit-content;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .stats {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             margin-top: 25px;
         }
 
-        .btn {
-            padding: 12px;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: 0.3s;
+        .stat-box {
+            background: #fafafa;
+            padding: 15px 10px;
+            border-radius: 18px;
         }
 
-        .btn-edit { background: var(--orange-main); color: white; }
-        .btn-logout { background: #fee2e2; color: #ef4444; }
+        .stat-box h3 {
+            color: #F47B20;
+            font-size: 20px;
+        }
 
-        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .stat-box p {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        /* ================= DETAIL CARD ================= */
+
+        .detail-card {
+            flex: 1;
+            background: white;
+            border-radius: 28px;
+            padding: 35px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+        }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        .detail-header h2 {
+            font-size: 28px;
+        }
+
+        .edit-btn {
+            border: none;
+            background: #fff1e7;
+            color: #F47B20;
+            padding: 12px 20px;
+            border-radius: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-group label {
+            font-size: 12px;
+            color: #999;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .input-box {
+            height: 58px;
+            background: #fafafa;
+            border: 1px solid #ececec;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            padding: 0 18px;
+            font-size: 15px;
+            color: #444;
+            font-weight: 500;
+        }
+
+        .status {
+            width: fit-content;
+            background: #ddffe8;
+            color: #17a34a;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width: 950px) {
+
+            .container {
+                flex-direction: column;
+            }
+
+            .profile-card {
+                width: 100%;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: 100%;
+                padding: 0 15px;
+            }
+
+            .detail-card {
+                width: 100%;
+            }
+
+            .profile-card {
+                width: 100%;
+            }
+        }
+
+        @media(max-width: 650px) {
+
+
+            .detail-card {
+                padding: 25px;
+
+            }
+
+            .detail-header h2 {
+                font-size: 22px;
+            }
+
+            .hero {
+                height: 180px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<div class="logo-mobile">
-        <img src="../../source/icon/logo.svg" alt="KantinKita">
-    </div>
+    <!-- ================= NAVBAR ================= -->
 
-    <div class="logo-desktop">
-        <img src="../../source/icon/logo1.svg" alt="KantinKita">
-    </div>
-    <!-- --------/LOGO------------ -->
-    <div class="top-nav" style="text-align: center; margin-bottom: 0px;">
-        <nav class="menu">
-            <a href="penjual.php" style="margin: 0 5px; text-decoration: none ; color:#F47B20">
-                <img src="../../source/icon/pesanan2.svg" alt=""> 
-                <span>History</span>
-            </a>
-            <a href="edit1.php" class="active" style="margin: 0 5px; text-decoration: none;">
-                <img src="../../source/icon/edit1.svg" alt="">
-                <span>Edit</span>
-            </a>
-            <div class="dropdown-container">
-                <a href="profil.php" style="margin: 0 5px; text-decoration: none;">
-                    <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profile</span>
+    <header class="topbar">
+
+        <div class="logo-mobile">
+            <img src="../../source/icon/logo1.svg" alt="KantinKita">
+        </div>
+
+        <div class="logo-desktop">
+            <img src="../../source/icon/logo1.svg" alt="KantinKita">
+        </div>
+        <!-- --------/LOGO------------ -->
+        <div class="top-nav" style="text-align: center; margin-bottom: 0px;">
+            <nav class="menu">
+                <a href="penjual.php" style="margin: 0 5px; text-decoration: none ; color:#F47B20">
+                    <img src="../../source/icon/pesanan2.svg" alt="history">
+                    <span>History</span>
                 </a>
-                <div class="dropdown-content">
-                    <a href="profil.php">Profile</a>
-                    <a href="./../logout.php">Keluar</a>
+                <a href="edit1.php" class="active" style="margin: 0 5px; text-decoration: none;">
+                    <img src="../../source/icon/edit1.svg" alt="edit">
+                    <span style="color:#aaa;">Edit</span>
+                </a>
+                <div class="dropdown-container">
+                    <a href="profil.php" style="margin: 0 5px; text-decoration: none; color:#F47B20">
+                        <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks" style="color:#aaa;">Profile</span>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="profil.php" style="color: #202a39">Profile</a>
+                        <a href="./../logout.php" style="color: #202a39">Keluar</a>
+                    </div>
+                </div>
+
+            </nav>
+        </div>
+
+    </header>
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero"></section>
+
+    <!-- ================= CONTENT ================= -->
+
+    <section class="container">
+
+        <!-- PROFILE CARD -->
+
+        <div class="profile-card">
+
+            <div class="profile-image">
+                <?php
+                $foto = !empty($data['FOTO_USERS']) ? "../../source/fotopengguna/" . $data['FOTO_USERS'] : "../../source/fotopengguna/default.jpg";
+                ?>
+                <img src="<?php echo $foto; ?>" class="profile-pic" alt="User Avatar">
+            </div>
+            <h2><?php echo $data['NAMA_LENGKAP']; ?></h2>
+            <p>@<?php echo $data['USERNAME']; ?></p>
+
+
+
+        </div>
+
+        <!-- DETAIL CARD -->
+
+        <div class="detail-card">
+
+            <div class="detail-header">
+                <h2>Information Details</h2>
+
+                <button class="edit-btn">
+                    ✎ Edit Details
+                </button>
+            </div>
+
+            <div class="detail-grid">
+
+                <div class="input-group">
+                    <label>Full Name</label>
+
+                    <div class="input-box">
+                        <p><?php echo $data['NAMA_LENGKAP']; ?></p>
+                    </div>
+                </div>
+
+
+                <div class="input-group">
+                    <label>Phone Number</label>
+
+                    <div class="input-box">
+                        <p><?php echo $data['NO_TLP']; ?></p>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Email Address</label>
+
+                    <div class="input-box">
+                        <?php echo $data['EMAIL']; ?>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Canteen Name</label>
+
+                    <div class="input-box">
+                        Kantin Bakso Bu Joko
+                    </div>
+                </div>
+
+
+                <div class="input-group">
+                    <label>Outlet Status</label>
+
+                    <div class="status">
+                        Aktif
+                    </div>
                 </div>
             </div>
 
-        </nav>
-    </div>
-
-    <section class="hero-profile">
-        <div class="avatar-wrapper">
-            <?php 
-                $foto = !empty($data['FOTO_USERS']) ? "../../source/fotopengguna/" . $data['FOTO_USERS'] : "../../source/fotopengguna/default.jpg";
-            ?>
-            <img src="<?php echo $foto; ?>" class="profile-pic" alt="User Avatar">
         </div>
-        <h2><<?php echo $data['USERNAME']; ?></h2>
-        <p style="font-size: 0.8rem; opacity: 0.9;">Role: <?php echo strtoupper($data['ROLE']); ?></p>
+
     </section>
 
-    <div class="main-container">
-        <div class="info-card">
-            <h3>Informasi Akun</h3>
-
-            <div class="detail-item">
-                <label>Nama Lengkap</label>
-                <p><?php echo $data['NAMA_LENGKAP']; ?></p>
-                
-            </div>
-
-            <div class="detail-item">
-                <label>Alamat Email</label>
-                <p><?php echo $data['EMAIL']; ?></p>
-            </div>
-
-            <div class="detail-item">
-                <label>Nomor WhatsApp</label>
-                <p><?php echo $data['NO_TLP']; ?></p>
-            </div>
-
-            <div class="btn-group">
-                <a href="edit1.php" class="btn btn-edit">Edit Profil</a>
-                <a href="../logout.php" class="btn btn-logout">Logout</a>
-            </div>
-        </div>
-    </div>
-
 </body>
+
 </html>

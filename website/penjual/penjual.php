@@ -158,16 +158,16 @@ if ($_SESSION['role'] != "penjual")
             </a>
             <a href="edit1.php" class="active" style="margin: 0 5px; text-decoration: none;">
                 <img src="../../source/icon/edit1.svg" alt="edit">
-                <span>Edit</span>
+                <span style="color:#aaa;">Edit</span>
             </a>
             <div class="dropdown-container">
                 <a href="profil.php" style="margin: 0 5px; text-decoration: none;">
-                    <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profile</span>
+                    <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks" style="color:#aaa;">Profile</span>
                 </a>
-                <div class="dropdown-content">
-                    <a href="profil.php">Profile</a>
-                    <a href="./../logout.php">Keluar</a>
-                </div>
+                 <div class="dropdown-content">
+                        <a href="profil.php" style="color: #202a39">Profile</a>
+                        <a href="./../logout.php"  style="color: #202a39">Keluar</a>
+                    </div>
             </div>
 
         </nav>

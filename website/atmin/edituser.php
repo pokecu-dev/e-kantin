@@ -57,23 +57,25 @@ if ($query->num_rows > 0) {
         }
 
         body {
-            background-color: var(--bg-body);
+            /* background-color: var(--bg-body);
             color: var(--text-main);
-            padding: 40px 20px;
-            line-height: 1.6;
+           
+            line-height: 1.5; */
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+    /* width: 100%;
+    max-width: 1400px;
+    margin-inline: auto;
+    padding: 24px;
+    box-sizing: border-box;
+    margin-top: 60px; */
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 30px;
-            align-items: start;
-        }
+.main-grid {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: auto;
+}
 
         .category-title {
             display: block;
@@ -193,7 +195,7 @@ if ($query->num_rows > 0) {
 </head>
 
 <body>
-    <div class="container">
+    <div class="main">
         <form data-ajax="true" data-action="./process/pro_edit.php" data-notif="notif">
             <div class="main-grid">
 
@@ -220,10 +222,7 @@ if ($query->num_rows > 0) {
                             <input type="text" name="pass">
                         </div>
                     </div>
-                </div>
-
-                <!-- KOLOM KANAN -->
-                <div class="right-column">
+                
                     <span class="category-title">Informasi Pribadi</span>
                     <div class="card">
                         <div class="form-group">

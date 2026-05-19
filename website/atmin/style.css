@@ -19,24 +19,26 @@ body{
 }
 
 /* Navbar Utama sebagai Card */
+/* Navbar Utama sebagai Card */
 .navbar {
     background: var(--white);
     height: 80px;
-    width: 100vw; 
-    /* margin: 10px auto; Memberikan jarak dari tepi atas */
-    border-radius: 0 0 15px 15px; /* Membuat sudut membulat */
+    
+    /* 1. UBAH width: 100% MENJADI left & right 0 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0; /* Mengunci lebar navbar berdasarkan viewport dasar, bukan sisa ruang scrollbar */
+    
+    /* border-radius: 0 0 15px 15px; */ /* Membuat sudut membulat */
     display: flex;
     align-items: center;
     padding: 0 30px;
-    margin: 0;
+    margin: 0 ;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     
-    /* Efek Sticky agar tetap di atas saat scroll */
-    position: sticky;
-    top: 0;
     z-index: 1000;
 }
-
 .nav-container {
     display: flex;
     justify-content: space-between;
@@ -68,13 +70,13 @@ body{
     text-decoration: none;
     color: #555;
     font-weight: 500;
-    transition: 0.3s;
+    /* transition: 0.3s; */
     font-size: 0.95rem;
 }
 
-.nav-links a:hover {
+/* .nav-links a:hover {
     color: var(--primary);
-}
+} */
 
 /* Burger Menu Styles */
 #check {

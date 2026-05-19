@@ -91,13 +91,10 @@ body {
     padding: 10px;
     font-size: 22px;
     color: #aaa;
-    transition: 0.3s;
+    /* transition: 0.3s; */
     text-decoration: none;
 }
 
-.top-nav a:hover {
-    color: var(--primary-color);
-}
 
 .logo-mobile img {
     width: auto;

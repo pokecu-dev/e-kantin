@@ -259,8 +259,8 @@ $query = $conn->query("SELECT * FROM users ORDER BY ID DESC LIMIT 5");
             <ul class="nav-links">
                 <li><a href="admin.php" class="active">Beranda</a></li>
                 <li><a href="akun.php">Akun</a></li>
-                <li><a href="menu.php">Menu</a></li>
-                <li><a href="#">Outlet</a></li>
+                <li><a href="menu.php">Produk</a></li>
+                <li><a href="oulet">Outlet</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
@@ -334,18 +334,18 @@ $query = $conn->query("SELECT * FROM users ORDER BY ID DESC LIMIT 5");
             </div>
         </div>
     </div>
-    <br>
+    <!-- <br>
     <p>tes up file</p>
     <form id="upfile-form">
         <label for="upfile">pilih file:</label>
         <input type="file" id="upfile" name="upfile">
         <button type="submit"">upload</button>
-    </form>
+    </form> -->
     <!-- <div id=" notif" style="color: green;">hi</div> -->
 
-            <br>
+            <!-- <br>
             <a href="TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
-            <a href="cariProduk.php">cari</a>
+            <a href="cariProduk.php">cari</a> -->
 
 
             <script>

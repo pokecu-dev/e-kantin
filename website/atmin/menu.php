@@ -1,42 +1,64 @@
+<?php
+require_once __DIR__ . "/../include/koneksi.php";
+
+if ($conn->error) {
+    echo $conn->connect_error;
+}
+
+$sql = "SELECT * FROM tb_menu";
+$query = $conn->query($sql);
+
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cari Produk - CEO Dashboard</title>
+    <title>Produk Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-orange: #f36f21;
+            --primary-orange: #f36f20;
             --bg-gray: #f8fafc;
             --text-dark: #1e293b;
             --text-muted: #64748b;
             --border-color: #e2e8f0;
             --white: #ffffff;
-            /* Definisi Lebar Kolom agar sejajar */
+
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --radius: 18px;
+
             --col-product: 2fr;
             --col-category: 1fr;
-            --col-price: 1.2fr;
-            --col-stock: 1.2fr;
-            --col-status: 0.8fr;
-            --col-action: 0.5fr;
+            --col-price: 1fr;
+            --col-stock: 1fr;
+            --col-status: .7fr;
+            --col-action: .5fr;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            background-color: var(--bg-gray);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gray);
             color: var(--text-dark);
-            /* padding: 40px; */
             line-height: 1.5;
         }
+
+        /* =========================
+NAVBAR
+========================= */
 
         .nav-links a {
             text-decoration: none;
@@ -46,305 +68,444 @@
             transition: 0.3s;
         }
 
-        /* Warna khusus (Merah) untuk menu yang sedang aktif */
         .nav-links a.active {
             color: var(--primary);
-            /* Warna merah brand KantinKita */
             border-bottom: 2px solid #F47B20;
-            /* Opsional: tambah garis bawah agar lebih jelas */
             padding-bottom: 5px;
         }
 
+
+
+        /* =========================
+   CONTAINER
+========================= */
+
         .container {
-            padding: 40px;
-            margin: 0;
+            width: 100%;
+            max-width: 1400px;
+            margin-inline: auto;
+            padding: 24px;
+            margin-top: 60px;
         }
 
-        /* Header Section */
+        /* =========================
+   HEADER
+========================= */
+
         .header {
-            display: flex;
-            /* justify-content: space-between;
-            align-items: flex-start; */
             margin-bottom: 30px;
         }
 
+        .header-title {
+            width: 100%;
+        }
+
         .header-title h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            margin-bottom: 10px;
         }
 
-        /* .header-title p {
+        .header-title p {
             color: var(--text-muted);
-            font-size: 14px;
-        } */
-
-        .btn-add {
-            background-color: var(--primary-orange);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: 0.3s;
+            margin-top: 10px;
         }
 
-        /* Stats Cards */
+        /* =========================
+   SEARCH
+========================= */
+
+        .input-group {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+
+            background: #fff7ed;
+            padding: 18px;
+            border-radius: var(--radius);
+            border: 1px solid #fed7aa;
+        }
+
+        .input-group input {
+            flex: 1 1 300px;
+            min-width: 0;
+
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-orange);
+        }
+
+        .btn-orange {
+            border: none;
+            background: var(--primary-orange);
+            color: white;
+
+            padding: 14px 24px;
+            border-radius: 12px;
+
+            font-weight: 600;
+            cursor: pointer;
+
+            transition: .3s;
+        }
+
+        .btn-orange:hover {
+            opacity: .9;
+        }
+
+        /* =========================
+   STATS
+========================= */
+
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
+
             margin-bottom: 30px;
         }
 
         .stat-card {
-            background: var(--white);
+            background: white;
+            border-radius: var(--radius);
             padding: 24px;
-            border-radius: 16px;
+
             display: flex;
             align-items: center;
-            gap: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            gap: 16px;
+
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-color);
         }
 
         .icon-box {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 56px;
+            height: 56px;
+
+            border-radius: 14px;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+
+            font-size: 22px;
+            flex-shrink: 0;
         }
 
         .icon-total {
             background: #fff7ed;
-            color: #f97316;
         }
 
         .icon-low {
             background: #fef2f2;
-            color: #ef4444;
         }
 
         .icon-active {
             background: #f0fdf4;
-            color: #22c55e;
         }
 
         .stat-info span {
             font-size: 12px;
             color: var(--text-muted);
             font-weight: 600;
-            display: block;
         }
 
         .stat-info h2 {
-            font-size: 24px;
-            font-weight: 700;
+            font-size: 26px;
         }
 
-        /* Main List Section (Modern Grid Replacement for Table) */
+        /* =========================
+   DATA CARD
+========================= */
+
         .data-card {
-            background: var(--white);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: var(--radius);
             overflow: hidden;
+            border: 1px solid var(--border-color);
         }
+
+        /* =========================
+   TOOLBAR
+========================= */
 
         .toolbar {
             padding: 20px;
+
             display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+
             justify-content: space-between;
             align-items: center;
+
             border-bottom: 1px solid var(--border-color);
         }
 
         .search-input {
-            width: 320px;
-            padding: 10px 15px 10px 35px;
-            border-radius: 8px;
+            flex: 1 1 280px;
+            min-width: 0;
+
+            padding: 12px 16px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
-            background: #f1f5f9;
-            outline: none;
+
+            background: #f8fafc;
         }
 
-        /* Grid Layout */
+        .toolbar>div {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-page {
+            border: 1px solid var(--border-color);
+            background: white;
+
+            padding: 10px 16px;
+            border-radius: 10px;
+
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-page:hover {
+            background: #f8fafc;
+        }
+
+        /* =========================
+   TABLE GRID
+========================= */
+
+        .grid-wrapper {
+            background-color: var(--white);
+            width: 100%;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
         .grid-header,
         .grid-row {
+            min-width: 900px;
+
             display: grid;
-            grid-template-columns: var(--col-product) var(--col-category) var(--col-price) var(--col-stock) var(--col-status) var(--col-action);
-            padding: 16px 20px;
+            grid-template-columns:
+                var(--col-product) var(--col-category) var(--col-price) var(--col-stock) var(--col-status) var(--col-action);
+
+            gap: 16px;
             align-items: center;
+
+            padding: 18px 20px;
         }
 
         .grid-header {
-            background-color: #fafafa;
-            border-bottom: 1px solid var(--border-color);
+            background: #fafafa;
+
             font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
+            font-weight: 700;
             text-transform: uppercase;
+
+            color: var(--text-muted);
+
+            border-bottom: 1px solid var(--border-color);
         }
 
         .grid-row {
             border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
-            transition: background 0.2s;
+            transition: .2s;
         }
 
         .grid-row:hover {
-            background-color: #f8fafc;
+            background: #f8fafc;
         }
 
         .product-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
+
+            min-width: 0;
+        }
+
+        .product-info strong {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .img-placeholder {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
+
+            border-radius: 12px;
+
             background: #f1f5f9;
-            border-radius: 8px;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #94a3b8;
-            font-size: 20px;
+
+            flex-shrink: 0;
         }
 
-        /* Badges */
+        /* =========================
+   BADGES
+========================= */
         .badge {
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 6px 12px;
+            border-radius: 999px;
+
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .badge-green {
-            background: #f0fdf4;
-            color: #16a34a;
+            background: #dcfce7;
+            color: #15803d;
         }
 
         .badge-orange {
-            background: #fff7ed;
+            background: #ffedd5;
             color: #ea580c;
         }
 
         .badge-gray {
-            background: #f1f5f9;
-            color: #64748b;
+            background: #e2e8f0;
+            color: #475569;
         }
 
-        /* Custom Switch */
+        /* =========================
+   SWITCH
+========================= */
+
         .switch {
-            width: 40px;
-            height: 22px;
             position: relative;
+            width: 44px;
+            height: 24px;
             display: inline-block;
         }
 
         .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
+            display: none;
         }
 
         .slider {
             position: absolute;
+            inset: 0;
+            background: #cbd5e1;
+            border-radius: 999px;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #cbd5e1;
-            transition: .4s;
-            border-radius: 20px;
+            transition: .3s;
         }
 
-        .slider:before {
+        .slider::before {
             content: "";
+
             position: absolute;
-            height: 16px;
-            width: 16px;
+            width: 18px;
+            height: 18px;
+
             left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
+            top: 3px;
+
+            background: white;
             border-radius: 50%;
+
+            transition: .3s;
         }
 
-        input:checked+.slider {
-            background-color: var(--primary-orange);
+        .switch input:checked+.slider {
+            background: var(--primary-orange);
         }
 
-        input:checked+.slider:before {
-            transform: translateX(18px);
+        .switch input:checked+.slider::before {
+            transform: translateX(20px);
         }
+
+        /* =========================
+   ACTIONS
+========================= */
 
         .actions {
             display: flex;
-            gap: 15px;
             justify-content: flex-end;
-            color: #94a3b8;
+            gap: 14px;
+
+            font-size: 18px;
             cursor: pointer;
         }
+
+        /* =========================
+   FOOTER
+========================= */
 
         .footer {
             padding: 20px;
+
             display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+
             justify-content: space-between;
             align-items: center;
-            font-size: 14px;
+
             color: var(--text-muted);
         }
 
-        .pagination {
-            display: flex;
-            gap: 8px;
-        }
+        /* =========================
+   MOBILE
+========================= */
 
-        .btn-page {
-            padding: 6px 16px;
-            border: 1px solid var(--border-color);
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            background: #fff3e0;
-            padding: 15px;
-            width: 100%;
-            border-radius: 8px;
-        }
+        @media (max-width: 768px) {
 
-        input[type="text"] {
-            flex: 1; padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
+            .container {
+                padding: 16px;
+            }
 
-        .btn-orange {
-            background: #e67e22; color: white;
-            border: none; padding: 10px 20px;
-            border-radius: 5px; cursor: pointer;
-            font-weight: bold;
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .toolbar>div {
+                width: 100%;
+            }
+
+            .btn-page {
+                flex: 1;
+            }
+
+            .footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .input-group {
+                padding: 14px;
+            }
+
+            .stat-card {
+                padding: 18px;
+            }
+
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar" style=" font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
         <div class="nav-container">
             <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
 
@@ -359,25 +520,37 @@
             <ul class="nav-links">
                 <li><a href="admin.php">Beranda</a></li>
                 <li><a href="akun.php">Akun</a></li>
-                <li><a href="menu.php" class="active">Menu</a></li>
-                <li><a href="#">Outlet</a></li>
+                <li><a href="menu.php" class="active">Produk</a></li>
+                <li><a href="oulet.php">Outlet</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
     </nav>
-
+    <!-- CONTAINER -->
 
     <div class="container">
+
+        <!-- HEADER -->
+
         <div class="header">
             <div class="header-title">
+                <h1>Kelola Produk</h1>
                 <form action="cariProduk.php" method="GET" class="input-group">
-                    <input type="text" name="query" placeholder="Cari Nama, ID Menu, atau ID Kantin..." value="" required>
-                    <button type="submit" class="btn-orange">Cari Menu</button>
+                    <input type="text"
+                        name="query"
+                        placeholder="Cari Nama, ID Menu, atau ID Kantin..."
+                        required>
+                    <button type="submit" class="btn-orange">
+                        Cari Menu
+                    </button>
                 </form>
-                <p>Pantau dan kelola inventaris produk secara real-time.</p>
+                <p>
+                    Pantau dan kelola inventaris produk secara real-time.
+                </p>
             </div>
-            <!-- <button class="btn-add"><span>+</span> Cari Produk</button> -->
         </div>
+
+        <!-- STATS -->
 
         <div class="stats-grid">
             <div class="stat-card">
@@ -394,6 +567,7 @@
                     <h2>12</h2>
                 </div>
             </div>
+
             <div class="stat-card">
                 <div class="icon-box icon-active">✅</div>
                 <div class="stat-info">
@@ -403,85 +577,73 @@
             </div>
         </div>
 
+        <!-- DATA CARD -->
+
+
+
         <div class="data-card">
+            <!-- TOOLBAR -->
             <div class="toolbar">
-                <input type="text" class="search-input" placeholder="Cari nama produk atau kategori...">
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn-page">📊 Filter</button>
-                    <button class="btn-page">📥 Ekspor</button>
+                <p>Daftar menu</p>
+                <div class="toolbar-buttons">
+                    <a href="menulkp.php" class="btn-page"> Lihat Semua</a>
                 </div>
             </div>
 
-            <div class="grid-header">
-                <div>Produk</div>
-                <div>Kategori</div>
-                <div>Harga</div>
-                <div>Stok</div>
-                <div>Status</div>
-                <div style="text-align: right;">Aksi</div>
+            <div class="grid-wrapper">
+                <div class="grid-header">
+                    <div>Produk</div>
+                    <div>Kategori</div>
+                    <div>Harga</div>
+                    <div>Stok</div>
+                    <div>Status</div>
+                    <div style="text-align: right;">Aksi</div>
+                </div>
+                <?php while ($menu = $query->fetch_assoc()): ?>
+                    <!-- ROW 1 -->
+                    <div class="grid-row">
+                        <div class="product-info">
+                            <a href="../../source/gambar_menu/ <?= $menu['FOTO_MENU'] ?>" alt="foto" class="img-placeholder"></a>
+                            
+                            <strong><?= $menu['NAMA_MENU'] ?></strong>
+                        </div>
+                        <div><?= $menu['KATEGORI'] ?></div>
+                        <div><?= $menu['HARGA'] ?></div>
+                        <div>
+                            <span class="badge badge-orange">
+                             <?= $menu['STOK'] ?> Tersisa
+                            </span>
+                        </div>
+                        <div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="actions">
+                            📝 🗑️
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            
             </div>
-
-            <div class="grid-row">
-                <div class="product-info">
-                    <div class="img-placeholder">📄</div>
-                    <strong>Kursi Ergonomis Pro</strong>
-                </div>
-                <div>Furniture</div>
-                <div>Rp 2.450.000</div>
-                <div><span class="badge badge-green">45 Tersedia</span></div>
-                <div>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="actions">📝 🗑️</div>
-            </div>
-
-            <div class="grid-row">
-                <div class="product-info">
-                    <div class="img-placeholder">📄</div>
-                    <strong>Meja Kerja Minimalis</strong>
-                </div>
-                <div>Furniture</div>
-                <div>Rp 1.800.000</div>
-                <div><span class="badge badge-orange">5 Sisa</span></div>
-                <div>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="actions">📝 🗑️</div>
-            </div>
-
-            <div class="grid-row">
-                <div class="product-info">
-                    <div class="img-placeholder">📄</div>
-                    <strong>Lampu Meja LED</strong>
-                </div>
-                <div>Elektronik</div>
-                <div>Rp 450.000</div>
-                <div><span class="badge badge-gray">0 Stok</span></div>
-                <div>
-                    <label class="switch">
-                        <input type="checkbox">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="actions">📝 🗑️</div>
-            </div>
-
+            <!-- FOOTER -->
             <div class="footer">
-                <div>Menampilkan 3 dari 1,284 produk</div>
+                <div>
+                    Menampilkan 3 dari 1,284 produk
+                </div>
                 <div class="pagination">
-                    <button class="btn-page">Sebelumnya</button>
-                    <button class="btn-page" style="background: #f1f5f9; font-weight: 600;">Berikutnya</button>
+                    <button class="btn-page">
+                        Sebelumnya
+                    </button>
+                    <button class="btn-page"
+                        style="background:#f1f5f9; font-weight:600;">
+                        Berikutnya
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-
 </body>
 
 </html>
