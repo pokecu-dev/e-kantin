@@ -177,7 +177,7 @@ if (!empty($search_user)) {
                                 <p><span class="role-badge"><?= $row['ROLE'] ?></span></p>
                                 <p style="text-align: center;">
                                     <!-- <-- Link edit mengarah ke file edit dengan membawa parameter ID -->
-                                    <a href="edit_user.php?id=<?= $row['ID'] ?>" class="btn-edit">EDIT</a>
+                                    <a href="edituser.php?id=<?= $row['ID'] ?>" class="btn-edit">EDIT</a>
                                 </p>
                             </div>
                         <?php endforeach; ?>

@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../include/koneksi.php";
+// require_once __DIR__ . "/../include/session/loginCheck.php";
 
 if ($conn->error) {
     echo $conn->connect_error;
@@ -13,7 +14,6 @@ $query = $conn->query($sql);
 
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -448,6 +448,7 @@ body.modal-open {
             <a href="./addPenjual.php" class="btn-action">Tambah Penjual</a>
         </section>
 
+
         <!-- STATS -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -455,6 +456,7 @@ body.modal-open {
                 <div class="stat-info">
                     <span>TOTAL PEMBELI</span>
                     <h2>1,284</h2>
+
                 </div>
             </div>
             <div class="stat-card">

@@ -101,17 +101,26 @@
             $safeId = (int)$id;
 
             $sql = match($target){
-                UploadTarget::PROFILE => "UPDATE users SET FOTO_USERS = '$filename' WHERE ID=$safeId",
-                UploadTarget::KANTIN => "UPDATE list_kantin SET FOTO_KANTIN = '$filename' WHERE ID=$safeId",
-                UploadTarget::MENU => "UPDATE tb_menu SET FOTO_MENU = '$filename' WHERE ID_MENU=$safeId",
+                UploadTarget::PROFILE => "UPDATE users SET FOTO_USERS = ? WHERE ID=?",
+                UploadTarget::KANTIN => "UPDATE list_kantin SET FOTO_KANTIN = ? WHERE ID=?",
+                UploadTarget::MENU => "UPDATE tb_menu SET FOTO_MENU = ? WHERE ID_MENU=?",
             };
 
-            $query = $this->db->query($sql);
 
-            if (!$query) {
-                error_log("Database Error: " . $this->db->error);
+            // $query = $this->db->query($sql);
+            $stmt = $this->db->prepare($sql);
+            $stmt->bind_param("si",$filename,$safeId);
+            
+
+
+            if (!$stmt->execute()) {
+                $errorMsg = $stmt->error;
+                $stmt->close();
+                
+                error_log("Database Error: " . $errorMsg);
                 throw new Exception("Gagal mengupdate database.");
             }
+            $stmt->close();
             
 
         }

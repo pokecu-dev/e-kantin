@@ -30,7 +30,8 @@
                 $nama_lengkap,
                 $no_tlp,
                 $email,
-                "PENJUAL"
+                "PENJUAL",
+                '1'
             );
             if($hasil){
                 echo json_encode([

@@ -210,17 +210,14 @@
     </main>
 
     <script>
-        
-
         document.getElementById('form_login').onsubmit = async (event) => {
 
             event.preventDefault();
             const notif = document.getElementById("notif");
             const form_data = new FormData(event.target);
-            // const notiftes = document.getElementById('notiftes');
+            const notiftes = document.getElementById('notiftes');
 
             try {
-                // notiftes.innerText = 'woi'
 
                 const respon = await fetch('auth.php', {
                     method: 'POST',
@@ -246,7 +243,8 @@
                 }
 
 
-            } catch (error) {
+            }
+            catch (error) {
                 notif.innerText = "error" + error.message;
             }
 

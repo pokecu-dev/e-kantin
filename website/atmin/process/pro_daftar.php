@@ -26,7 +26,8 @@
                 $nama_lengkap,
                 $no_tlp,
                 $email,
-                "MURID"
+                "MURID",
+                '1'
                 );
 
             if($hasil){

@@ -1,39 +1,30 @@
 <?php
-    /*
     session_start();
-    if(!isset($_SESSION['status']) || $_SESSION['status'] != 'success'){
-        // echo $_SESSION['status'];
-        header("location: ../login.php");
-        exit();
-    }
+//     if(!isset($_SESSION['status']) || $_SESSION['status'] != 'success'){
+//         // echo $_SESSION['status'];
+//         header("location: ../login.php");
+//         exit();
+//     }
 
 
+// session_start();
+// if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
+//     // echo $_SESSION['status'];
+//     header("location: ../login.php");
+//     exit();
+// }
 
-
-
-session_start();
-if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
-    // echo $_SESSION['status'];
-    header("location: ../login.php");
-    exit();
-}
-
-
-    echo ' sebagai pembeli';
-*/
+//     echo ' sebagai pembeli';
 
 // $nama = $_SESSION['nama_lengkap'];
 
 // echo $nama . '<br> <br>';
 
-
 // echo ' sebagai pembeli';
+
+    require_once '../include/koneksi.php'; 
 ?>
 
-
-<?php 
-require_once '../include/koneksi.php'; 
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -253,6 +244,12 @@ require_once '../include/koneksi.php';
             margin: 10px 0 5px 0;
         }
 
+        .menu-link{
+            text-decoration:none;
+            color:inherit;
+            display:block;
+        }
+
         .add-btn {
             text-decoration: none;
             display: flex;
@@ -283,17 +280,17 @@ require_once '../include/koneksi.php';
 </head>
 <body>
     <div class="logo-mobile">
-        <img src="../../source/website1/icon/logo1.svg" alt="KantinKita">
+            <img src="../../source/icon/logo1.svg" alt="KantinKita">
+        </div>
+
+        <div class="logo-desktop">
+            <img src="../../source/icon/logo1.svg" alt="KantinKita">
+        </div>
     </div>
 
-    <div class="logo-desktop">
-        <img src="../../source/website1/icon/logo1.svg" alt="KantinKita">
-    </div>
-
-    <!-- --------/LOGO------------ -->
     <div class="top-nav">
         <nav class="menu" >
-            <a href="penjual.php">
+            <a href="pembeli.php">
                 <img src="../../source/icon/home2.svg" alt=" home"> <span class="nav-teks">Beranda</span>
             </a>
             <a href="Keranjang.php">
@@ -346,14 +343,36 @@ require_once '../include/koneksi.php';
             while ($row = mysqli_fetch_assoc($result_menu)): 
             ?>
                 <div class="child">
-                   <img src="/source/gambar_menu/<?php echo $row['FOTO_MENU']; ?>">
+                   <a href="detail_menu.php?id=<?php echo $row['ID_MENU']; ?>" class="menu-link">
+
+                    <img src="/source/gambar_menu/<?php echo $row['FOTO_MENU']; ?>">
+
                     <h3><?php echo $row['NAMA_MENU']; ?></h3>
-                    <div class="rating">5,5 ★★★</div>
-                    
-                    <p class="harga">Rp <?php echo number_format($row['HARGA'], 0, ',', '.'); ?></p>
-                    
-                   <a href="detail_menu.php?id=<?php echo $row['ID_MENU']; ?>" class="add-btn">+</a>
-                </div>
+
+                    <div class="rating">★ 5.0</div>
+
+                    <p class="harga">
+                        Rp <?php echo number_format($row['HARGA'],0,',','.'); ?>
+                    </p>
+
+                </a>
+                <form action="keranjang.php" method="POST">
+
+                    <input type="hidden"
+                    name="id_menu"
+                    value="<?php echo $row['ID_MENU']; ?>">
+
+                    <input type="hidden"
+                    name="qty"
+                    value="1">
+
+                    <button type="submit"
+                    name="add_to_cart"
+                    class="add-btn">+</button>
+
+                </form>
+
+            </div>
             <?php endwhile; ?>
         </div>
         

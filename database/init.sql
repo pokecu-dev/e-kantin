@@ -44,6 +44,36 @@ INSERT INTO `detail_menu_kantin` VALUES (1,1,'nasi goreng mawut',6000),(2,1,'bak
 UNLOCK TABLES;
 
 --
+-- Table structure for table `keranjang`
+--
+
+DROP TABLE IF EXISTS `keranjang`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `keranjang` (
+  `id_keranjang` int NOT NULL AUTO_INCREMENT,
+  `id_user` int NOT NULL,
+  `id_menu` int NOT NULL,
+  `qty` int NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id_keranjang`),
+  UNIQUE KEY `id_user` (`id_user`,`id_menu`),
+  KEY `id_menu` (`id_menu`),
+  CONSTRAINT `keranjang_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`ID`),
+  CONSTRAINT `keranjang_ibfk_2` FOREIGN KEY (`id_menu`) REFERENCES `tb_menu` (`ID_MENU`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `keranjang`
+--
+
+LOCK TABLES `keranjang` WRITE;
+/*!40000 ALTER TABLE `keranjang` DISABLE KEYS */;
+INSERT INTO `keranjang` VALUES (35,11,8,1),(36,11,1,4),(42,12,1,6),(43,12,2,2);
+/*!40000 ALTER TABLE `keranjang` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `list_kantin`
 --
 
@@ -95,7 +125,7 @@ CREATE TABLE `tb_menu` (
 
 LOCK TABLES `tb_menu` WRITE;
 /*!40000 ALTER TABLE `tb_menu` DISABLE KEYS */;
-INSERT INTO `tb_menu` VALUES (1,1,'Nasi Ayam Bakar','8000','makanan',20,'tersedia','ayambakar.jpg','Ayam bakar adalah hidangan khas Indonesia berupa daging ayam yang dimarinasi dengan rempah-rempah (seperti kunyit, bawang putih, kemiri), kemudian dipanggang di atas bara arang atau teflon hingga bumbu meresap ke dalam daging. Karakteristik utamanya adalah aroma asap (smokey) yang kuat, kulit yang kecoklatan, dan tekstur daging yang lembut.'),(2,1,'Chocolatos Drink','5000','minuman',10,'tersedia','chocolatos.jpg','Chocolatos Drink adalah minuman cokelat bubuk instan yang diproduksi oleh Garudafood, yang menonjolkan cita rasa cokelat Italia yang intens, creamy, dan premium. Minuman ini populer karena rasanya yang gurih-manis, tekstur kental, dan kemudahan penyajian (bisa panas maupun dingin). '),(3,1,'Risol Mayo','3000','snack',20,'tersedia','risolmayo.jpg','Risol mayo adalah camilan gurih kekinian berupa kulit dadar tipis renyah berlapis tepung panir, diisi daging asap (smoked beef), telur rebus, keju, dan mayones yang melimpah. Teksturnya renyah di luar, namun lembut dan lumer (creamy) di dalam. Umumnya dijual sebagai snack, risol mayo sering dideskripsikan sebagai \"lumer\", \"gurih\", dan \"krispi\".'),(4,2,'Nasi Goreng','8000','makanan',20,'tersedia','nasigoreng.jpg','Nasi goreng adalah hidangan khas Indonesia berupa nasi yang digoreng dalam minyak/margarin, dicampur bumbu kaya rempah (bawang, kecap manis, terasi). Makanan ini fleksibel dengan topping telur, ayam, atau seafood. Populer karena rasa gurih-manis yang khas, nikmat, dan sering disajikan hangat dengan kerupuk. \r\n'),(5,2,'Drink Beng Beng','5000','minuman',10,'tersedia','dringbeng.jpg','Drink Beng Beng adalah minuman cokelat instan yang mengadaptasi rasa ikonik dari snack bar Beng Beng, memadukan cokelat, susu, krimer, dan ekstrak malt yang menghasilkan rasa creamy, manis, dan gurih. Minuman ini populer disajikan dalam keadaan dingin (es) maupun panas, serta sering kali diperkaya dengan tambahan topping seperti susu evaporasi untuk meningkatkan tekstur dan rasa. '),(6,2,'Risol Solo','2000','snack',20,'tersedia','risolo.jpg','Risol Solo (Sosis Solo) adalah jajanan tradisional khas Surakarta yang berupa dadar gulung tipis berbahan telur dan tepung, berisi suwiran daging ayam atau sapi berbumbu gurih. Berbeda dengan risoles biasa yang menggunakan tepung panir, Sosis Solo umumnya dicelupkan ke dalam kocokan telur sebelum digoreng hingga kuning keemasan, menghasilkan kulit yang lembut di dalam namun sedikit renyah di luar. '),(7,3,'Nasi Sate Ayam','8000','makanan',20,'tersedia','sateayam.jpg','Sate ayam adalah hidangan khas Indonesia berupa potongan daging ayam yang ditusuk, dipanggang di atas bara arang hingga matang sempurna, dan disajikan dengan bumbu kacang atau kecap yang gurih-manis. Deskripsi ini menekankan pada aroma smoky (asap), kelembutan daging, dan kekayaan rempah, sering dipasangkan dengan lontong/nasi.'),(8,3,'Martabak Manis','5000','snack',20,'tersedia','martabakmanis.jpg','Martabak manis (dikenal juga sebagai terang bulan) adalah kue dadar tebal khas Indonesia yang dipanggang dengan adonan tepung terigu, telur, dan gula. Karakteristik utamanya adalah permukaan bergelembung (bersarang/ fluffy) dengan tekstur lembut, tebal, dan bagian bawah yang renyah setelah diolesi mentega.'),(9,3,'Es Buah','5000','minuman',10,'tersedia','esbuah.jpg','Es buah adalah hidangan penutup atau minuman segar khas Indonesia yang terdiri dari campuran berbagai potongan buah-buahan segar, disajikan dengan kuah manis (sirup/susu), dan es serut atau es batu');
+INSERT INTO `tb_menu` VALUES (1,1,'Nasi Ayam Bakar','8000','makanan',22,'tersedia','ayambakar.jpg','Ayam bakar adalah hidangan khas Indonesia berupa daging ayam yang dimarinasi dengan rempah-rempah (seperti kunyit, bawang putih, kemiri), kemudian dipanggang di atas bara arang atau teflon hingga bumbu meresap ke dalam daging. Karakteristik utamanya adalah aroma asap (smokey) yang kuat, kulit yang kecoklatan, dan tekstur daging yang lembut.'),(2,1,'Chocolatos Drink','5000','minuman',10,'tersedia','chocolatos.jpg','Chocolatos Drink adalah minuman cokelat bubuk instan yang diproduksi oleh Garudafood, yang menonjolkan cita rasa cokelat Italia yang intens, creamy, dan premium. Minuman ini populer karena rasanya yang gurih-manis, tekstur kental, dan kemudahan penyajian (bisa panas maupun dingin). '),(3,1,'Risol Mayo','3000','snack',20,'tersedia','risolmayo.jpg','Risol mayo adalah camilan gurih kekinian berupa kulit dadar tipis renyah berlapis tepung panir, diisi daging asap (smoked beef), telur rebus, keju, dan mayones yang melimpah. Teksturnya renyah di luar, namun lembut dan lumer (creamy) di dalam. Umumnya dijual sebagai snack, risol mayo sering dideskripsikan sebagai \"lumer\", \"gurih\", dan \"krispi\".'),(4,2,'Nasi Goreng','8000','makanan',20,'tersedia','nasigoreng.jpg','Nasi goreng adalah hidangan khas Indonesia berupa nasi yang digoreng dalam minyak/margarin, dicampur bumbu kaya rempah (bawang, kecap manis, terasi). Makanan ini fleksibel dengan topping telur, ayam, atau seafood. Populer karena rasa gurih-manis yang khas, nikmat, dan sering disajikan hangat dengan kerupuk. \r\n'),(5,2,'Drink Beng Beng','5000','minuman',10,'tersedia','dringbeng.jpg','Drink Beng Beng adalah minuman cokelat instan yang mengadaptasi rasa ikonik dari snack bar Beng Beng, memadukan cokelat, susu, krimer, dan ekstrak malt yang menghasilkan rasa creamy, manis, dan gurih. Minuman ini populer disajikan dalam keadaan dingin (es) maupun panas, serta sering kali diperkaya dengan tambahan topping seperti susu evaporasi untuk meningkatkan tekstur dan rasa. '),(6,2,'Risol Solo','2000','snack',20,'tersedia','risolo.jpg','Risol Solo (Sosis Solo) adalah jajanan tradisional khas Surakarta yang berupa dadar gulung tipis berbahan telur dan tepung, berisi suwiran daging ayam atau sapi berbumbu gurih. Berbeda dengan risoles biasa yang menggunakan tepung panir, Sosis Solo umumnya dicelupkan ke dalam kocokan telur sebelum digoreng hingga kuning keemasan, menghasilkan kulit yang lembut di dalam namun sedikit renyah di luar. '),(7,3,'Nasi Sate Ayam','8000','makanan',20,'tersedia','sateayam.jpg','Sate ayam adalah hidangan khas Indonesia berupa potongan daging ayam yang ditusuk, dipanggang di atas bara arang hingga matang sempurna, dan disajikan dengan bumbu kacang atau kecap yang gurih-manis. Deskripsi ini menekankan pada aroma smoky (asap), kelembutan daging, dan kekayaan rempah, sering dipasangkan dengan lontong/nasi.'),(8,3,'Martabak Manis','5000','snack',20,'tersedia','martabakmanis.jpg','Martabak manis (dikenal juga sebagai terang bulan) adalah kue dadar tebal khas Indonesia yang dipanggang dengan adonan tepung terigu, telur, dan gula. Karakteristik utamanya adalah permukaan bergelembung (bersarang/ fluffy) dengan tekstur lembut, tebal, dan bagian bawah yang renyah setelah diolesi mentega.'),(9,3,'Es Buah','5000','minuman',10,'tersedia','esbuah.jpg','Es buah adalah hidangan penutup atau minuman segar khas Indonesia yang terdiri dari campuran berbagai potongan buah-buahan segar, disajikan dengan kuah manis (sirup/susu), dan es serut atau es batu');
 /*!40000 ALTER TABLE `tb_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -145,6 +175,7 @@ CREATE TABLE `users` (
   `EMAIL` varchar(100) DEFAULT NULL,
   `ROLE` enum('PEMBELI','PENJUAL','ADMIN') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `FOTO_USERS` varchar(100) DEFAULT NULL,
+  `STATUS` enum('1','0') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '1',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `USERNAME` (`USERNAME`),
   UNIQUE KEY `NO_TLP` (`NO_TLP`),
@@ -158,7 +189,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'adin','SIGMA_COY','MUHAMMAD SAIFUDDIN','+62 81235807937','adin@dnproject.my.id','PEMBELI','6bee6143c5f90bf6e241e21b79cc2feb.jpeg'),(2,'penjual1','ADMIN!@#','penjual santoso eak','+62 123654789','PENJUAL@gmail.com','PENJUAL',NULL),(3,'mulyono','mobil esemka','bapak mulyono','+62 097384324736','ratapansolo@solo.com','PEMBELI',NULL),(4,'atemin_nyata','ini atemin ygy','pokok admin','+62 097384434736','adminUntukNyata@gmail.com','ADMIN',NULL),(5,'EBADRUS','GURU PPLG','PAK BADRUS','+62 097344434736','guru@ebadrus.com','PEMBELI',NULL),(6,'tes',NULL,NULL,NULL,NULL,'PEMBELI',NULL),(7,'tuwes','tuwes123','buwat tuwes','+60 1234567890','tuwes@tuwes.com','PEMBELI',NULL),(8,'bagus','bagus14','prasetiyo','+62 87521098','vinas@gmail.com','PEMBELI',NULL),(9,'murid','murid1','murid aseli','+62 765432189','murid@gmail.com','PEMBELI',NULL),(11,'murid1','$2y$10$6Z/AiyeIOEsVwEzERnX/SepRZ0XCD8TPQTy51pTCjHNLWgJeq/9UG','murid aselioi','+62 7654321892','murid1@gmail.com','PEMBELI',NULL),(12,'siswa','$2y$10$J6p0a3AulK3YR/GavIjrSOY3r0C6391uLO13wfsR9WMS4H6TIl18K','siswa','+62 7687678678','siswa@gmail.com','PEMBELI',NULL),(13,'admin','$2y$10$Jr4drTCswbJ6U3QtLGUY5.YbuH9.be2FEvWon.kQ307/8gx8rPlNu','admin nyata banget coy versi password hash','+62 56789765','atemin@gmail.com','ADMIN',NULL),(15,'penjual','$2y$10$o6bPhZvsmtDh6Jo.QcrTOOLBKEoqWvKCHDLd77.XxWtvVvo2RJYEC','penjual nyata banget tipe pass hash','+62 456789876','wpenjual@gmail.com','PENJUAL',NULL);
+INSERT INTO `users` VALUES (1,'adin','$2y$10$Sr8PkbInbzNv6zb27qWPmuHUPWkHDa.7mdNxiPeDLdDfVwV2MhPlu','MUHAMMAD SAIFUDDIN','+62 81235807937','adin@dnproject.my.id','PEMBELI','6bee6143c5f90bf6e241e21b79cc2feb.jpeg','1'),(2,'penjual1','ADMIN!@#','penjual santoso eak','+62 123654789','PENJUAL@gmail.com','PENJUAL',NULL,'1'),(3,'mulyono','mobil esemka','bapak mulyono','+62 097384324736','ratapansolo@solo.com','PEMBELI',NULL,'1'),(4,'atemin_nyata','ini atemin ygy','pokok admin','+62 097384434736','adminUntukNyata@gmail.com','ADMIN',NULL,'1'),(5,'EBADRUS','GURU PPLG','PAK BADRUS','+62 097344434736','guru@ebadrus.com','PEMBELI',NULL,'1'),(6,'tes',NULL,NULL,NULL,NULL,'PEMBELI',NULL,'1'),(7,'tuwes','tuwes123','buwat tuwes','+60 1234567890','tuwes@tuwes.com','PEMBELI',NULL,'1'),(8,'bagus','bagus14','prasetiyo','+62 87521098','vinas@gmail.com','PEMBELI',NULL,'1'),(9,'murid','murid1','murid aseli','+62 765432189','murid@gmail.com','PEMBELI',NULL,'1'),(11,'murid1','$2y$10$6Z/AiyeIOEsVwEzERnX/SepRZ0XCD8TPQTy51pTCjHNLWgJeq/9UG','murid aselioi','+62 7654321892','murid1@gmail.com','PEMBELI',NULL,'1'),(12,'siswa','$2y$10$J6p0a3AulK3YR/GavIjrSOY3r0C6391uLO13wfsR9WMS4H6TIl18K','siswa','+62 7687678678','siswa@gmail.com','PEMBELI',NULL,'1'),(13,'admin','$2y$10$Jr4drTCswbJ6U3QtLGUY5.YbuH9.be2FEvWon.kQ307/8gx8rPlNu','admin nyata banget coy versi password hash','+62 56789765','atemin@gmail.com','ADMIN',NULL,'1'),(15,'penjual','$2y$10$WBeInwwZtc7Vv5WCUQPtauWHIl/knlhdD.AlbvA5ua/.TY4rF3k1W','penjual nyata banget tipe pass hash','+62 456789876','wpenjual@gmail.com','PENJUAL',NULL,'1');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -171,4 +202,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-13  5:47:30
+-- Dump completed on 2026-05-16 14:22:24
