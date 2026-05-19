@@ -70,7 +70,6 @@ $query = mysqli_query($conn, "
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* Perbaikan: Mengubah .body menjadi body agar style css diterapkan global */
         body {
             font-family: 'Poppins', sans-serif;
             background: #f5f5f5;
@@ -80,9 +79,10 @@ $query = mysqli_query($conn, "
         }
 
         .container {
-            margin: 120px auto 40px;
-            max-width: 1200px;
-            padding: 0 15px;
+           width: 95%;
+            max-width: 1100px;
+            margin: 0 auto 40px;
+            padding: 30px;
         }
 
         .back {
@@ -231,6 +231,25 @@ $query = mysqli_query($conn, "
             }
         }
 
+        @media (min-width: 769px){
+
+            .checkout-box{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .grand-total-container{
+                margin-top: 0 !important;
+            }
+
+            .checkout-btn{
+                width: 250px;
+                margin-top: 0;
+            }
+
+        }
+
         .btn-hapus img {
             width: 22px;
             height: 22px;
@@ -245,14 +264,13 @@ $query = mysqli_query($conn, "
             top: 15px;
             right: 15px;
         }
+
     </style>
 </head>
 <body>
-
 <div class="logo-mobile">
     <img src="../../source/icon/logo1.svg" alt="KantinKita">
 </div>
-
 <div class="logo-desktop">
     <img src="../../source/icon/logo1.svg" alt="KantinKita">
 </div>
@@ -265,6 +283,9 @@ $query = mysqli_query($conn, "
         <a href="keranjang.php">
             <img src="../../source/icon/pesanan2.svg" alt=""><span class="nav-teks">Keranjang</span>
         </a>
+        <a href="Pesanan.php">
+            <img src="../../source/icon/proses.svg" alt=""><span class="nav-teks">Pesanan</span>
+            </a>
         <a href="profil.php">
             <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
         </a>
@@ -343,11 +364,8 @@ $query = mysqli_query($conn, "
                     Total Belanja: <span id="total-belanja">Rp 0</span>
                 </div>
                 
-                <h3>Total Belanja</h3>
-                <h2>
-                    Rp <?php echo number_format($total, 0, ',', '.'); ?>
-                </h2>
                 <button class="checkout-btn">
+                    <a href="beli.php" class="checkout" </a>
                     Checkout Sekarang
                 </button>
             </div>
@@ -432,9 +450,10 @@ $query = mysqli_query($conn, "
 
         let formatRibuan = grandtotal.toLocaleString('id-ID');
 
+        if (totalHarga !== null) {
         totalHarga.innerText = `Rp ${formatRibuan}`;
 
-
+        }
     }
 
 </script>

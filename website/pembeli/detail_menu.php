@@ -316,7 +316,7 @@ if (!$data) {
             }
         }
     </style>
-</head> 
+</head>  
 <body>  
 
 <div class="logo-mobile">
@@ -335,6 +335,9 @@ if (!$data) {
         <a href="keranjang.php">
             <img src="../../source/icon/pesanan1.svg" alt=""><span class="nav-teks">Keranjang</span>
         </a>
+        <a href="Pesanan.php">
+            <img src="../../source/icon/proses.svg" alt=""><span class="nav-teks">Pesanan</span>
+            </a>
         <a href="profil.php">
             <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
         </a>
@@ -446,7 +449,7 @@ if (!$data) {
             const data = await response.json();
             console.log(2);
             if(data.status === 'success'){
-                window.location.href = './keranjang.php'; 
+                window.location.href = './beli.php'; 
             }
             console.log(data.message);
 

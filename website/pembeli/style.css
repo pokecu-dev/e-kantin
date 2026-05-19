@@ -32,8 +32,8 @@ body{
 .top-nav {
     position: fixed;
     top: 0;
-    width: 100%;
-    height: 60px;
+    width: 24px !important;
+    height: 24px !important;
     background: #FFFCFA;
     display: flex;
     align-items: center;
@@ -62,7 +62,6 @@ body{
     /* font-weight: 400px; */
 
 }
-
 .top-nav a {
     padding: 10px;
     font-size: 22px;
@@ -149,7 +148,6 @@ body{
     .top-nav span {
         display: none;
 
-
     }
 
 }
@@ -217,6 +215,8 @@ body{
     }
     
     .menu a img {
-        width: 24px; 
+        width: 24px !important;
+        height: 24px !important;
+        object-fit: contain !important;
     }
 }
