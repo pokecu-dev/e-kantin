@@ -36,19 +36,6 @@ if (!$data) {
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background-color: #f5f5f5;
-            color: #333;
-            padding: 24px;
-        }
-
         /* ================= NAVBAR ================= */
 
         /* ================= HERO ================= */
@@ -294,17 +281,18 @@ if (!$data) {
 
             <ul class="nav-links">
                 <li><a href="penjual.php">Beranda</a></li>
+                <li><a href="pesanan.php">Pesanan</a></li>
                 <li><a href="edit1.php">Produk</a></li>
-                <li><a href="profil.php"  class="active">Profil</a></li>
+                <li><a href="profil.php" class="active">Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
     </nav>
-  
+
 
     <!-- ================= HERO ================= -->
 
-    <section class="hero"></section>
+    <section class="hero" ></section>
 
     <!-- ================= CONTENT ================= -->
 
@@ -313,10 +301,10 @@ if (!$data) {
         <!-- PROFILE CARD -->
 
         <div class="profile-card">
-<div class="profile-image">
-    <?php $foto = "../../source/fotopengguna/" . $data['FOTO_USERS']; ?>
-    <img src="<?php echo $foto; ?>" class="profile-pic" alt="User Avatar">
-</div>
+            <div class="profile-image">
+                <?php $foto = "../../source/fotopengguna/" . $data['FOTO_USERS']; ?>
+                <img src="<?php echo $foto; ?>" class="profile-pic" alt="User Avatar">
+            </div>
             <h2><?php echo $data['NAMA_LENGKAP']; ?></h2>
             <p>@<?php echo $data['USERNAME']; ?></p>
 

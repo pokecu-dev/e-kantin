@@ -19,20 +19,16 @@ $id_login = $_SESSION['id_user'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KantinKita - Dashboard Penjual</title>
-
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Profile Kantin</title>
     <link rel="stylesheet" href="style.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* --- Base Styles --- */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-                font-family: 'Poppins', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         /* Chrome, Edge, Safari */
@@ -46,10 +42,10 @@ $id_login = $_SESSION['id_user'];
             scrollbar-width: none;
         }
 
-       body {
+        body {
             background: #f5f5f5;
             color: #333;
-        
+
         }
 
         /* --- Layout Container --- */
@@ -189,7 +185,6 @@ $id_login = $_SESSION['id_user'];
             gap: 20px;
             padding: 20px;
             max-width: 1500px;
-
             box-sizing: border-box;
             max-width: 100%;
         }
@@ -332,7 +327,7 @@ $id_login = $_SESSION['id_user'];
 <body>
 
     <!-- Logo Section -->
-   <nav class="navbar">
+    <nav class="navbar">
         <div class="nav-container">
             <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
 
@@ -346,13 +341,14 @@ $id_login = $_SESSION['id_user'];
 
             <ul class="nav-links">
                 <li><a href="penjual.php">Beranda</a></li>
-                <li><a href="edit1.php"  class="active">Produk</a></li>
-                <li><a href="profil.php" >Profil</a></li>
+                <li><a href="pesanan.php">Pesanan</a></li>
+                <li><a href="edit1.php" class="active">Produk</a></li>
+                <li><a href="profil.php">Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
     </nav>
-  
+
     <!-- <div class="container">
         <div class="kategori">
             <button class="kat-btn">
