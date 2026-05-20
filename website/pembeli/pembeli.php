@@ -47,6 +47,7 @@
 
         .search-box {
             width: 100%;
+            margin: 40px;
             position: relative;
             padding: 0;
         }
@@ -68,6 +69,7 @@
         .iconsch {
             width: 80px;
             height: 50px;
+            
         }
 
         .btn-search {
@@ -281,32 +283,28 @@
     </style>
 </head>
 <body>
-    <div class="logo-mobile">
-            <img src="../../source/icon/logo1.svg" alt="KantinKita">
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
+
+            <!-- Burger Menu (Mobile Only) -->
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+
+            <ul class="nav-links">
+                <li><a href="pembeli.php" class="active">Beranda</a></li>
+                <li><a href="keranjang.php">Akun</a></li>
+                <li><a href="pesanan.php">Produk</a></li>
+                <li><a href="profil.php">Profil</a></li>
+                <li><a href="./../logout.php">Log Out</a></li>
+            </ul>
         </div>
-
-        <div class="logo-desktop">
-            <img src="../../source/icon/logo1.svg" alt="KantinKita">
-        </div>
-    </div>
-
-    <div class="top-nav">
-        <nav class="menu" >
-            <a href="pembeli.php">
-                <img src="../../source/icon/home2.svg" alt=" home"> <span class="nav-teks">Beranda</span>
-            </a>
-            <a href="Keranjang.php">
-                <img src="../../source/icon/pesanan1.svg" alt=""><span class="nav-teks">Keranjang</span>
-            </a>
-            <a href="Pesanan.php">
-                <img src="../../source/icon/proses.svg" alt=""><span class="nav-teks">Pesanan</span>
-            </a>
-            <a href="profil.php">
-                <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
-            </a>
-        </nav>
-
-    </div>
+    </nav>
     <div class="container">
 
       <h1 class="teks">Cari Menu <b>Yang Kamu Inginkan!</b></h1>

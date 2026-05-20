@@ -267,6 +267,49 @@ $total_all = array_sum(array_column($grouped, 'total'));
         }
 
         .kr-btn-checkout:hover { opacity: 0.9; }
+        .kr-total-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            border: 1px solid #f0f0f0;
+        }
+        .kr-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .kr-total-info p {
+            margin: 0 0 4px;
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .kr-total-info h4 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: #F47B20;
+        }
+        .kr-btn-checkout-all {
+            padding: 14px 36px;
+            border: none;
+            border-radius: 12px;
+            background: #F47B20;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 12px rgba(244, 123, 32, 0.2);
+        }
+
 
         /* Empty State */
         .kr-empty {
@@ -312,29 +355,27 @@ $total_all = array_sum(array_column($grouped, 'total'));
 </head>
 <body>
 
-<div class="logo-mobile">
-    <img src="../../source/icon/logo1.svg" alt="KantinKita">
-</div>
-<div class="logo-desktop">
-    <img src="../../source/icon/logo1.svg" alt="KantinKita">
-</div>
+<nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
 
-<div class="top-nav">
-    <nav class="menu">
-        <a href="pembeli.php">
-            <img src="../../source/icon/home1.svg" alt="home">
-            <span class="nav-teks">Beranda</span>
-        </a>
-        <a href="keranjang.php">
-            <img src="../../source/icon/pesanan2.svg" alt="">
-            <span class="nav-teks">Keranjang</span>
-        </a>
-        <a href="profil.php">
-            <img src="../../source/icon/user1.svg" alt="">
-            <span class="nav-teks">Profil</span>
-        </a>
+            <!-- Burger Menu (Mobile Only) -->
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+
+            <ul class="nav-links">
+                <li><a href="pembeli.php" class="active">Beranda</a></li>
+                <li><a href="keranjang.php">Keranjang</a></li>
+                <li><a href="pesanan.php">Produk</a></li>
+                <li><a href="profil.php">Profil</a></li>
+                <li><a href="./../logout.php">Log Out</a></li>
+            </ul>
+        </div>
     </nav>
-</div>
 
 <div class="kr-wrap">
 
@@ -393,14 +434,22 @@ $total_all = array_sum(array_column($grouped, 'total'));
                 <p class="kr-kantin-total">
                     Total: <span>Rp <?= number_format($kantin['total'], 0, ',', '.') ?></span>
                 </p>
-                <a href="checkout.php?kantin=<?= $kantin['kantin_id'] ?>" class="kr-btn-checkout">
-                    Checkout 🛒
-                </a>
             </div>
 
         </div>
 
         <?php endforeach; ?>
+            <div class="kr-total-card">
+                <div class="kr-total-row">
+                    <div class="kr-total-info">
+                        <p>Total Pesanan</p>
+                        <h4>Rp <?= number_format($total_all, 0, ',', '.') ?></h4>
+                    </div>
+                    <a href="checkout.php?kantin=<?= $kantin['kantin_id'] ?>" class="kr-btn-checkout">
+                    Checkout 
+                </a>
+                </div>
+            </div>
 
     <?php else: ?>
 
