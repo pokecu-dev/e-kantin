@@ -32,6 +32,7 @@ $id_login = $_SESSION['id_user'];
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+                font-family: 'Poppins', sans-serif;
         }
 
         /* Chrome, Edge, Safari */
@@ -45,10 +46,10 @@ $id_login = $_SESSION['id_user'];
             scrollbar-width: none;
         }
 
-        body {
-
-            font-family: 'Poppins', sans-serif;
-
+       body {
+            background: #f5f5f5;
+            color: #333;
+        
         }
 
         /* --- Layout Container --- */
@@ -56,7 +57,7 @@ $id_login = $_SESSION['id_user'];
             padding: 20px;
             width: 100%;
             max-width: 1200px;
-            margin: 40px auto 0;
+            margin: 60px auto 0;
         }
 
         .active {
@@ -331,41 +332,27 @@ $id_login = $_SESSION['id_user'];
 <body>
 
     <!-- Logo Section -->
-    <header>
-        <div class="logo-mobile">
-            <img src="../../source/icon/logo1.svg" alt="KantinKita">
+   <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
+
+            <!-- Burger Menu (Mobile Only) -->
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+
+            <ul class="nav-links">
+                <li><a href="penjual.php">Beranda</a></li>
+                <li><a href="edit1.php"  class="active">Produk</a></li>
+                <li><a href="profil.php" >Profil</a></li>
+                <li><a href="./../logout.php">Log Out</a></li>
+            </ul>
         </div>
-
-        <div class="logo-desktop">
-            <img src="../../source/icon/logo1.svg" alt="KantinKita">
-        </div>
-    </header>
-
-    <!-- Navigation -->
-    <div class="top-nav" style="text-align: center; margin-bottom: 0px;">
-        <nav class="menu">
-            <a href="penjual.php" style="margin: 0 5px; text-decoration: none;">
-                <img src="../../source/icon/pesanan2.svg" alt="">
-                <span style="color:#aaa;">History</span>
-            </a>
-            <a href="edit1.php" class="active" style="margin: 0 5px; text-decoration: none; color:#F47B20">
-                <img src="../../source/icon/edit1.svg" alt="">
-                <span>Edit</span>
-            </a>
-            <div class="dropdown-container">
-                <a href="profil.php" style="margin: 0 5px; text-decoration: none;">
-                    <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks" style="color:#aaa;">Profile</span>
-                </a>
-                <div class="dropdown-content">
-                    <a href="profil.php" style="color: #202a39">Profile</a>
-                    <a href="./../logout.php" style="color: #202a39">Keluar</a>
-                </div>
-            </div>
-
-        </nav>
-    </div>
-
-
+    </nav>
+  
     <!-- <div class="container">
         <div class="kategori">
             <button class="kat-btn">
@@ -382,7 +369,7 @@ $id_login = $_SESSION['id_user'];
             </button>
         </div>
     </div> -->
-    <div class="container">
+    <div class="container" style="margin-top: 60px;">
         <!-- Menu Grid -->
         <div class="parent">
 

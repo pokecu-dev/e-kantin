@@ -40,6 +40,26 @@ if (!empty($search_user)) {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Data User</title>
     <style>
+          :root {
+            --primary-orange: #f36f21;
+            --bg-gray: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --white: #ffffff;
+
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --radius: 18px;
+
+            /* GRID UTAMA - TIDAK DIUBAH SAMA SEKALI */
+            --col-username: 1fr;
+            --col-name: 1.5fr;
+            --col-phone: 1.2fr;
+            --col-email: 1.8fr;
+            --col-role: .9fr;
+            --col-action: .8fr;
+        }
+
         body {
             font-family: 'Segoe UI', sans-serif;
             background: #f0f2f5;
@@ -62,120 +82,180 @@ if (!empty($search_user)) {
             padding-bottom: 10px;
         }
 
-        .header-tabel,
-        .div1 {
-            display: grid;
-            /* 4 Kolom: kolom pertama lebih lebar (2fr), sisanya sama rata (1fr) */
-            grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1fr;
-            gap: 10px;
-            padding: 8px;
-            min-width: 700px;
-            border-bottom: 1px solid #492509;
-
-            align-items: start;
+         .search-box {
+            margin-bottom: 30px;
         }
 
-        .parent {
-            background-color: #dac8b9;
-            padding: 15px;
-            border-radius: 10px;
-
+        .search-wrapper {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: var(--radius);
+            padding: 18px;
         }
 
-        .header-tabel {
-            background: #fff5eb;
-            font-weight: bold;
-            border-radius: 5px;
-            margin-bottom: 5px;
+        .search-wrapper h2 {
+            margin-bottom: 16px;
+            font-size: 18px;
         }
 
-        p {
-            font-size: small;
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-        .div1 {
-            line-height: 1.4;
-            max-height: fit-content;
-        }
-
-        .div1 p {
-            word-break: break-word;
-            margin: 0;
-        }
-        .card2 {
-        overflow-x: auto;
-    }
-
-        tr:hover {
-            background-color: #f9f9f9;
-        }
-
-        .btn-edit {
-            background: #3498db;
-            color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .btn-edit:hover {
-            background: #2980b9;
-        }
-
-        .btn-back {
-            display: inline-block;
-            margin-bottom: 15px;
-            text-decoration: none;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .role-badge {
-            background: #e1f5fe;
-            color: #e49408;
-            padding: 3px 8px;
+        .search-form input {
+            flex: 1 1 300px;
+            min-width: 0;
+            padding: 14px 16px;
             border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
+            border: 1px solid var(--border-color);
+            outline: none;
+            transition: border-color 0.2s ease;
         }
+
+        .search-form input:focus {
+            border-color: var(--primary-orange);
+        }
+
+        .btn-orange {
+            border: none;
+            background: var(--primary-orange);
+            color: white;
+            padding: 14px 22px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-orange:hover {
+            background: #d95f14;
+        }
+  /* =====================
+           USER TABLE & GRID - RESERVED & UNTOUCHED
+        ===================== */
+        .user-table {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+
+        .user-table__header,
+        .user-table__row {
+            min-width: 1100px;
+     
+            display: grid;
+            grid-template-columns: var(--col-username) var(--col-name) var(--col-phone) var(--col-email) var(--col-role) var(--col-action);
+            gap: 16px;
+            align-items: center;
+            padding: 18px 20px;
+        }
+
+        .user-table__header {
+            background: #fafafa;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .user-table__row {
+            border-bottom: 1px solid var(--border-color);
+            transition: .2s;
+        }
+
+        .user-table__row:hover {
+            background: #f8fafc;
+        }
+
+        .user-table__cell {
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .user-table__cell strong {
+            color: var(--text-dark);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        .user-table__link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--primary-orange);
+            font-weight: 600;
+        }
+
+        /* =====================
+           MOBILE RESPONSIVE
+        ===================== */
+        @media (max-width: 768px) {
+            .container { padding: 16px; }
+            .action-bar { flex-direction: column; }
+            .btn-action { width: 100%; text-align: center; }
+            .search-wrapper { padding: 14px; }
+            .stat-card { padding: 18px; }
+        }
+
     </style>
 </head>
 
 <body>
 
     <div class="container">
-        <form action="" method="GET" class="input-group">
-            <input type="text" name="query" placeholder="Ketik Username atau ID..." value="<?= htmlspecialchars($search_user) ?>">
-            <button type="submit">Cari User</button>
-        </form>
+          <!-- SEARCH -->
+        <div class="search-box">
+            <div class="search-wrapper">
+                <form action="" method="GET" class="search-form">
+                    <input type="text" name="query" placeholder="Masukkan Username atau ID..." required>
+                    <button type="submit" class="btn-orange">Cari Sekarang</button>
+                </form>
+            </div>
+        </div>
         <h3>Hasil Pencarian: "<?= htmlspecialchars($search_user) ?>"</h3>
 
 
-        <div class="parent">
-            <div class="card2">
-                <div class="header-tabel">
-                    <p>ID</p>
-                    <p>USERNAME</p>
-                    <p>NAMA LENGKAP</p>
-                    <p>NO TLP</p>
-                    <p>EMAIL</p>
-                    <p>ROLE</p>
-                    <p>AKSI</p>
+        <        <div class="user-table">
+            <div class="table-wrapper">
+                <div class="user-table__header">
+                    <div>Username</div>
+                    <div>Nama Lengkap</div>
+                    <div>No Tlp</div>
+                    <div>Email</div>
+                    <div>Role</div>
+                    <div>Aksi</div>
                 </div>
 
-                <div class="card">
                     <?php if (count($user_results) > 0): ?>
                         <?php foreach ($user_results as $row): ?>
-                            <div class="div1">
-                                <p><?= $row['ID'] ?></td>
-                                <p><strong><?= htmlspecialchars($row['USERNAME']) ?></strong></p>
-                                <p><?= htmlspecialchars($row['NAMA_LENGKAP']) ?></p>
-                                <p><?= htmlspecialchars($row['NO_TLP']) ?></p>
-                                <p><?= htmlspecialchars($row['EMAIL']) ?></p>
-                                <p><span class="role-badge"><?= $row['ROLE'] ?></span></p>
-                                <p style="text-align: center;">
+                            <div class="user-table__row">
+                            
+                                <p class="user-table__cell"><strong><?= htmlspecialchars($row['USERNAME']) ?></strong></p>
+                                <p class="user-table__cell"><?= htmlspecialchars($row['NAMA_LENGKAP']) ?></p>
+                                <p class="user-table__cell"><?= htmlspecialchars($row['NO_TLP']) ?></p>
+                                <p class="user-table__cell"><?= htmlspecialchars($row['EMAIL']) ?></p>
+                                <p class="user-table__cell"><span class="role-badge"><?= $row['ROLE'] ?></span></p>
+                                <p style="text-align: center;" lass="user-table__cell">>
                                     <!-- <-- Link edit mengarah ke file edit dengan membawa parameter ID -->
                                     <a href="edituser.php?id=<?= $row['ID'] ?>" class="btn-edit">EDIT</a>
                                 </p>
@@ -186,7 +266,7 @@ if (!empty($search_user)) {
                             <p style="text-align:center; color:#999; padding: 30px;">Data user tidak ditemukan.</p>
                         </div>
                     <?php endif; ?>
-                </div>
+              
             </div>
         </div>
 

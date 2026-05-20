@@ -1,351 +1,153 @@
 :root {
     --bg-color: #f5f5f5;
-    --primary-color: #F47B20;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
+    --primary: #F47B20;
+    --dark: #1A1A1A;
+    --gray-text: #64748b;
     --white: #ffffff;
-
-    --shadow:
-        0 4px 12px rgba(0,0,0,0.08);
-
-    --shadow-hover:
-        0 10px 25px rgba(0,0,0,0.12);
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
-
-/* =========================
-   RESET
-========================= */
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-
-    font-family: 'Poppins', sans-serif;
-}
-
-html,
-body {
-    width: 100%;
-    overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
     background-color: var(--bg-color);
 
-    min-height: 100vh;
-
-    display: flex;
-    flex-direction: column;
-
-    color: var(--text-main);
 }
 
-/* =========================
-   LOGO DESKTOP
-========================= */
 
-.logo-desktop {
-    display: flex;
-    align-items: center;
-
-    padding: 20px 0 0 20px;
+.nav-links a {
+    text-decoration: none;
+    color: #888;
+    /* Warna abu-abu */
+    font-weight: 500;
+    transition: 0.3s;
 }
 
-.logo-desktop img {
-    width: auto;
-    height: 42px;
-    margin: 15px;
+.nav-links a.active {
+    color: var(--primary);
+
+    border-bottom: 2px solid #F47B20;
+    padding-bottom: 5px;
+}
+
+/* Navbar Utama sebagai Card */
+.navbar {
+    background: var(--white);
+    height: 80px;
+
     position: fixed;
-    margin-top: 45px;
-    z-index: 1001;
-}
-
-/* =========================
-   LOGO MOBILE
-========================= */
-
-.logo-mobile {
-    display: none;
-}
-
-.logo-mobile img {
-    width: auto;
-
-    height: clamp(40px, 6vw, 52px);
-
-    display: block;
-}
-
-/* =========================
-   NAVBAR
-========================= */
-
-.top-nav {
-    position: fixed;
-
     top: 0;
     left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    margin: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 
+    z-index: 1000;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
+}
 
-    height: 68px;
-
-    background: rgba(255,255,255,0.92);
-
-    backdrop-filter: blur(12px);
-
+.logo {
     display: flex;
     align-items: center;
-
-    z-index: 999;
-
-    box-shadow:
-        0 2px 10px rgba(0,0,0,0.06);
 }
 
-/* =========================
-   MENU
-========================= */
-
-.menu {
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-
-    margin-left: auto;
-    margin-right: 24px;
-}
-
-.menu a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 8px;
-
-    text-decoration: none;
-
-    color: #94a3b8;
-
-    padding: 10px 16px;
-
-    border-radius: 14px;
-
-    transition: 0.25s ease;
-
-    font-size: 15px;
-    font-weight: 500;
-}
-
-.menu a:hover {
-    background: #f1f5f9;
-
-    color: var(--primary-color);
-
-    transform: translateY(-1px);
-}
-
-.menu img {
-    width: 20px;
-    height: 20px;
-
+.logo img {
+    height: clamp(30px, 5vw, 40px);
+    width: auto;
     object-fit: contain;
 }
 
-.top-nav span {
-    font-size: 15px;
-    font-weight: 500;
+.nav-links {
+    display: flex;
+    list-style: none;
 }
 
-.nav-teks {
-    padding-top: 2px;
+.nav-links li {
+    margin-left: 20px;
 }
 
-/* =========================
-   ACTIVE
-========================= */
-
-
-/* =========================
-   DROPDOWN
-========================= */
-
-.dropdown-container {
-    position: relative;
-}
-
-.dropdown-content {
-    position: absolute;
-
-    top: 120%;
-    right: 0;
-
-    min-width: 160px;
-
-    background: white;
-
-    border-radius: 16px;
-
-    overflow: hidden;
-
-    display: none;
-
-    box-shadow:
-        0 10px 30px rgba(0,0,0,0.12);
-
-    animation: fadeDropdown .2s ease;
-}
-
-.dropdown-content a {
-    display: block;
-
-    padding: 14px 16px;
-
-    color: #334155;
-
+.nav-links a {
     text-decoration: none;
-
-    font-size: 14px;
-
-    transition: .2s;
+    color: #555;
+    font-weight: 500;
+    /* transition: 0.3s; */
+    font-size: 0.95rem;
 }
 
-.dropdown-content a:hover {
-    background: #f8fafc;
+/* .nav-links a:hover {
+    color: var(--primary);
+} */
 
-    color: var(--primary-color);
+/* Burger Menu Styles */
+#check {
+    display: none;
 }
 
-.dropdown-container:hover .dropdown-content {
+.checkbtn {
+    display: none;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.checkbtn span {
     display: block;
+    width: 25px;
+    height: 3px;
+    background: #333;
+    transition: 0.3s;
 }
 
-/* =========================
-   ANIMATION
-========================= */
-
-@keyframes fadeDropdown {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
+/* Responsive Design untuk Handphone */
+@media (max-width: 850px) {
+    .checkbtn {
+        display: flex;
     }
 
-    to {
+    .nav-links {
+        position: absolute;
+        width: 100%;
+        height: auto;
+        background: var(--white);
+        top: 90px;
+        left: 0;
+        flex-direction: column;
+        text-align: center;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        padding: 20px 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.4s ease;
+        transform: translateY(-20px);
+    }
+
+    .nav-links li {
+        margin: 15px 0;
+    }
+
+    /* Logika Dropdown saat burger di-klik */
+    #check:checked~.nav-links {
         opacity: 1;
+        pointer-events: auto;
         transform: translateY(0);
     }
 }
 
-/* =========================
-   TABLET
-========================= */
-
-@media (max-width: 780px) {
-
-    .dropdown-content {
-        display: none !important;
-    }
-
-    .logo-desktop {
-        display: none;
-    }
-
-    .logo-mobile {
-        display: flex;
-        align-items: center;
-
-        padding: 14px 16px;
-    }
-
-    /* =========================
-       MOBILE NAVBAR
-    ========================= */
-
-    .top-nav {
-        top: auto;
-
-        bottom: 0;
-        left: 0;
-
-        height: 72px;
-
-        border-radius: 22px 22px 0 0;
-
-        padding-bottom:
-            env(safe-area-inset-bottom);
-
-        justify-content: center;
-    }
-
-    .menu {
-        width: 100%;
-
-        margin: 0;
-        padding: 0 10px;
-
-        justify-content: space-around;
-
-        gap: 0;
-    }
-
-    .menu a {
-        flex-direction: column;
-
-        flex: 1;
-
-        gap: 5px;
-
-        padding: 8px 4px;
-
-        min-height: 60px;
-
-        border-radius: 16px;
-
-        font-size: 11px;
-    }
-
-    .menu img {
-        width: 22px;
-        height: 22px;
-    }
-
-    .top-nav span {
-      display: none;
-    }
-
-    .nav-teks {
-        padding: 0;
-    }
-
-    .menu a:hover {
-        transform: none;
-    }
-}
-
-/* =========================
-   SMALL MOBILE
-========================= */
-
-@media (max-width: 480px) {
-
-    .top-nav {
-        height: 68px;
-    }
-
-    .menu a {
-        min-height: 55px;
-
-        font-size: 10px;
-    }
-
-    .menu img {
-        width: 20px;
-        height: 20px;
-    }
-
-    .top-nav span {
-        font-size: 10px;
-    }
+.container {
+    margin-top: 60px;
 }

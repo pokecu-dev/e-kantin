@@ -260,7 +260,7 @@ $query = $conn->query("SELECT * FROM users ORDER BY ID DESC LIMIT 5");
                 <li><a href="admin.php" class="active">Beranda</a></li>
                 <li><a href="akun.php">Akun</a></li>
                 <li><a href="menu.php">Produk</a></li>
-                <li><a href="oulet">Outlet</a></li>
+                <li><a href="oulet.php">Outlet</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>

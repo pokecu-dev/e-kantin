@@ -22,21 +22,42 @@ $id_login = $_SESSION['id_user'];
 
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
      * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+ 
 }
 
 body {
     background: #f8fafc;
     color: #1e293b;
+      font-family: 'Poppins', sans-serif;
 }
+
+   /* Warna default (Abu-abu) untuk semua menu */
+        .nav-links a {
+            text-decoration: none;
+            color: #888;
+            /* Warna abu-abu */
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        /* Warna khusus (Merah) untuk menu yang sedang aktif */
+        .nav-links a.active {
+            color: var(--primary);
+            /* Warna merah brand KantinKita */
+            border-bottom: 2px solid #F47B20;
+            /* Opsional: tambah garis bawah agar lebih jelas */
+            padding-bottom: 5px;
+        }
 
 /* ======================
    CONTAINER
@@ -375,9 +396,9 @@ body {
 
             <ul class="nav-links">
                 <li><a href="admin.php">Beranda</a></li>
-                <li><a href="akun.php" class="active">Akun</a></li>
+                <li><a href="akun.php" >Akun</a></li>
                 <li><a href="menu.php">Produk</a></li>
-                <li><a href="oulet">Outlet</a></li>
+                <li><a href="oulet" class="active">Outlet</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>

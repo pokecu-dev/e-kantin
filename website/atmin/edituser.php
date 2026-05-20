@@ -215,6 +215,7 @@ if ($result->num_rows > 0) {
                         <div class="foto-container">
                             <img src="../../source/fotopengguna/<?= $dataUsers['FOTO_USERS'] ?>" alt="Profile" class="foto">
                         </div>
+                         <h6 style="margin-bottom: 5px; color:#94a3b8">#<?= $dataUsers['ID'] ?></h6>
                         <h4 style="margin-bottom: 5px;"><?= $dataUsers['USERNAME'] ?></h4>
                         <span class="role-badge"><?= $dataUsers['ROLE'] ?></span>
                     </div>
@@ -228,7 +229,7 @@ if ($result->num_rows > 0) {
                         </div>
                         <div class="form-group">
                             <label>Password <span>(BEFORE: <?= $dataUsers['PASS'] ?>)</span></label>
-                            <input type="text" name="pass">
+                            <input type="text" name="pass"  value="<?= $dataUsers['PASS'] ?>">
                         </div>
                     </div>
                 

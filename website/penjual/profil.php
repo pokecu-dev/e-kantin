@@ -40,13 +40,13 @@ if (!$data) {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background: #f5f5f5;
+            background-color: #f5f5f5;
             color: #333;
-            font-family: 'Poppins', sans-serif;
+            padding: 24px;
         }
 
         /* ================= NAVBAR ================= */
@@ -280,40 +280,27 @@ if (!$data) {
 
     <!-- ================= NAVBAR ================= -->
 
-    <header class="topbar">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
 
-        <div class="logo-mobile">
-            <img src="../../source/icon/logo1.svg" alt="KantinKita">
+            <!-- Burger Menu (Mobile Only) -->
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+
+            <ul class="nav-links">
+                <li><a href="penjual.php">Beranda</a></li>
+                <li><a href="edit1.php">Produk</a></li>
+                <li><a href="profil.php"  class="active">Profil</a></li>
+                <li><a href="./../logout.php">Log Out</a></li>
+            </ul>
         </div>
-
-        <div class="logo-desktop">
-            <img src="../../source/icon/logo1.svg" alt="KantinKita">
-        </div>
-        <!-- --------/LOGO------------ -->
-        <div class="top-nav" style="text-align: center; margin-bottom: 0px;">
-            <nav class="menu">
-                <a href="penjual.php" style="margin: 0 5px; text-decoration: none ; color:#F47B20">
-                    <img src="../../source/icon/pesanan2.svg" alt="history">
-                    <span>History</span>
-                </a>
-                <a href="edit1.php" class="active" style="margin: 0 5px; text-decoration: none;">
-                    <img src="../../source/icon/edit1.svg" alt="edit">
-                    <span style="color:#aaa;">Edit</span>
-                </a>
-                <div class="dropdown-container">
-                    <a href="profil.php" style="margin: 0 5px; text-decoration: none; color:#F47B20">
-                        <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks" style="color:#aaa;">Profile</span>
-                    </a>
-                    <div class="dropdown-content">
-                        <a href="profil.php" style="color: #202a39">Profile</a>
-                        <a href="./../logout.php" style="color: #202a39">Keluar</a>
-                    </div>
-                </div>
-
-            </nav>
-        </div>
-
-    </header>
+    </nav>
+  
 
     <!-- ================= HERO ================= -->
 
