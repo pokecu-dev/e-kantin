@@ -127,13 +127,13 @@ $query_item = $conn->query($sql_item);
     <div class="nota-card">
         <div class="nota-header">
             <h2><img src="../../source/icon/logo1.svg" alt=""></h2>
-            <p>Rincian Nota Transaksi Pembelian</p>
+            <p>Rincian Transaksi Pembelian</p>
         </div>
 
         <div class="info-section">
             <div class="info-row">
                 <span class="info-label">ID Transaksi</span>
-                <span class="info-value">#TRX-<?php echo $transaksi_utama['id']; ?></span>
+                <span class="info-value">#-<?php echo $transaksi_utama['id']; ?></span>
             </div>
             <div class="info-row">
                 <span class="info-label">Tanggal / Waktu</span>

@@ -1,14 +1,41 @@
 <?php
 require_once __DIR__ . "/../include/koneksi.php";
 
-if ($conn->error) {
-    echo $conn->connect_error;
+if ($conn->connect_error) {
+    die("Koneksi gagal: " . $conn->connect_error);
 }
 
+// =====================
+// AMBIL MENU
+// =====================
 $sql = "SELECT * FROM tb_menu";
 $query = $conn->query($sql);
 
+// =====================
+// TOTAL PRODUK
+// =====================
+$sql_total = "SELECT COUNT(*) AS total FROM tb_menu";
+$total_produk = $conn->query($sql_total)->fetch_assoc()['total'] ?? 0;
+
+// =====================
+// STOK RENDAH
+// =====================
+$sql_low = "SELECT COUNT(*) AS low_stock FROM tb_menu WHERE STOK <= 5";
+$low_stock = $conn->query($sql_low)->fetch_assoc()['low_stock'] ?? 0;
+
+// =====================
+// PRODUK TERSEDIA
+// =====================
+$sql_ready = "SELECT COUNT(*) AS ready FROM tb_menu WHERE STATUS = 'tersedia'";
+$ready = $conn->query($sql_ready)->fetch_assoc()['ready'] ?? 0;
+
+// =====================
+// RATING RATA-RATA
+// =====================
+$sql_rating = "SELECT AVG(RATING) AS avg_rating FROM tb_menu";
+$avg_rating = $conn->query($sql_rating)->fetch_assoc()['avg_rating'] ?? 0;
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -204,11 +231,11 @@ NAVBAR
         }
 
         .icon-low {
-            background: #fef2f2;
+            background: #fefaf2;
         }
 
         .icon-active {
-            background: #f0fdf4;
+            background: #fbfdf0;
         }
 
         .stat-info span {
@@ -223,7 +250,7 @@ NAVBAR
 
         /* =========================
    DATA CARD
-========================= */
+     ========================= */
 
         .data-card {
             background: white;
@@ -372,9 +399,9 @@ NAVBAR
             color: #15803d;
         }
 
-        .badge-orange {
-            background: #ffedd5;
-            color: #ea580c;
+        .badge-red {
+            background: #fee2e2;
+            color: #b91c1c;
         }
 
         .badge-gray {
@@ -551,28 +578,40 @@ NAVBAR
         </div>
 
         <!-- STATS -->
+        <?php
+        // TOTAL PRODUK
+        $total_produk = $conn->query("SELECT COUNT(*) AS total FROM tb_menu")
+            ->fetch_assoc()['total'] ?? 0;
 
+        // STOK RENDAH (<=5)
+        $stok_rendah = $conn->query("SELECT COUNT(*) AS total FROM tb_menu WHERE STOK <= 5")
+            ->fetch_assoc()['total'] ?? 0;
+
+        // PRODUK HABIS (STOK = 0)
+        $produk_habis = $conn->query("SELECT COUNT(*) AS total FROM tb_menu WHERE STOK = 0")
+            ->fetch_assoc()['total'] ?? 0;
+        ?>
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="icon-box icon-total">📦</div>
                 <div class="stat-info">
                     <span>TOTAL PRODUK</span>
-                    <h2>1,284</h2>
+                    <h2><?= $total_produk ?></h2>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="icon-box icon-low">⚠️</div>
                 <div class="stat-info">
                     <span>STOK RENDAH</span>
-                    <h2>12</h2>
+                    <h2><?= $stok_rendah ?></h2>
                 </div>
             </div>
 
             <div class="stat-card">
-                <div class="icon-box icon-active">✅</div>
+                <div class="icon-box icon-active">❌</div>
                 <div class="stat-info">
                     <span>PRODUK AKTIF</span>
-                    <h2>1,240</h2>
+                    <h2><?= $produk_habis ?></h2>
                 </div>
             </div>
         </div>
@@ -585,9 +624,7 @@ NAVBAR
             <!-- TOOLBAR -->
             <div class="toolbar">
                 <p>Daftar menu</p>
-                <div class="toolbar-buttons">
-                    <a href="menulkp.php" class="btn-page"> Lihat Semua</a>
-                </div>
+               
             </div>
 
             <div class="grid-wrapper">
@@ -596,52 +633,65 @@ NAVBAR
                     <div>Kategori</div>
                     <div>Harga</div>
                     <div>Stok</div>
-                    <div>Status</div>
+                    <div>Rating</div>
                     <div style="text-align: right;">Aksi</div>
                 </div>
+
                 <?php while ($menu = $query->fetch_assoc()): ?>
-                    <!-- ROW 1 -->
+                    <?php
+                    $status = ((int)$menu['STOK'] <= 0) ? 'habis' : 'tersedia';
+                    ?>
                     <div class="grid-row">
+
+                        <!-- PRODUK -->
                         <div class="product-info">
-                            <a href="../../source/gambar_menu/ <?= $menu['FOTO_MENU'] ?>" alt="foto" class="img-placeholder"></a>
-                            
-                            <strong><?= $menu['NAMA_MENU'] ?></strong>
+                            <div class="img-placeholder">
+                                <img
+                                    src="../../source/gambar_menu/<?= htmlspecialchars($menu['FOTO_MENU']) ?>"
+                                    width="45"
+                                    height="45"
+                                    style="border-radius:10px; object-fit:cover;">
+                            </div>
+
+                            <strong><?= htmlspecialchars($menu['NAMA_MENU']) ?></strong>
                         </div>
-                        <div><?= $menu['KATEGORI'] ?></div>
-                        <div><?= $menu['HARGA'] ?></div>
+
+                        <!-- KATEGORI -->
+                        <div><?= htmlspecialchars($menu['KATEGORI']) ?></div>
+
+                        <!-- HARGA -->
+                        <div>Rp <?= number_format($menu['HARGA'], 0, ',', '.') ?></div>
+
+                        <!-- STOK -->
                         <div>
-                            <span class="badge badge-orange">
-                             <?= $menu['STOK'] ?> Tersisa
-                            </span>
+                            <div>
+                                <?php if ((int)$menu['STOK'] <= 0): ?>
+                                    <span class="badge badge-red">
+                                        Habis
+                                    </span>
+                                <?php else: ?>
+                                    <span class="badge badge-green">
+                                        <?= (int)$menu['STOK'] ?> Tersedia
+                                    </span>
+                                <?php endif; ?>
+                            </div>
                         </div>
+
+                        <!-- RATING -->
                         <div>
-                            <label class="switch">
-                                <input type="checkbox" checked>
-                                <span class="slider"></span>
-                            </label>
+                            ⭐ <?= number_format($menu['RATING'] ?? 0, 1) ?>/5
                         </div>
+
+                        <!-- AKSI -->
                         <div class="actions">
                             📝 🗑️
                         </div>
+
                     </div>
                 <?php endwhile; ?>
-            
             </div>
             <!-- FOOTER -->
-            <div class="footer">
-                <div>
-                    Menampilkan 3 dari 1,284 produk
-                </div>
-                <div class="pagination">
-                    <button class="btn-page">
-                        Sebelumnya
-                    </button>
-                    <button class="btn-page"
-                        style="background:#f1f5f9; font-weight:600;">
-                        Berikutnya
-                    </button>
-                </div>
-            </div>
+
         </div>
     </div>
 </body>

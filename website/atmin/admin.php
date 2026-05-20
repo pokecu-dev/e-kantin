@@ -83,7 +83,7 @@ $query = $conn->query("SELECT * FROM users ORDER BY ID DESC LIMIT 5");
         .stats-container {
             margin-bottom: 30px;
             overflow: hidden;
-            margin-top: 20px;
+            margin-top: 100px;
             padding: 0 20px;
         }
 

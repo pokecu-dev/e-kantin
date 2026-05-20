@@ -1,48 +1,143 @@
 <?php
-// 1. Hubungkan ke file koneksi bawaan kamu
+// ===============================
+// KONEKSI & SESSION
+// ===============================
 require_once __DIR__ . "/../include/koneksi.php";
 
-// Aktifkan session jika belum aktif untuk tahu siapa yang login
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+
+session_start();
+
+// 1. Proteksi Halaman
+if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
+    header("location: ../login.php");
+    exit();
 }
+// ===============================
+// USER LOGIN
+// ===============================
+$id_user_login = $_SESSION['id_user'] ?? 0;
 
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
-}
 
-$id_user_login = $_SESSION['id_user'] ?? 24;
 
-// Cari ID Kantin yang dimiliki oleh penjual ini dari tabel list_kantin
-$sql_kantin = "SELECT ID FROM list_kantin WHERE id_penjual = '$id_user_login' LIMIT 1";
+// ===============================
+// AMBIL KANTIN
+// ===============================
+$sql_kantin = "
+SELECT ID 
+FROM list_kantin 
+WHERE id_penjual = '$id_user_login'
+LIMIT 1
+";
+
 $query_kantin = $conn->query($sql_kantin);
 $data_kantin = $query_kantin->fetch_assoc();
 
-$id_kantin_toko = $data_kantin['ID'] ?? 1;
+$id_kantin_toko = $data_kantin['ID'] ?? 0;
 
+if ($id_kantin_toko == 0) {
+    die("Kantin tidak ditemukan!");
+}
 
-// 2. QUERY RIWAYAT TRANSAKSI (Sesuai kolom tabel detail_transaksi kamu)
-// Kita gunakan kolom `nama_menu`, `qty`, dan `subtotal` langsung dari detail_transaksi
-$sql_transaksi = "SELECT t.id AS id_transaksi, dt.nama_menu, dt.qty, dt.subtotal, t.waktu 
-                  FROM transaksi t
-                  JOIN detail_transaksi dt ON t.id = dt.id_transaksi
-                  WHERE t.id_kantin = '$id_kantin_toko'
-                  ORDER BY t.waktu DESC 
-                  LIMIT 5";
+// ===============================
+// TOTAL PRODUK TERJUAL HARI INI (FIX)
+// ===============================
+$sql_produk = "
+SELECT SUM(dt.qty) AS total_produk
+FROM detail_transaksi dt
+JOIN transaksi t 
+ON dt.id_transaksi = t.id
+WHERE t.id_kantin = '$id_kantin_toko'
+AND DATE(t.tgl) = CURDATE()
+";
+
+$query_produk = $conn->query($sql_produk);
+$data_produk = $query_produk->fetch_assoc();
+
+$total_produk_terjual = $data_produk['total_produk'] ?? 0;
+
+// ===============================
+// RATING RATA-RATA DARI TB_MENU
+// ===============================
+$sql_rating = "
+SELECT AVG(rating) AS avg_rating
+FROM tb_menu
+WHERE id_kantin = '$id_kantin_toko'
+";
+
+$query_rating = $conn->query($sql_rating);
+$data_rating = $query_rating->fetch_assoc();
+
+$avg_rating = $data_rating['avg_rating'] ?? 0;
+// ===============================
+// RIWAYAT TRANSAKSI (GROUP PER TRANSAKSI)
+// ===============================
+$sql_transaksi = "
+SELECT 
+    t.id AS id_transaksi,
+    SUM(dt.qty) AS total_qty,
+    SUM(dt.subtotal) AS total_harga,
+    t.waktu,
+    t.status
+FROM transaksi t
+JOIN detail_transaksi dt 
+ON t.id = dt.id_transaksi
+WHERE t.id_kantin = '$id_kantin_toko'
+AND t.status = 'selesai'
+GROUP BY t.id, t.waktu, t.status
+ORDER BY t.waktu DESC
+LIMIT 5
+";
 
 $query_transaksi = $conn->query($sql_transaksi);
 
-
-// 3. QUERY MENGHITUNG PESANAN MASUK HARI INI
-$sql_count = "SELECT COUNT(*) as total_order 
-              FROM transaksi 
-              WHERE id_kantin = '$id_kantin_toko' AND DATE(tgl) = CURDATE()";
+// ===============================
+// PESANAN HARI INI
+// ===============================
+$sql_count = "
+SELECT COUNT(*) AS total_order
+FROM transaksi
+WHERE id_kantin = '$id_kantin_toko'
+AND DATE(tgl) = CURDATE()
+";
 
 $query_count = $conn->query($sql_count);
-$res_count = $query_count->fetch_assoc();
-$pesanan_masuk_hari_ini = $res_count['total_order'] ?? 0;
-?>
+$data_count = $query_count->fetch_assoc();
 
+$pesanan_masuk_hari_ini = $data_count['total_order'] ?? 0;
+
+// ===============================
+// PENDAPATAN HARI INI
+// ===============================
+$sql_pendapatan = "
+SELECT SUM(dt.subtotal) AS total
+FROM detail_transaksi dt
+JOIN transaksi t 
+ON dt.id_transaksi = t.id
+WHERE DATE(t.tgl) = CURDATE()
+AND t.id_kantin = '$id_kantin_toko'
+";
+
+$query_pendapatan = $conn->query($sql_pendapatan);
+$data_pendapatan = $query_pendapatan->fetch_assoc();
+
+$total_hari_ini = $data_pendapatan['total'] ?? 0;
+
+// ===============================
+// PRODUK TERJUAL HARI INI
+// ===============================
+$sql_produk = "
+SELECT SUM(dt.qty) AS total_produk
+FROM detail_transaksi dt
+JOIN transaksi t ON dt.id_transaksi = t.id
+WHERE t.id_kantin = '$id_kantin_toko'
+AND DATE(t.tgl) = CURDATE()
+";
+
+$query_produk = $conn->query($sql_produk);
+$data_produk = $query_produk->fetch_assoc();
+
+$total_produk_terjual = $data_produk['total_produk'] ?? 0;
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -400,58 +495,47 @@ $pesanan_masuk_hari_ini = $res_count['total_order'] ?? 0;
 
 <body>
 
-    <div class="container">
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
 
-                <input type="checkbox" id="check">
-                <label for="check" class="checkbtn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </label>
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
 
-                <ul class="nav-links">
-                    <li><a href="penjual.php" class="active">Beranda</a></li>
-                    <li><a href="pesanan.php">Pesanan</a></li>
-                    <li><a href="edit1.php">Produk</a></li>
-                    <li><a href="profil.php">Profil</a></li>
-                    <li><a href="./../logout.php">Log Out</a></li>
-                </ul>
-            </div>
-        </nav>
+            <ul class="nav-links">
+                <li><a href="penjual.php" class="active">Beranda</a></li>
+                <li><a href="pesanan.php">Pesanan</a></li>
+                <li><a href="edit1.php">Produk</a></li>
+                <li><a href="profil.php">Profil</a></li>
+                <li><a href="./../logout.php">Log Out</a></li>
+            </ul>
+        </div>
+    </nav>
 
-        <header class="header">
-            <div class="header-title">
-                <h1>Beranda Penjual</h1>
-                <p>Rabu, 20 Mei 2026</p>
-            </div>
-            <div class="status-toko">
-                <span>Status Toko: Buka</span>
-                <label class="switch">
-                    <input type="checkbox" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </header>
 
+    <div class="container" style="margin-top: 70px;">
         <section class="summary-grid">
             <div class="card-summary">
                 <div class="card-icon-trend">
                     <div class="icon-box icon-pendapatan">💵</div>
-                    <span class="trend-label trend-up">+12.5%</span>
+                    <span class="trend-label trend-up"></span>
                 </div>
-                <p>Pendapatan Hari Ini</p>
-                <h2>Rp 1.250k</h2>
+                <p>Total Pendapatan</p>
+                <h1>
+                    Rp <?= number_format($total_hari_ini, 0, ',', '.'); ?>
+                </h1>
             </div>
             <div class="card-summary">
                 <div class="card-icon-trend">
                     <div class="icon-box icon-terjual">🛍️</div>
-                    <span class="trend-label trend-stable">Stable</span>
+                    <span class="trend-label trend-stable"></span>
                 </div>
-                <p>Produk Terjual</p>
-                <h2>82</h2>
+                <p>Total Produk</p>
+                <h2><?= $total_produk_terjual; ?></h2>
             </div>
             <div class="card-summary">
                 <div class="card-icon-trend">
@@ -459,7 +543,9 @@ $pesanan_masuk_hari_ini = $res_count['total_order'] ?? 0;
                     <span class="trend-label trend-up" style="color:#4f46e5;"></span>
                 </div>
                 <p>Rating</p>
-                <h2>4.8/5</h2>
+                <h2>
+                    <?= number_format($avg_rating, 1); ?>/5
+                </h2>
             </div>
         </section>
 
@@ -467,7 +553,7 @@ $pesanan_masuk_hari_ini = $res_count['total_order'] ?? 0;
             <div class="card-section">
                 <div class="section-header">
                     <h3>Riwayat Transaksi Mingguan</h3>
-                    <a href="#" class="section-link">Detail Laporan </a>
+                    <a href="#" class="section-link"> </a>
                 </div>
 
                 <div class="grid-table">
@@ -483,22 +569,34 @@ $pesanan_masuk_hari_ini = $res_count['total_order'] ?? 0;
                     <?php if ($query_transaksi && $query_transaksi->num_rows > 0): ?>
                         <?php while ($row = $query_transaksi->fetch_assoc()): ?>
                             <div class="grid-row-data">
+
                                 <div>#-<?php echo $row['id_transaksi']; ?></div>
-                                <strong><?php echo htmlspecialchars($row['nama_menu']); ?></strong>
-                                <div><?php echo $row['qty']; ?> Porsi</div>
-                                <div>Rp <?php echo number_format($row['subtotal'], 0, ',', '.'); ?></div>
-                                <div><?php echo date('H:i', strtotime($row['waktu'])); ?> WIB</div>
+
+                                <strong>TRANSAKSI</strong>
+
+                                <div><?php echo $row['total_qty']; ?> Porsi</div>
 
                                 <div>
-                                    <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">
+                                    Rp <?php echo number_format($row['total_harga'] ?? 0, 0, ',', '.'); ?>
+                                </div>
+
+                                <div>
+                                    <?php echo date('H:i', strtotime($row['waktu'])); ?> WIB
+                                </div>
+
+                                <div>
+                                    <button type="button"
+                                        class="btn-detail btn-buka-modal"
+                                        data-id="<?php echo $row['id_transaksi']; ?>">
                                         Detail
                                     </button>
                                 </div>
+
                             </div>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <div class="grid-row-data" style="grid-template-columns: 1fr; text-align: center; color: #888;">
-                            Belum ada riwayat transaksi untuk kantin ini.
+                        <div class="grid-row-data" style="grid-template-columns: 1fr; text-align:center; color:#888;">
+                            Belum ada transaksi.
                         </div>
                     <?php endif; ?>
                 </div>
