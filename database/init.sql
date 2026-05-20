@@ -163,7 +163,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
->>>>>>> ef15136ebcd400814778cfedae86ae88592b3d01
 
 --
 -- Table structure for table `tb_menu`
