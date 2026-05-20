@@ -1,8 +1,8 @@
-﻿-- MySQL dump 10.13  Distrib 8.0.46, for Linux (x86_64)
+﻿-- MySQL dump 10.13  Distrib 8.0.45, for Linux (x86_64)
 --
 -- Host: localhost    Database: kantin
 -- ------------------------------------------------------
--- Server version	8.0.46
+-- Server version	8.0.45
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,38 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `detail_transaksi`
+--
+
+DROP TABLE IF EXISTS `detail_transaksi`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `detail_transaksi` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_transaksi` int NOT NULL,
+  `id_menu` int NOT NULL,
+  `nama_menu` varchar(150) NOT NULL COMMENT 'Snapshot nama menu saat checkout',
+  `harga` int NOT NULL COMMENT 'Snapshot harga saat checkout',
+  `qty` int NOT NULL DEFAULT '1',
+  `subtotal` int NOT NULL COMMENT 'harga * qty',
+  PRIMARY KEY (`id`),
+  KEY `idx_dt_transaksi` (`id_transaksi`),
+  KEY `fk_dt_menu` (`id_menu`),
+  CONSTRAINT `fk_dt_menu` FOREIGN KEY (`id_menu`) REFERENCES `tb_menu` (`ID_MENU`),
+  CONSTRAINT `fk_dt_transaksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `detail_transaksi`
+--
+
+LOCK TABLES `detail_transaksi` WRITE;
+/*!40000 ALTER TABLE `detail_transaksi` DISABLE KEYS */;
+/*!40000 ALTER TABLE `detail_transaksi` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `keranjang`
@@ -41,7 +73,7 @@ CREATE TABLE `keranjang` (
 
 LOCK TABLES `keranjang` WRITE;
 /*!40000 ALTER TABLE `keranjang` DISABLE KEYS */;
-INSERT INTO `keranjang` VALUES (35,11,8,1),(36,11,1,4),(43,12,2,2);
+INSERT INTO `keranjang` VALUES (35,11,8,1),(36,11,1,4),(43,12,2,5);
 /*!40000 ALTER TABLE `keranjang` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -75,7 +107,6 @@ INSERT INTO `list_kantin` VALUES (1,'kantin pak trisno','kantin1.jpg',24,'1'),(2
 UNLOCK TABLES;
 
 --
-
 -- Table structure for table `rating`
 --
 
@@ -207,11 +238,16 @@ DROP TABLE IF EXISTS `transaksi`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `transaksi` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `kode_pesanan` varchar(25) NOT NULL DEFAULT '',
   `id_kantin` int DEFAULT NULL,
   `id_user` int DEFAULT NULL,
   `tgl` date DEFAULT (curdate()),
   `waktu` time DEFAULT (curtime()),
+  `total` int NOT NULL DEFAULT '0',
+  `status` enum('pending','dikonfirmasi','diproses','selesai','dibatalkan') NOT NULL DEFAULT 'pending',
+  `catatan` text,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_kode_pesanan` (`kode_pesanan`),
   KEY `id_kantin_fk` (`id_kantin`),
   KEY `id_user_fk` (`id_user`),
   CONSTRAINT `id_kantin_fk` FOREIGN KEY (`id_kantin`) REFERENCES `list_kantin` (`ID`),
@@ -271,3 +307,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+-- Dump completed on 2026-05-20  2:07:47
