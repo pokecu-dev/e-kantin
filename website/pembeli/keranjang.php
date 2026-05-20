@@ -1,273 +1,317 @@
 <?php
+/**
+ * keranjang.php — VERSI BARU
+ * Auto group by kantin pakai while loop PHP native
+ * Author: CEO Fullstack Dev
+ */
+
 session_start();
 require_once '../include/koneksi.php';
 
-// Proteksi halaman: Pastikan user sudah login
 if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php");
     exit();
 }
 
-// PROSES TAMBAH KE KERANJANG (ADD TO CART)
-// if (isset($_POST['add_to_cart'])) {
+$id_user = (int)$_SESSION['id_user'];
 
-//     $id_menu = (int)($_POST['id_menu'] ?? 0);
-//     $qty = (int)($_POST['qty'] ?? 1);
-//     $id_user = (int)$_SESSION['id_user'];
-
-//     if ($id_menu > 0 && $qty > 0) {
-
-//         $cek_keranjang = mysqli_query($conn,
-//             "SELECT * FROM keranjang 
-//             WHERE id_menu='$id_menu' 
-//             AND id_user='$id_user'"
-//         );
-
-//         if (mysqli_num_rows($cek_keranjang) > 0) {
-//             mysqli_query($conn,
-//                 "UPDATE keranjang 
-//                 SET qty = qty + $qty 
-//                 WHERE id_menu='$id_menu' 
-//                 AND id_user='$id_user'"
-//             );
-//         } else {
-//             mysqli_query($conn,
-//                 "INSERT INTO keranjang(id_user,id_menu,qty)
-//                 VALUES('$id_user','$id_menu','$qty')"
-//             );
-//         }
-//     }
-
-//     header('Location: keranjang.php');
-//     exit();
-// }
-
-// AMBIL DATA BARANG DI KERANJANG USER AKTIF
-$id_user_aktif = (int)$_SESSION['id_user'];
-
+// ── Ambil SEMUA item keranjang, JOIN dengan menu & kantin ──
 $query = mysqli_query($conn, "
     SELECT 
-        k.*,
+        k.id_keranjang,
+        k.id_menu,
+        k.qty,
         m.NAMA_MENU,
         m.HARGA,
         m.FOTO_MENU,
         m.STOK,
-        ka.NAMA_KANTIN
+        m.STATUS,
+        m.ID_KANTIN,
+        ka.NAMA_KANTIN,
+        ka.FOTO_KANTIN
     FROM keranjang k
     JOIN tb_menu m ON k.id_menu = m.ID_MENU
     JOIN list_kantin ka ON m.ID_KANTIN = ka.ID
-    WHERE k.id_user = $id_user_aktif
+    WHERE k.id_user = $id_user
+    ORDER BY ka.ID ASC, k.id_keranjang ASC
 ");
-?>
 
+// ── GROUP BY KANTIN pakai array PHP ──
+$grouped = [];
+while ($row = mysqli_fetch_assoc($query)) {
+    $id_kantin = $row['ID_KANTIN'];
+    
+    // Inisialisasi jika kantin belum ada di array
+    if (!isset($grouped[$id_kantin])) {
+        $grouped[$id_kantin] = [
+            'kantin_id'   => $id_kantin,
+            'kantin_nama' => $row['NAMA_KANTIN'],
+            'kantin_foto' => $row['FOTO_KANTIN'],
+            'items'       => [],
+            'total'       => 0,
+        ];
+    }
+    
+    $subtotal = (int)$row['HARGA'] * (int)$row['qty'];
+    
+    // Tambahkan item ke kantin
+    $grouped[$id_kantin]['items'][] = [
+        'id_keranjang' => $row['id_keranjang'],
+        'id_menu'      => $row['id_menu'],
+        'nama_menu'    => $row['NAMA_MENU'],
+        'harga'        => (int)$row['HARGA'],
+        'qty'          => (int)$row['qty'],
+        'foto_menu'    => $row['FOTO_MENU'],
+        'stok'         => (int)$row['STOK'],
+        'status'       => $row['STATUS'],
+        'subtotal'     => $subtotal,
+    ];
+    
+    $grouped[$id_kantin]['total'] += $subtotal;
+}
+
+$total_all = array_sum(array_column($grouped, 'total'));
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keranjang</title>
-
+    <title>Keranjang - E-Kantin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #f5f5f5;
-            color: #222;
-            margin: 0;
-            padding: 0;
+        .kr-wrap {
+            max-width: 900px;
+            margin: 100px auto 120px;
+            padding: 0 16px;
         }
 
-        .container {
-           width: 95%;
-            max-width: 1100px;
-            margin: 0 auto 40px;
-            padding: 30px;
-        }
-
-        .back {
+        .kr-header {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 15px 0;
-            position: relative;
-            z-index: 10;
+            padding: 14px 0 10px;
+            margin-bottom: 16px;
         }
 
-        .btn-back img {
-            width: 24px;
-            height: 24px;
-            display: block;
-        }
+        .kr-header .btn-back img { width: 24px; height: 24px; }
 
-        .back h2 {
+        .kr-header h2 {
             margin: 0;
             font-size: 18px;
-            color: #333;
+            font-weight: 700;
+            color: #1A1A1A;
         }
 
-        .parent {
-            background: #dac8b9;
-            padding: 15px;
+        /* ── Card per Kantin (hasil while loop) ── */
+        .kr-kantin-card {
+            background: #fff;
             border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
         }
 
-        .header-tabel {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            align-items: center;
-            gap: 15px;
-            background: #fff5eb;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .produk {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            align-items: center;
-            gap: 15px;
-            position: relative;
-            background: white;
-            padding: 25px;
-            border-radius: 16px;
-            margin-bottom: 15px;
-        }
-
-        .div1 {
+        /* Header Kantin */
+        .kr-kantin-head {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 14px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f5f5f5;
+            margin-bottom: 14px;
         }
 
-        .div1 img {
-            width: 80px;
-            height: 80px;
+        .kr-kantin-head img {
+            width: 56px;
+            height: 56px;
             border-radius: 12px;
             object-fit: cover;
         }
 
-        .div1 p {
-            font-size: 18px;
-            font-weight: 600;
+        .kr-kantin-head h3 {
             margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1A1A1A;
         }
 
-        .harga-tabel {
+        /* Item Row */
+        .kr-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .kr-item:last-child { border-bottom: none; }
+
+        .kr-item img {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .kr-item-info { flex: 1; min-width: 0; }
+
+        .kr-item-info .nama {
+            margin: 0 0 4px;
+            font-size: 15px;
             font-weight: 600;
+            color: #1A1A1A;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .nama-kantin {
+        .kr-item-info .harga {
+            margin: 0;
             font-size: 14px;
-            color: #777;
-            margin: 4px 0;
+            font-weight: 700;
+            color: #F47B20;
         }
 
-        .jumlah {
+        .kr-item-info .stok-warn {
+            margin: 4px 0 0;
+            font-size: 11px;
+            color: #e53935;
+            font-weight: 500;
+        }
+
+        /* Qty Control */
+        .kr-qty-wrap {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .jumlah button {
-            width: 35px;
-            height: 35px;
-            border: none;
-            background: #F47B20;
-            color: white;
-            border-radius: 10px;
-            font-size: 20px;
+        .kr-qty-btn {
+            width: 32px;
+            height: 32px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fff;
+            color: #1A1A1A;
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .jumlah input {
-            width: 45px;
-            height: 35px;
-            text-align: center;
-            font-size: 16px;
-            border: none;
-            background: #f3f3f3;
-            border-radius: 10px;
-            outline: none;
+        .kr-qty-btn:hover {
+            border-color: #F47B20;
+            color: #F47B20;
         }
 
-        .subtotal {
+        .kr-qty-val {
+            font-size: 15px;
             font-weight: 700;
-            text-align: right;
+            min-width: 32px;
+            text-align: center;
         }
 
-        .checkout-box {
-            margin-top: 20px;
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
+        .kr-btn-del {
+            width: 32px;
+            height: 32px;
+            border: 1.5px solid #fee;
+            border-radius: 8px;
+            background: #fff;
+            color: #e53935;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .checkout-btn {
-            width: 100%;
-            height: 45px;
+        .kr-btn-del:hover {
+            background: #fdecea;
+            border-color: #f5c6c6;
+        }
+
+        /* Footer per Kantin */
+        .kr-kantin-foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            margin-top: 10px;
+            border-top: 2px solid #f5f5f5;
+        }
+
+        .kr-kantin-total {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1A1A1A;
+        }
+
+        .kr-kantin-total span {
+            color: #F47B20;
+            font-size: 17px;
+        }
+
+        .kr-btn-checkout {
+            padding: 12px 28px;
             border: none;
             border-radius: 12px;
             background: #F47B20;
-            color: white;
-            font-size: 16px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            text-decoration: none;
+        }
+
+        .kr-btn-checkout:hover { opacity: 0.9; }
+
+        /* Empty State */
+        .kr-empty {
+            text-align: center;
+            padding: 60px 20px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        }
+
+        .kr-empty .icon { font-size: 72px; margin-bottom: 12px; }
+
+        .kr-empty h3 {
+            margin: 0 0 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1A1A1A;
+        }
+
+        .kr-empty p {
+            margin: 0 0 24px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .kr-empty a {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 12px;
+            background: #F47B20;
+            color: #fff;
             font-weight: 600;
-            cursor: pointer;
-            margin-top: 15px;
+            font-size: 14px;
+            text-decoration: none;
         }
 
-        @media (max-width: 768px) {
-            .header-tabel {
-                display: none;
-            }
-            .produk {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            .subtotal, .harga-tabel {
-                text-align: left;
-            }
+        @media (max-width: 480px) {
+            .kr-wrap { margin-top: 20px; margin-bottom: 100px; }
+            .kr-item img { width: 60px; height: 60px; }
+            .kr-qty-wrap { flex-direction: column; gap: 6px; }
         }
-
-        @media (min-width: 769px){
-
-            .checkout-box{
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .grand-total-container{
-                margin-top: 0 !important;
-            }
-
-            .checkout-btn{
-                width: 250px;
-                margin-top: 0;
-            }
-
-        }
-
-        .btn-hapus img {
-            width: 22px;
-            height: 22px;
-            cursor: pointer;
-        }
-
-        .btn-hapus {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: absolute;
-            top: 15px;
-            right: 15px;
-        }
-
     </style>
 </head>
 <body>
+
 <div class="logo-mobile">
     <img src="../../source/icon/logo1.svg" alt="KantinKita">
 </div>
@@ -278,184 +322,140 @@ $query = mysqli_query($conn, "
 <div class="top-nav">
     <nav class="menu">
         <a href="pembeli.php">
-            <img src="../../source/icon/home1.svg" alt="home"> <span class="nav-teks">Beranda</span>
+            <img src="../../source/icon/home1.svg" alt="home">
+            <span class="nav-teks">Beranda</span>
         </a>
         <a href="keranjang.php">
-            <img src="../../source/icon/pesanan2.svg" alt=""><span class="nav-teks">Keranjang</span>
+            <img src="../../source/icon/pesanan2.svg" alt="">
+            <span class="nav-teks">Keranjang</span>
         </a>
-        <a href="Pesanan.php">
-            <img src="../../source/icon/proses.svg" alt=""><span class="nav-teks">Pesanan</span>
-            </a>
         <a href="profil.php">
-            <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks">Profil</span>
+            <img src="../../source/icon/user1.svg" alt="">
+            <span class="nav-teks">Profil</span>
         </a>
     </nav>
 </div>
 
-<div class="container">
+<div class="kr-wrap">
 
-    <div class="back">
+    <div class="kr-header">
         <a href="pembeli.php" class="btn-back">
             <img src="../../source/icon/kembali.svg" alt="Kembali">
         </a>
-        <h2>Keranjang Saya</h2>
+        <h2>Keranjang Belanja</h2>
     </div>
 
-    <div class="parent">
+    <?php if (!empty($grouped)): ?>
 
-        <div class="header-tabel">
-            <div>Produk</div>
-            <div>Harga Satuan</div>
-            <div>Jumlah</div>
-            <div>Subtotal</div>
-        </div>
-
-        <?php 
-        $total = 0; 
+        <?php
+        // ── WHILE LOOP: Tampilkan card per kantin ──
+        foreach ($grouped as $id_kantin => $kantin):
         ?>
 
-        <?php if(mysqli_num_rows($query) > 0) { ?>
+        <div class="kr-kantin-card">
 
-            <?php while($data = mysqli_fetch_array($query)) { 
-                $subtotal = $data['HARGA'] * $data['qty'];
-                $total += $subtotal;
-            ?>
+            <!-- Header Kantin -->
+            <div class="kr-kantin-head">
+                <img src="../../source/foto_kantin/<?= htmlspecialchars($kantin['kantin_foto']) ?>" alt="Foto Kantin">
+                <h3><?= htmlspecialchars($kantin['kantin_nama']) ?></h3>
+            </div>
 
-                <div class="produk">
+            <!-- Items dalam kantin ini -->
+            <?php foreach ($kantin['items'] as $item): ?>
 
-                    <div class="div1">
-                        <img src="../../source/gambar_menu/<?php echo $data['FOTO_MENU']; ?>" alt="Foto Menu">
-                        <div>
-                            <p><?php echo $data['NAMA_MENU']; ?></p>
-                            <p class="nama-kantin">
-                                <?php echo $data['NAMA_KANTIN']; ?>
-                            </p>
-                            <!-- Tempat menyimpan stok max secara hidden untuk kebutuhan Javascript -->
-                            <span class="stok-maks" style="display:none;"><?php echo $data['STOK']; ?></span>
-                        </div>
-                    </div>
+                <div class="kr-item">
+                    <img src="../../source/gambar_menu/<?= htmlspecialchars($item['foto_menu']) ?>" alt="Foto Menu">
 
-                    <a href="hapus_keranjang.php?id=<?php echo $data['id_keranjang']; ?>" class="btn-hapus">
-                        <img src="../../source/icon/sampah.svg" alt="hapus">
-                    </a>
-
-                    <div class="harga-tabel">
-                        Rp <?php echo number_format($data['HARGA'], 0, ',', '.'); ?>
-                    </div>
-
-                    <div class="jumlah">
-                        <!-- Mengirim data objek tombol (this) agar fungsi JS tidak bingung baris mana yang diklik -->
-                        <button type="button" data-id="<?= $data['id_menu'] ?>" onclick="UpdateQTY(this, -1)">-</button>
-                        <input type="number" name="qty" class="qty-input" value="<?php echo $data['qty']; ?>" min="1" max="<?php echo $data['STOK']; ?>" readonly>
-                        <button type="button" data-id="<?= $data['id_menu'] ?>" onclick="UpdateQTY(this, 1)">+</button>
-                    </div>
-
-                    <div class="subtotal">
-                        <p id="subtotal">Rp <?php echo number_format($subtotal, 0, ',', '.'); ?></p>
+                    <div class="kr-item-info">
+                        <p class="nama"><?= htmlspecialchars($item['nama_menu']) ?></p>
+                        <p class="harga">Rp <?= number_format($item['harga'], 0, ',', '.') ?></p>
                         
+                        <?php if ($item['status'] === 'habis'): ?>
+                            <p class="stok-warn">⚠ Menu habis</p>
+                        <?php elseif ($item['stok'] < $item['qty']): ?>
+                            <p class="stok-warn">⚠ Stok kurang (sisa: <?= $item['stok'] ?>)</p>
+                        <?php endif; ?>
                     </div>
 
+                    <!-- Qty Control -->
+                    <div class="kr-qty-wrap">
+                        <button class="kr-qty-btn" onclick="updateQty(<?= $item['id_keranjang'] ?>, <?= $item['qty'] - 1 ?>)">−</button>
+                        <span class="kr-qty-val"><?= $item['qty'] ?></span>
+                        <button class="kr-qty-btn" onclick="updateQty(<?= $item['id_keranjang'] ?>, <?= $item['qty'] + 1 ?>)">+</button>
+                        <button class="kr-btn-del" onclick="hapusItem(<?= $item['id_keranjang'] ?>)" title="Hapus">🗑</button>
+                    </div>
                 </div>
 
-            <?php } ?>
-
-            <div class="checkout-box">
-                <div class="grand-total-container" style="margin-top: 20px; font-weight: bold; font-size: 20px;">
-                    Total Belanja: <span id="total-belanja">Rp 0</span>
-                </div>
-                
-                <button class="checkout-btn">
-                    <a href="beli.php" class="checkout" </a>
-                    Checkout Sekarang
-                </button>
+            <?php endforeach; ?>
+                            
+            <!-- Footer per Kantin: Total + Tombol Checkout -->
+            <div class="kr-kantin-foot">
+                <p class="kr-kantin-total">
+                    Total: <span>Rp <?= number_format($kantin['total'], 0, ',', '.') ?></span>
+                </p>
+                <a href="checkout.php?kantin=<?= $kantin['kantin_id'] ?>" class="kr-btn-checkout">
+                    Checkout 🛒
+                </a>
             </div>
 
-        <?php } else { ?>
-            <div style="background: white; padding: 25px; border-radius: 16px; text-align: center;">
-                <p>Keranjang masih kosong</p>
-            </div>
-        <?php } ?>
+        </div>
 
-    </div>
+        <?php endforeach; ?>
+
+    <?php else: ?>
+
+        <!-- Keranjang kosong -->
+        <div class="kr-empty">
+            <div class="icon">🛒</div>
+            <h3>Keranjang Masih Kosong</h3>
+            <p>Yuk, pesan menu favoritmu sekarang!</p>
+            <a href="pembeli.php">Mulai Belanja</a>
+        </div>
+
+    <?php endif; ?>
+
 </div>
 
 <script>
-
-    document.addEventListener("DOMContentLoaded", function() {
-        totalBelanja();
-    });
-
-    function UpdateQTY(btn, step) {
-        // Cari container produk terdekat dari tombol yang diklik
-        let produkDiv = btn.closest('.produk');
-        let inputQTY = produkDiv.querySelector('.qty-input');
-        let maxStock = parseInt(produkDiv.querySelector('.stok-maks').innerText);
+    // Update qty via AJAX
+    function updateQty(idKeranjang, qtyBaru) {
+        if (qtyBaru < 0) return;
         
-        let newVal = parseInt(inputQTY.value) + step;
-
-        subtotalVal = newVal;
-        const hargaKotorStr = produkDiv.querySelector('.harga-tabel');
-        let harga = hargaKotorStr.innerText.slice(3).replace(/\./g,''); //regex "/\./g" , /.../ -> adalah format regex, \ -> mengubah chara khusus regex menjadi chara biasa, . -> simbol yang di cari, g -> flag yang berarti global
-        // singkat nya fungsi regex di atas untuk mencari ".",format replace(chara_before, chara_setelah_replace) jarang jarang make comment:v
-
-        harga = Number(harga);
-
-        const subtotal = produkDiv.querySelector('#subtotal');
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'up_keranjangDB.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+            var responTeks = xhr.responseText.trim();
+            if (xhr.status === 200) {
+                if (responTeks !== "success") { 
+                    alert("Pesan dari sistem: " + responTeks);
+                }
+                location.reload();
+                console.log("hai");
+            } else {
+                alert('Gagal update qty');
+            }
+        };
+        xhr.send('id_keranjang=' + idKeranjang + '&qty=' + qtyBaru);
         
-
-        
-        // Cek batas minimum (1) dan batas maksimum stok toko
-        if (newVal >= 1 && newVal <= maxStock) {
-            inputQTY.value = newVal;
-            newValST = newVal * harga;
-            newValST = newValST.toLocaleString('id-ID');
-            console.log(newValST);
-            subtotal.innerText = `Rp ${newValST}`;
-            totalBelanja(); 
-
-            let idmenu = btn.getAttribute('data-id');
-
-            fetch('./up_keranjangDB.php',{
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/x-www-form-urlencoded' 
-                },
-                body: `id_menu=${idmenu}&qty=${newVal}`
-            })
-            .then(Response => Response.json())
-            .then(data => {
-                console.log("Mantap berhasil:", data);
-            })
-            .catch(error => {
-                console.error("Waduh error:", error);
-            });
-            
-
-        } else if (newVal > maxStock) {
-            alert("Maaf, stok tidak mencukupi!");
-        }
     }
 
-    function totalBelanja(){
-        let semuaSubTotal = document.querySelectorAll('.subtotal');
-        let grandtotal = 0;
-        const totalHarga = document.getElementById('total-belanja');
+    // Hapus item via AJAX
+    function hapusItem(idKeranjang) {
+        if (!confirm('Yakin hapus item ini?')) return;
 
-        semuaSubTotal.forEach(function(elemen){
-            let angkaStr = elemen.innerText.slice(3).replace(/\./g,'');
-            let angka = Number(angkaStr);
-
-            grandtotal += angka;
-        });
-
-        let formatRibuan = grandtotal.toLocaleString('id-ID');
-
-        if (totalHarga !== null) {
-        totalHarga.innerText = `Rp ${formatRibuan}`;
-
-        }
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'hapus_keranjang.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                location.reload();
+            } else {
+                alert('Gagal hapus item');
+            }
+        };
+        xhr.send('id=' + idKeranjang);
     }
-
 </script>
 
 </body>

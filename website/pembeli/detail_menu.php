@@ -449,7 +449,7 @@ if (!$data) {
             const data = await response.json();
             console.log(2);
             if(data.status === 'success'){
-                window.location.href = './beli.php'; 
+                window.location.href = './keranjang.php'; 
             }
             console.log(data.message);
 
