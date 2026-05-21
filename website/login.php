@@ -16,13 +16,23 @@
         }
 
         body {
+            background: #F5F5F5;
             justify-content: center;
 
             background-color: #F5F5F5;
             min-height: 100vh;
             display: flex;
+        }
 
-
+        .page {
+            min-height: 100vh;
+            display: flex;
+            width: 80%;
+            max-width: 600px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            /* padding-top: 60px; kasih ruang buat logo */
         }
 
         .logo img {
@@ -35,101 +45,108 @@
         }
 
         .logo {
-            margin: 40px 0 65px 0;
-            align-items: center;
+
             position: absolute;
-            padding-top: 0;
-            justify-content: center;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
         }
+
 
         .card {
-            width: 100%;
-            max-width: 420px;
-            max-height: 85%;
-            background: #FFFfff;
-            color: black;
-            box-shadow: 0 2px 3px #aeaeae;
-            border-radius: 20px;
-            padding: 30px 45px;
-            border: 1px solid #652f05;
-            justify-content: center;
+
             align-items: center;
-            margin-top: 130px;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
 
-            /* justify-content: center;
-                display: grid;
-                place-items: center;
-                background-color: white;
-                margin: 10vh auto;
-                width: 65vw;
-                height: 50vh; */
-            /* align-items: center; */
-            /* display: flex; */
-            /* margin-top: 10vh; */
-
+            max-height: 85%;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
         }
 
-        .card h1 {
-            font-size: 36px;
+        h2 {
             text-align: center;
-
+            margin-bottom: 5px;
+            font-size: 2rem;
         }
 
-        .card label {
-            font-size: 15px;
-            padding-top: 30px;
+        .note {
+            text-align: center;
+            font-size: 12px;
+            color: #64748B;
+            margin-bottom: 15px;
         }
 
-        .card .input-box {
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input {
             width: 100%;
-            height: 50px;
-            margin: 30px 0;
-        }
-
-        .input-box input {
-            width: 100%;
-            height: 100%;
-            background: transparent;
+            padding: 10px;
             border: none;
+            border-bottom: 1px solid #CBD5E1;
             outline: none;
-            border-bottom: 2px solid black;
-            padding: 20px 45px 20px 20px;
+            transition: 0.2s;
         }
 
-        .btn {
-            width: 100%;
+        input:focus {
+            border-bottom: 2px solid #F47B20;
+        }
+
+        .pass-box {
+            display: flex;
+            align-items: center;
+        }
+
+        .pass-box button {
             border: none;
-            outline: none;
+            background: none;
+            cursor: pointer;
             font-size: 14px;
-            height: 40px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            border: none;
             border-radius: 20px;
+            background: #F47B20;
             color: white;
-            margin: 20px 0 15px;
-            background-color: #F47B20;
-            box-shadow: 0 2px 5px #492509;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        #notif {
-            color: #d61010;
+        button[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
-        @media (max-width:768px) {
-            .card {
-                width: 85%;
-                /* max-height: 100%; */
-                justify-content: center;
-                margin-left: auto;
-                margin-right: auto;
-            }
+        .auth-footer {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #64748B;
+        }
 
-            .card label {
-                margin-top: 10px;
-                padding: 10px;
-                font-size: 10px;
-            }
+        .auth-footer a {
+            color: #F47B20;
+            text-decoration: none;
+            font-weight: 600;
+        }
 
-            .card h1 {
-                font-size: 28px;
+
+        /* Mengubah ukuran saat layar di bawah 768px (Tablet & HP) */
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 1.6rem;
             }
         }
 
@@ -157,19 +174,19 @@
 </head>
 
 <body>
+    <div class="page">
+        <!-- LOGO -->
+        <div class="logo">
+            <img src="/source/icon/logo1.svg" alt="logokita">
+        </div>
 
-    <!-- LOGO -->
-    <div class="logo">
-        <img src="/source/icon/logo1.svg" alt="logokita">
-    </div>
+        <!-- --------/LOGO------------ -->
 
-    <!-- --------/LOGO------------ -->
 
-    <main>
-        <section class="card">
+        <div class="card">
 
             <header>
-                <h1>E-kantin login</h1>
+                <h2>E-kantin login</h2>
             </header>
 
             <div id="notiftes">
@@ -201,15 +218,18 @@
 
                 <button type="submit" class="btn" id="btn">Login</button>
             </form>
-
+            <p class="auth-footer">
+                Belum punya akun?
+                <a href="./register.php" class="auth-link">Daftar!</a>
+</p>
             <div id="notif">
                 <!-- berisi notif peringatan error dan sejenisnya -->
             </div>
-            <p>belum punya akun? <a href="./register.php">Daftar!</a></p>
 
-        </section>
-    </main>
 
+        </div>
+
+    </div>
     <script>
         document.getElementById('form_login').onsubmit = async (event) => {
 
@@ -239,13 +259,12 @@
                         notif.innerText = "role tidak dikenali!";
                     }
                 } else {
-                    
+
                     notif.innerText = data.message;
                 }
 
 
-            }
-            catch (error) {
+            } catch (error) {
                 notif.innerText = "error" + error.message;
             }
 
