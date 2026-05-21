@@ -7,7 +7,7 @@
 <body>
     <h2>Form Test Tambah Murid</h2>
     <p>note:usn akan di ubah menjadi huruf kecil semua</p>
-    <form data-ajax="true" data-action="process/pro_addmurid.php" data-notif="notif" >
+    <form data-ajax="true" data-action="process/pro_daftar.php" data-notif="notif" >
         
         <label>Username</label><br>
         <input type="text" name="usn"><br><br>
@@ -29,5 +29,6 @@
     </form>
 
     <div id="notif"></div>
+    <script src="./../shared/js/script.js"></script>
 </body>
 </html>

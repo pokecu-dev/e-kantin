@@ -34,24 +34,24 @@
             if($hasil == 1){
                 echo json_encode([
                     'status'=>'success',
-                    'message'=>'pendaftaran telah berhasil,silahkan kembali ke halaman login!' . $hasil
+                    'message'=>'pendaftaran telah berhasil,silahkan kembali ke halaman login!' 
                 ]);
             }
             else if ($hasil == "usn dupe") {
                 echo json_encode([
                     'error'=>'error',
-                    'message' => 'username sudah terpakai!' . $hasil 
+                    'message' => 'username sudah terpakai!'  
                 ]);
             }
             else if ($hasil == "no tlp dupe") {
                 echo json_encode([
                     'error'=>'error',
-                    'message' => 'nomor telepon sudah terpakai!' . $hasil
+                    'message' => 'nomor telepon sudah terpakai!' 
                 ]);
             }else if ($hasil == "email dupe") {
                 echo json_encode([
                     'error'=>'error',
-                    'message' => 'email sudah terpakai!' . $hasil
+                    'message' => 'email sudah terpakai!' 
                 ]);
             }
 

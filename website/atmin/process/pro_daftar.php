@@ -30,10 +30,33 @@
                 '1'
                 );
 
-            if($hasil){
+            // if($hasil){
+            //     echo json_encode([
+            //         'status'=>'success',
+            //         'message'=>'berhasil menambahkan PEMBELI!'
+            //     ]);
+            // }
+            if($hasil == 1){
                 echo json_encode([
                     'status'=>'success',
-                    'message'=>'berhasil menambahkan PEMBELI!'
+                    'message'=>'pembeli telah berhasil ditambahkan!' 
+                ]);
+            }
+            else if ($hasil == "usn dupe") {
+                echo json_encode([
+                    'error'=>'error',
+                    'message' => 'username sudah terpakai!'  
+                ]);
+            }
+            else if ($hasil == "no tlp dupe") {
+                echo json_encode([
+                    'error'=>'error',
+                    'message' => 'nomor telepon sudah terpakai!' 
+                ]);
+            }else if ($hasil == "email dupe") {
+                echo json_encode([
+                    'error'=>'error',
+                    'message' => 'email sudah terpakai!' 
                 ]);
             }
 
