@@ -204,7 +204,7 @@
 
                 <label>Email</label>
                 <input type="email" name="email" id="email">
-
+ <div id="notif"></div>
                 <button type="submit" id="btn">Daftar</button>
 
             </form>
@@ -216,7 +216,7 @@
 
     </div>
 
-
+  <script src="./shared/js/script.js"></script>
 </body>
 
 </html>
