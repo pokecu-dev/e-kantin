@@ -235,7 +235,7 @@ if (!empty($search_user)) {
         <h3>Hasil Pencarian: "<?= htmlspecialchars($search_user) ?>"</h3>
 
 
-        <        <div class="user-table">
+         <div class="user-table">
             <div class="table-wrapper">
                 <div class="user-table__header">
                     <div>Username</div>

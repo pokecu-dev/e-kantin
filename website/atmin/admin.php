@@ -1,380 +1,447 @@
 <?php
 
-session_start();
-if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
-    // echo $_SESSION['status'];
-    header("location: ../index.php");
-    exit();
-}
-if ($_SESSION['role'] != 'ADMIN') {
-    header("location: ../index.php");
-}
-
-
-
-$nama = $_SESSION['nama_lengkap'];
-
-// echo $nama . '<br> <br>';
-
-
-// echo ' sebagai pembeli';
-
-
-?>
-
-<?php
-
 require_once __DIR__ . "/../include/koneksi.php";
 
-if ($conn->error) {
-    echo $conn->connect_error;
-}
+// ======================
+// TOTAL PRODUK
+// ======================
 
-$sql = "SELECT * FROM users";
-$query = $conn->query("SELECT * FROM users ORDER BY ID DESC LIMIT 5");
+$totalProduk = mysqli_query($conn, "
+    SELECT COUNT(*) as total 
+    FROM tb_menu
+");
+
+$dataProduk = mysqli_fetch_assoc($totalProduk);
+
+// ======================
+// TOTAL USER
+// ======================
+
+$totalUser = mysqli_query($conn, "
+    SELECT COUNT(*) as total 
+    FROM users
+");
+
+$dataUser = mysqli_fetch_assoc($totalUser);
+
+// ======================
+// TOTAL OUTLET
+// ======================
+
+$totalOutlet = mysqli_query($conn, "
+    SELECT COUNT(*) as total 
+    FROM list_kantin
+");
+
+$dataOutlet = mysqli_fetch_assoc($totalOutlet);
+
+// ======================
+// PRODUK HABIS
+// ======================
+
+$produkHabis = mysqli_query($conn, "
+    SELECT COUNT(*) as total 
+    FROM tb_menu
+    WHERE STOK = 0
+");
+
+$dataHabis = mysqli_fetch_assoc($produkHabis);
+
+// ======================
+// TRANSAKSI TERBARU
+// ======================
+
+$transaksi = mysqli_query($conn, "
+    SELECT * 
+    FROM transaksi
+    ORDER BY id DESC
+    LIMIT 5
+");
+
+// ======================
+// PRODUK TERLARIS
+// ======================
+
+$terlaris = mysqli_query($conn, "
+    SELECT 
+        NAMA_MENU,
+        RATING
+    FROM tb_menu
+    ORDER BY RATING DESC
+    LIMIT 5
+");
 
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canteen Admin Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #F47B20;
-            --bg: #f5f5f5;
-            --white: #ffffff;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        /* Warna default (Abu-abu) untuk semua menu */
-        .nav-links a {
-            text-decoration: none;
-            color: #888;
-            /* Warna abu-abu */
-            font-weight: 500;
-            transition: 0.3s;
-        }
+<title>Dashboard Admin</title>
 
-        /* Warna khusus (Merah) untuk menu yang sedang aktif */
-        .nav-links a.active {
-            color: var(--primary);
-            /* Warna merah brand KantinKita */
-            border-bottom: 2px solid #F47B20;
-            /* Opsional: tambah garis bawah agar lebih jelas */
-            padding-bottom: 5px;
-        }
+<link rel="stylesheet" href="style.css">
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+<style>
 
-        body {
-            background-color: var(--bg);
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter',sans-serif;
+}
 
-        }
+body{
+    background:#f8fafc;
+    color:#1e293b;
+}
 
-        /* Stats Card Styling */
-        .stats-container {
-            margin-bottom: 30px;
-            overflow: hidden;
-            margin-top: 100px;
-            padding: 0 20px;
-        }
+/* =======================
+CONTAINER
+======================= */
 
-        .stats-wrapper {
-            display: flex;
-            gap: 15px;
-            padding-bottom: 10px;
-        }
+.container{
+    width:100%;
+    max-width:1400px;
+    margin:auto;
+    padding:24px;
+    margin-top:70px;
+}
 
-        .stat-card {
-            background: var(--white);
-            padding: 20px;
-            border-radius: 12px;
-            min-width: 200px;
-            flex: 1;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+/* =======================
+HEADER
+======================= */
 
-        .stat-card h3 {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin: 0;
-        }
+.dashboard-header{
+    margin-bottom:30px;
+}
 
-        .stat-card p {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 10px 0 0 0;
-            color: #111827;
-        }
+.dashboard-header h1{
+    font-size:32px;
+    margin-bottom:10px;
+}
 
-        /* User Table Card */
-        .table-card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 0 20px 0 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+.dashboard-header p{
+    color:#64748b;
+}
 
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+/* =======================
+STATS
+======================= */
 
-        .btn-view-all {
-            text-decoration: none;
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
+.stats-scroll{
+    overflow-x:auto;
+    padding-bottom:10px;
+}
 
-        /* Indikator Dots */
-        .dots {
-            display: none;
-            /* Sembunyi di desktop */
-            justify-content: center;
-            gap: 5px;
-            margin-top: 10px;
-        }
+.stats-scroll::-webkit-scrollbar{
+    height:6px;
+}
 
-        .dot {
-            width: 8px;
-            height: 8px;
-            background: #d1d5db;
-            border-radius: 50%;
-        }
+.stats-scroll::-webkit-scrollbar-thumb{
+    background:#cbd5e1;
+    border-radius:999px;
+}
 
-        .dot.active {
-            background: var(--primary);
-        }
+.stats-grid{
+    display:flex;
+    gap:20px;
+    min-width:max-content;
+}
 
-        /* Responsivitas Mobile */
-        @media (max-width: 768px) {
-            .stats-wrapper {
-                overflow-x: auto;
-                scroll-snap-type: x mandatory;
-                -webkit-overflow-scrolling: touch;
-            }
+.stat-card{
+    width:260px;
+    background:white;
+    border-radius:20px;
+    padding:24px;
+    border:1px solid #e2e8f0;
+    box-shadow:0 4px 20px rgba(0,0,0,0.05);
+}
 
-            .stat-card {
-                min-width: 80%;
-                scroll-snap-align: center;
-            }
+.icon-box{
+    width:60px;
+    height:60px;
+    border-radius:16px;
 
-            .dots {
-                display: flex;
-            }
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-            .stats-wrapper::-webkit-scrollbar {
-                display: none;
-            }
-        }
+    font-size:28px;
+    margin-bottom:18px;
+}
 
-        /* Styling untuk list user agar rapi */
-        .header-tabel,
-        .div1 {
-            display: grid;
-            grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1fr;
-            gap: 10px;
-            padding: 8px;
-            min-width: 700px;
-            max-height: fit-content;
-            border-bottom: 1px solid #492509;
-            align-items: start;
-        }
+.orange{
+    background:#fff7ed;
+}
 
-        .parent {
-            background-color: #dac8b9;
-            padding: 15px;
-            border-radius: 10px;
+.red{
+    background:#fef2f2;
+}
 
-        }
+.green{
+    background:#f0fdf4;
+}
 
-        .div1 {
-            line-height: 1.4;
+.blue{
+    background:#eff6ff;
+}
 
-        }
+.stat-card span{
+    color:#64748b;
+    font-size:14px;
+}
 
-        .div1 p {
-            word-break: break-word;
-        }
+.stat-card h2{
+    margin-top:10px;
+    font-size:34px;
+}
 
-        /* Warna background */
-        .header-tabel {
-            background: #fff5eb;
-            font-weight: bold;
-            border-radius: 5px;
-            margin-bottom: 5px;
-        }
+/* =======================
+GRID
+======================= */
 
-        .card1 {}
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:24px;
+    margin-top:30px;
+}
 
-        .card2 {
-            overflow-x: auto;
-        }
+/* =======================
+CARD
+======================= */
 
-        p {
-            font-size: small;
-        }
+.card{
+    background:white;
+    border-radius:20px;
+    border:1px solid #e2e8f0;
+    padding:24px;
+}
 
-        .btn {
-            border: none;
-            outline: none;
-            font-size: 14px;
-            height: 40px;
-            border-radius: 5px;
-            color: white;
-            margin: 20px 0 15px;
-            background-color: #F47B20;
-            box-shadow: 0 2px 5px #492509;
-        }
-    </style>
+.card h3{
+    margin-bottom:20px;
+}
+
+/* =======================
+TABLE
+======================= */
+
+.table{
+    width:100%;
+}
+
+.table-row{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    padding:14px 0;
+    border-bottom:1px solid #f1f5f9;
+}
+
+.table-header{
+    font-weight:700;
+    color:#64748b;
+}
+
+/* =======================
+PRODUK HABIS
+======================= */
+
+.habis-item{
+    background:#fef2f2;
+    color:#dc2626;
+    padding:14px;
+    border-radius:14px;
+    margin-bottom:12px;
+    font-weight:600;
+}
+
+/* =======================
+RESPONSIVE
+======================= */
+
+@media(max-width:900px){
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
 </head>
 
 <body>
 
-    <!-- Navigasi Utama -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-container">
 
-            <!-- Burger Menu (Mobile Only) -->
-            <input type="checkbox" id="check">
-            <label for="check" class="checkbtn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </label>
+        <div class="logo">
+            <img src="../../source/icon/logo1.svg" alt="">
+        </div>
 
-            <ul class="nav-links">
-                <li><a href="admin.php" class="active">Beranda</a></li>
-                <li><a href="akun.php">Akun</a></li>
-                <li><a href="menu.php">Produk</a></li>
-                <li><a href="oulet.php">Outlet</a></li>
-                <li><a href="./../logout.php">Log Out</a></li>
-            </ul>
-        </div>
-    </nav>
+        <ul class="nav-links">
+            <li><a href="admin.php" class="active">Beranda</a></li>
+            <li><a href="akun.php">Akun</a></li>
+            <li><a href="menu.php">Produk</a></li>
+            <li><a href="oulet.php">Outlet</a></li>
+            <li><a href="./../logout.php">Log Out</a></li>
+        </ul>
 
-    <!-- Bagian Statistik (Card Horizontal) -->
-    <div class="stats-container">
-        <div class="stats-wrapper">
-            <div class="stat-card">
-                <h3>Active User</h3>
-                <p>124</p>
-            </div>
-            <div class="stat-card">
-                <h3>Jumlah Kantin</h3>
-                <p>12</p>
-            </div>
-            <div class="stat-card">
-                <h3>Jumlah Menu</h3>
-                <p>85</p>
-            </div>
-            <div class="stat-card">
-                <h3>Jumlah Penjual</h3>
-                <p>10</p>
-            </div>
-        </div>
-        <!-- Dot active hanya muncul di mobile via CSS -->
-        <div class="dots">
-            <span class="dot active"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="dashboard-header">
+        <h1>Dashboard Admin</h1>
+        <p>Pantau semua aktivitas kantin secara real-time.</p>
     </div>
 
-    <!-- Bagian Tabel Users -->
-    <div class="table-card">
-        <div class="table-header">
-            <h2>Daftar User</h2>
-            <a href="#" class="btn-view-all">Lihat Semua</a>
+    <!-- STATS -->
+
+    <div class="stats-scroll">
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <div class="icon-box orange">📦</div>
+                <span>Total Produk</span>
+                <h2><?= $dataProduk['total'] ?></h2>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon-box blue">👤</div>
+                <span>Total User</span>
+                <h2><?= $dataUser['total'] ?></h2>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon-box green">🏪</div>
+                <span>Total Outlet</span>
+                <h2><?= $dataOutlet['total'] ?></h2>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon-box red">⚠️</div>
+                <span>Produk Habis</span>
+                <h2><?= $dataHabis['total'] ?></h2>
+            </div>
+
         </div>
 
-        <div class="perent">
-            <div class="card2">
-                <div class="header-tabel">
-                    <p>ID</p>
-                    <p>USERNAME</p>
-                    <p>NAMA LENGKAP</p>
-                    <p>NO TLP</p>
-                    <p>EMAIL</p>
-                    <p>ROLE</p>
-                    <p>AKSI</p>
+    </div>
+
+    <!-- GRID -->
+
+    <div class="dashboard-grid">
+
+        <!-- TRANSAKSI -->
+
+        <div class="card">
+
+            <h3>Transaksi Terbaru</h3>
+
+            <div class="table">
+
+                <div class="table-row table-header">
+                    <div>ID</div>
+                    <div>Total</div>
+                    <div>Status</div>
                 </div>
-                <?php
-                while ($user = $query->fetch_assoc()): ?>
-                    <div class="card">
-                        <div class="card1">
-                            <div class="div1">
-                                <p><?= $user['ID'] ?></p>
-                                <p><?= $user['USERNAME'] ?></p>
-                                <p><?= $user['NAMA_LENGKAP'] ?></p>
-                                <p><?= $user['NO_TLP'] ?></p>
-                                <p><?= $user['EMAIL'] ?></p>
-                                <p><?= $user['ROLE'] ?></p>
-                                <p>
-                                    <a href="edituser.php?id=<?= $user['ID'] ?>" class="btn-edit">Edit</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
+
+                <?php while($trx = mysqli_fetch_assoc($transaksi)): ?>
+
+                <div class="table-row">
+                    <div>#<?= $trx['ID_TRANSAKSI'] ?></div>
+                    <div>Rp <?= number_format($trx['TOTAL_HARGA']) ?></div>
+                    <div><?= $trx['STATUS'] ?></div>
+                </div>
+
                 <?php endwhile; ?>
+
             </div>
+
         </div>
+
+        <!-- SIDEBAR -->
+
+        <div>
+
+            <!-- PRODUK TERLARIS -->
+
+            <div class="card" style="margin-bottom:24px;">
+
+                <h3>Produk Rating Tertinggi</h3>
+
+                <?php while($top = mysqli_fetch_assoc($terlaris)): ?>
+
+                <div class="habis-item"
+                    style="
+                    background:#fff7ed;
+                    color:#ea580c;
+                    ">
+                    ⭐ <?= $top['NAMA_MENU'] ?>
+                    (<?= $top['RATING'] ?>)
+                </div>
+
+                <?php endwhile; ?>
+
+            </div>
+
+            <!-- QUICK ACTION -->
+
+            <div class="card">
+
+                <h3>Quick Action</h3>
+
+                <div style="
+                    display:flex;
+                    flex-direction:column;
+                    gap:14px;
+                ">
+
+                    <a href="menu.php"
+                    style="
+                    text-decoration:none;
+                    background:#f47b20;
+                    color:white;
+                    padding:14px;
+                    border-radius:14px;
+                    text-align:center;
+                    font-weight:600;
+                    ">
+                        + Tambah Produk
+                    </a>
+
+                    <a href="akun.php"
+                    style="
+                    text-decoration:none;
+                    background:#1e293b;
+                    color:white;
+                    padding:14px;
+                    border-radius:14px;
+                    text-align:center;
+                    font-weight:600;
+                    ">
+                        + Tambah User
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
-    <!-- <br>
-    <p>tes up file</p>
-    <form id="upfile-form">
-        <label for="upfile">pilih file:</label>
-        <input type="file" id="upfile" name="upfile">
-        <button type="submit"">upload</button>
-    </form> -->
-    <!-- <div id=" notif" style="color: green;">hi</div> -->
 
-            <!-- <br>
-            <a href="TESTINGFITUR.php">tes WILAYAH TESTING FITUR >:[]</a>
-            <a href="cariProduk.php">cari</a> -->
-
-
-            <script>
-                document.getElementById("upfile-form").onsubmit = async (events) => {
-
-                    events.preventDefault();
-                    const dataForm = new FormData(this);
-                    const notif = document.getElementById("notif");
-
-                    try {
-
-
-                        const respon = await fetch('/../include/proses(universal)/upfile.php', {
-                            method: "POST",
-                            body: dataForm
-                        });
-
-                        const data = await respon.json();
-
-                        notif.innerText = data.message;
-
-
-                    } catch (error) {
-                        console.error("Detail Error:", error);
-                        notif.innerText = error.message;
-                    }
-                }
-            </script>
+</div>
 
 </body>
-
 </html>

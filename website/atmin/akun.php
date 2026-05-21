@@ -29,7 +29,44 @@ $totalAdmin = mysqli_num_rows(
         "SELECT * FROM users WHERE ROLE='ADMIN'"
     )
 );
-?>
+
+$search_user = isset($_GET['query'])
+    ? trim($_GET['query'])
+    : '';
+
+if ($search_user !== '') {
+
+    $keyword = "%" . $search_user . "%";
+
+    $sql = "SELECT * FROM users
+            WHERE USERNAME LIKE ?
+            OR NAMA_LENGKAP LIKE ?
+            OR CAST(ID AS CHAR) LIKE ?";
+
+    $stmt = $conn->prepare($sql);
+
+    if ($stmt) {
+
+        $stmt->bind_param(
+            "sss",
+            $keyword,
+            $keyword,
+            $keyword
+        );
+
+        $stmt->execute();
+
+        $query = $stmt->get_result();
+    } else {
+
+        die("Query error: " . $conn->error);
+    }
+} else {
+
+    $sql = "SELECT * FROM users";
+
+    $query = $conn->query($sql);
+} ?>
 
 <!DOCTYPE html>
 <html lang="id">
@@ -57,6 +94,7 @@ $totalAdmin = mysqli_num_rows(
             --radius: 18px;
 
             /* GRID UTAMA - TIDAK DIUBAH SAMA SEKALI */
+            --col-id: 0.8fr;
             --col-username: 1fr;
             --col-name: 1.5fr;
             --col-phone: 1.2fr;
@@ -130,101 +168,114 @@ $totalAdmin = mysqli_num_rows(
         /* =====================
            SEARCH BOX
         ===================== */
-        
- .top-bar{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:20px;
-    margin-bottom:30px;
-    flex-wrap:wrap;
-}
 
-.top-actions{
-    display:flex;
-    align-items:center;
-    gap:16px;
-    margin-left:auto;
-}
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
 
-.search-form{
-    margin:0;
-}
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-left: auto;
+        }
 
-.search-input-wrapper{
-    display:flex;
-    align-items:center;
-    gap:12px;
+        .search-form {
+            margin: 0;
+        }
 
-    background:white;
+        .search-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
 
-    border:1px solid #e2e8f0;
-    border-radius:999px;
+            background: white;
 
-    padding:0 18px;
+            border: 1px solid #e2e8f0;
+            border-radius: 999px;
 
-    width:300px;
-    height:52px;
-}
+            padding: 0 18px;
 
-.search-input-wrapper i{
-    color:#94a3b8;
-    font-size:16px;
-}
+            width: 300px;
+            height: 52px;
+        }
 
-.search-input-wrapper input{
-    border:none;
-    outline:none;
-    width:100%;
-    font-size:14px;
-    background:transparent;
-}
+        .search-input-wrapper i {
+            color: #94a3b8;
+            font-size: 16px;
+        }
 
-.btn-add{
-    border:none;
-    background:#f47b20;
-    color:white;
+        .search-input-wrapper input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            background: transparent;
+        }
 
-    height:52px;
-    padding:0 24px;
+        .btn-add {
+            border: none;
+            background: #f47b20;
+            color: white;
 
-    border-radius:999px;
+            height: 52px;
+            padding: 0 24px;
 
-    display:flex;
-    align-items:center;
-    gap:10px;
+            border-radius: 999px;
 
-    font-weight:600;
-    cursor:pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
 
-    transition:.2s;
-}
+            font-weight: 600;
+            cursor: pointer;
 
-.btn-add:hover{
-    opacity:.9;
-}
+            transition: .2s;
+        }
 
-@media(max-width:768px){
+        .btn-add:hover {
+            opacity: .9;
+        }
 
-    .top-bar{
-        flex-direction:column;
-        align-items:stretch;
-    }
+        .search-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 16px;
 
-    .top-actions{
-        width:100%;
-    }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .search-input-wrapper{
-        width:100%;
-    }
+        @media(max-width:768px) {
 
-    .btn-add{
-        width:100%;
-        justify-content:center;
-    }
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
 
-}
+            .top-actions {
+                width: 100%;
+            }
+
+            .search-input-wrapper {
+                width: 100%;
+            }
+
+            .btn-add {
+                width: 100%;
+                justify-content: center;
+            }
+
+        }
+
         /* =====================
            STATS
         ===================== */
@@ -248,7 +299,7 @@ $totalAdmin = mysqli_num_rows(
             gap: 18px;
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-soft);
-           
+
             width: 32%;
             overflow: hidden;
             min-width: 260px;
@@ -292,7 +343,7 @@ $totalAdmin = mysqli_num_rows(
         /* =====================
            ACTION BAR
         ===================== */
-       
+
 
         .btn-action {
             background: white;
@@ -334,7 +385,7 @@ $totalAdmin = mysqli_num_rows(
             min-width: 1100px;
 
             display: grid;
-            grid-template-columns: var(--col-username) var(--col-name) var(--col-phone) var(--col-email) var(--col-role) var(--col-action);
+            grid-template-columns: var(--col-id) var(--col-username) var(--col-name) var(--col-phone) var(--col-email) var(--col-role) var(--col-action);
             gap: 16px;
             align-items: center;
             padding: 18px 20px;
@@ -468,6 +519,48 @@ $totalAdmin = mysqli_num_rows(
             cursor: pointer;
             font-size: 20px;
         }
+
+        /* Pastikan modal-content bertindak sebagai patokan posisi (relative) */
+        .modal-content {
+            position: relative;
+            /* Kunci utama agar tombol absolut tidak lari keluar kotak */
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            width: 450px;
+            max-width: 90%;
+            height: auto;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        /* STYLE TOMBOL X DI KANAN ATAS */
+        .close-modal-right {
+            position: absolute;
+            top: 20px;
+            /* Jarak dari batas atas kotak putih */
+            right: 25px;
+            /* Jarak dari batas kanan kotak putih */
+            background: none;
+            border: none;
+            font-size: 24px;
+            /* Ukuran huruf X */
+            font-weight: bold;
+            color: #94a3b8;
+            /* Warna abu-abu soft */
+            cursor: pointer;
+            line-height: 1;
+            padding: 5px;
+            z-index: 10;
+            /* Memastikan tombol berada di lapisan paling atas */
+            transition: color 0.2s ease;
+        }
+
+        /* Efek ketika tombol disorot kursor mouse */
+        .close-modal-right:hover {
+            color: #1e293b;
+            /* Berubah menjadi abu-abu gelap tajam */
+        }
     </style>
 </head>
 
@@ -494,73 +587,81 @@ $totalAdmin = mysqli_num_rows(
 
     <!-- MAIN CONTAINER -->
     <main class="container">
-      <div class="top-bar">
+        <div class="top-bar">
 
-    <div class="header-title">
-        <h1>Kelola User</h1>
-        <p>Pantau dan atur semua akun pengguna dalam sistem.</p>
-    </div>
-
-    <div class="top-actions">
-
-        <form action="cariUser.php" method="GET" class="search-form">
-
-            <div class="search-input-wrapper">
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                <input 
-                    type="text" 
-                    name="query" 
-                    placeholder="Cari outlet..." 
-                    required>
+            <div class="header-title">
+                <h1>Kelola User</h1>
+                <p>Pantau dan atur semua akun pengguna dalam sistem.</p>
             </div>
 
-        </form>
+            <div class="top-actions">
 
-        <button class="btn-add" onclick="openAddUserModal()">
-            <i class="fa-solid fa-plus"></i>
-            Tambah Outlet
-        </button>
+                <form action="" method="GET" class="search-form">
 
-    </div>
+                    <div class="search-input-wrapper">
 
-</div>
+                        <button type="submit" class="search-btn">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+
+                        <input
+                            type="text"
+                            name="query"
+                            placeholder="Cari user..."
+                            value="<?= htmlspecialchars($search_user) ?>">
+
+                    </div>
+
+                </form>
+
+                <button class="btn-add" onclick="openAddUserModal()">
+                    <i class="fa-solid fa-plus"></i>
+                    Tambah Outlet
+                </button>
+
+            </div>
+
+        </div>
 
         <!-- STATS -->
-       <div class="stats-grid">
+        <div class="stats-grid">
 
-    <div class="stat-card">
-        <div class="icon-box icon-total">📦</div>
+            <div class="stat-card">
+                <div class="icon-box icon-total">📦</div>
 
-        <div class="stat-info">
-            <span>TOTAL PEMBELI</span>
-            <h2><?= $totalPembeli ?></h2>
+                <div class="stat-info">
+                    <span>TOTAL PEMBELI</span>
+                    <h2><?= $totalPembeli ?></h2>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon-box icon-low">⚠️</div>
+
+                <div class="stat-info">
+                    <span>TOTAL PENJUAL</span>
+                    <h2><?= $totalPenjual ?></h2>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon-box icon-active">✅</div>
+
+                <div class="stat-info">
+                    <span>TOTAL ADMIN</span>
+                    <h2><?= $totalAdmin ?></h2>
+                </div>
+            </div>
+
         </div>
-    </div>
-
-    <div class="stat-card">
-        <div class="icon-box icon-low">⚠️</div>
-
-        <div class="stat-info">
-            <span>TOTAL PENJUAL</span>
-            <h2><?= $totalPenjual ?></h2>
-        </div>
-    </div>
-
-    <div class="stat-card">
-        <div class="icon-box icon-active">✅</div>
-
-        <div class="stat-info">
-            <span>TOTAL ADMIN</span>
-            <h2><?= $totalAdmin ?></h2>
-        </div>
-    </div>
-
-</div>
-        <!-- USER TABLE (GRID UNTOUCHED) -->
+        <!-- USER TABLE -->
+        <!-- USER TABLE -->
         <div class="user-table">
+
             <div class="table-wrapper">
+
                 <div class="user-table__header">
+                    <div>Id</div>
                     <div>Username</div>
                     <div>Nama Lengkap</div>
                     <div>No Tlp</div>
@@ -569,34 +670,73 @@ $totalAdmin = mysqli_num_rows(
                     <div>Aksi</div>
                 </div>
 
-                <?php while ($user = $query->fetch_assoc()): ?>
-                    <div class="user-table__row">
-                        <div class="user-table__cell">
-                            <strong><?= htmlspecialchars($user['USERNAME']) ?></strong>
+                <?php if ($query && $query->num_rows > 0): ?>
+
+                    <?php while ($user = $query->fetch_assoc()): ?>
+
+                        <div class="user-table__row">
+                            <div class="user-table__cell">#
+                                <?= htmlspecialchars($user['ID']) ?>
+                            </div>
+
+                            <div class="user-table__cell">
+                                <strong>
+                                    <?= htmlspecialchars($user['USERNAME']) ?>
+                                </strong>
+                            </div>
+
+                            <div class="user-table__cell">
+                                <?= htmlspecialchars($user['NAMA_LENGKAP']) ?>
+                            </div>
+
+                            <div class="user-table__cell">
+                                <?= htmlspecialchars($user['NO_TLP']) ?>
+                            </div>
+
+                            <div class="user-table__cell">
+                                <?= htmlspecialchars($user['EMAIL']) ?>
+                            </div>
+
+                            <div class="user-table__cell">
+                                <span class="badge">
+                                    <?= htmlspecialchars($user['ROLE']) ?>
+                                </span>
+                            </div>
+
+                            <div class="user-table__cell">
+
+                                <button
+                                    type="button"
+                                    class="user-table__link"
+                                    style="background:none;border:none;cursor:pointer;"
+                                    onclick="openEditModal(<?= (int)$user['ID'] ?>)">
+
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    Edit
+
+                                </button>
+
+                            </div>
+
                         </div>
-                        <div class="user-table__cell">
-                            <?= htmlspecialchars($user['NAMA_LENGKAP']) ?>
-                        </div>
-                        <div class="user-table__cell">
-                            <?= htmlspecialchars($user['NO_TLP']) ?>
-                        </div>
-                        <div class="user-table__cell">
-                            <?= htmlspecialchars($user['EMAIL']) ?>
-                        </div>
-                        <div class="user-table__cell">
-                            <span class="badge"><?= htmlspecialchars($user['ROLE']) ?></span>
-                        </div>
-                        <div class="user-table__cell">
-                            <button type="button"
-                                class="user-table__link"
-                                style="background: none; border: none; cursor: pointer;"
-                                onclick="openEditModal(<?= (int)$user['ID'] ?>)">
-                                <i class="fa-solid fa-pen-to-square"></i> Edit
-                            </button>
-                        </div>
+
+                    <?php endwhile; ?>
+
+                <?php else: ?>
+
+                    <div style="
+                padding:40px;
+                text-align:center;
+                color:#94a3b8;
+                font-weight:600;
+            ">
+                        User tidak ditemukan.
                     </div>
-                <?php endwhile; ?>
+
+                <?php endif; ?>
+
             </div>
+
         </div>
     </main>
 
@@ -639,219 +779,178 @@ $totalAdmin = mysqli_num_rows(
             <!-- Data dari AJAX edituser.php akan di-render di sini -->
         </div>
     </dialog>
+<script>
+  // =========================
+// EDIT USER MODAL (dialog)
+// =========================
 
-    <script>
-        // =========================
-        // MODAL EDIT USER
-        // =========================
+const editModal = document.getElementById("editUserModal");
+const modalBody = document.getElementById("modalBody");
 
-        const modal = document.getElementById('editUserModal');
-        const modalBody = document.getElementById('modalBody');
+async function openEditModal(userId) {
 
-        async function openEditModal(userId) {
+    modalBody.innerHTML = `
+        <div style="text-align:center;padding:30px;">
+            <i class="fa-solid fa-spinner fa-spin"
+               style="font-size:30px;color:#f36f21;"></i>
+            <p style="margin-top:10px;">Memuat data...</p>
+        </div>
+    `;
 
-            modalBody.innerHTML = `
-            <div style="text-align:center; padding: 30px;">
-                <i class="fa-solid fa-spinner fa-spin"
-                style="font-size:30px;color:#f36f21;"></i>
+    editModal.showModal();
+
+    try {
+        const response = await fetch(`edituser.php?id=${userId}`);
+
+        if (!response.ok) {
+            throw new Error("Fetch gagal");
+        }
+
+        const html = await response.text();
+        modalBody.innerHTML = html;
+
+    } catch (error) {
+        modalBody.innerHTML = `
+            <div style="padding:30px;text-align:center;">
+                <i class="fa-solid fa-circle-exclamation"
+                   style="font-size:30px;color:red;"></i>
 
                 <p style="margin-top:10px;">
-                    Memuat data...
+                    Gagal memuat data user.
                 </p>
-            </div>
-        `;
 
-            modal.showModal();
-
-            try {
-
-                const response = await fetch(`edituser.php?id=${userId}`);
-
-                if (!response.ok) {
-                    throw new Error('Fetch gagal');
-                }
-
-                const html = await response.text();
-
-                modalBody.innerHTML = html;
-
-            } catch (error) {
-
-                modalBody.innerHTML = `
-                <div style="padding:30px;text-align:center;">
-                    <i class="fa-solid fa-circle-exclamation"
-                    style="font-size:30px;color:red;"></i>
-
-                    <p style="margin-top:10px;">
-                        Gagal memuat data user.
-                    </p>
-
-                    <button
-                        onclick="closeEditModal()"
-                        class="btn-orange"
-                        style="margin-top:15px;">
-                        Tutup
-                    </button>
-                </div>
-            `;
-            }
-        }
-
-        function closeEditModal() {
-            modal.close();
-        }
-
-        modal.addEventListener('click', (e) => {
-
-            const rect = modal.getBoundingClientRect();
-
-            const isOutside =
-                e.clientX < rect.left ||
-                e.clientX > rect.right ||
-                e.clientY < rect.top ||
-                e.clientY > rect.bottom;
-
-            if (isOutside) {
-                closeEditModal();
-            }
-        });
-
-        document.addEventListener('keydown', (e) => {
-
-            if (e.key === 'Escape') {
-                closeEditModal();
-                closeAddModal();
-            }
-        });
-
-        // =========================
-        // MODAL TAMBAH USER
-        // =========================
-
-        function openAddUserModal() {
-
-            document.getElementById("addModal")
-                .classList.add("active");
-
-            backToMenu();
-        }
-
-        function closeAddModal() {
-
-            document.getElementById("addModal")
-                .classList.remove("active");
-        }
-
-        async function loadForm(file) {
-
-            const modalContent =
-                document.querySelector(".modal-content");
-
-            modalContent.innerHTML = `
-            <span class="close-modal"
-                onclick="closeAddModal()">
-                &times;
-            </span>
-
-            <button
-                onclick="backToMenu()"
-                class="btn-action"
-                style="margin-bottom:20px;">
-                ← Kembali
-            </button>
-
-            <div style="text-align:center; padding:30px;">
-                <i class="fa-solid fa-spinner fa-spin"
-                style="font-size:30px;color:#f36f21;"></i>
-
-                <p style="margin-top:10px;">
-                    Memuat form...
-                </p>
-            </div>
-        `;
-
-            try {
-
-                const response = await fetch(file);
-
-                if (!response.ok) {
-                    throw new Error("Gagal load form");
-                }
-
-                const html = await response.text();
-
-                modalContent.innerHTML = `
-                <span class="close-modal"
-                    onclick="closeAddModal()">
-                    &times;
-                </span>
-
-                <button
-                    onclick="backToMenu()"
-                    class="btn-action"
-                    style="margin-bottom:20px;">
-                    ← Kembali
+                <button onclick="closeEditModal()"
+                        style="margin-top:15px;padding:8px 14px;">
+                    Tutup
                 </button>
+            </div>
+        `;
+    }
+}
 
-                ${html}
-            `;
+function closeEditModal() {
+    editModal.close();
+}
 
-            } catch (error) {
+// klik luar modal = close
+editModal.addEventListener("click", (e) => {
+    const rect = editModal.getBoundingClientRect();
 
-                modalContent.innerHTML = `
-                <span class="close-modal"
-                    onclick="closeAddModal()">
-                    &times;
-                </span>
+    const isOutside =
+        e.clientX < rect.left ||
+        e.clientX > rect.right ||
+        e.clientY < rect.top ||
+        e.clientY > rect.bottom;
 
-                <p style="color:red; text-align:center;">
-                    Gagal memuat form.
-                </p>
-            `;
-            }
-        }
+    if (isOutside) closeEditModal();
+});
 
-        function backToMenu() {
+// ESC key close
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        closeEditModal();
+        closeAddModal();
+    }
+});
 
-            const modalContent =
-                document.querySelector(".modal-content");
 
-            modalContent.innerHTML = `
-            <span class="close-modal"
-                onclick="closeAddModal()">
-                &times;
-            </span>
+// =========================
+// ADD USER MODAL
+// =========================
 
-            <h3 style="margin-bottom:15px;">
-                Pilih Jenis Akun
-            </h3>
+const addModal = document.getElementById("addModal");
+const addModalContent = addModal.querySelector(".modal-content");
 
-            <button
-                class="btn-action"
+function openAddUserModal() {
+    addModal.classList.add("active");
+    resetAddMenu();
+}
+
+function closeAddModal() {
+    addModal.classList.remove("active");
+
+    // reset setelah animasi nutup
+    setTimeout(() => {
+        resetAddMenu();
+    }, 200);
+}
+
+// reset tampilan awal modal add
+function resetAddMenu() {
+    addModalContent.innerHTML = `
+        <button class="close-modal" onclick="closeAddModal()">&times;</button>
+
+        <h3 style="margin-bottom:15px; text-align:center;">
+            Pilih Jenis Akun
+        </h3>
+
+        <button class="btn-action"
                 style="width:100%; margin-bottom:10px;"
                 onclick="loadForm('addPembeli.php')">
+            Tambah Pembeli
+        </button>
 
-                Tambah Pembeli
-            </button>
-
-            <button
-                class="btn-action"
+        <button class="btn-action"
                 style="width:100%; margin-bottom:10px;"
                 onclick="loadForm('addPenjual.php')">
+            Tambah Penjual
+        </button>
 
-                Tambah Penjual
-            </button>
-
-            <button
-                class="btn-action"
+        <button class="btn-action"
                 style="width:100%;"
                 onclick="loadForm('addAdmin.php')">
+            Tambah Admin
+        </button>
+    `;
+}
 
-                Tambah Admin
-            </button>
-        `;
+// load form via fetch
+async function loadForm(file) {
+
+    addModalContent.innerHTML = `
+        <button type="button"
+                class="close-modal-right"
+                onclick="closeAddModal()">&times;</button>
+
+        <div style="text-align:center;padding:30px;">
+            <i class="fa-solid fa-spinner fa-spin"
+               style="font-size:30px;color:#f36f21;"></i>
+            <p style="margin-top:10px;">Memuat form...</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(file);
+
+        if (!response.ok) {
+            throw new Error("Gagal load form");
         }
-    </script>
+
+        const html = await response.text();
+
+        addModalContent.innerHTML = `
+            <button type="button"
+                    class="close-modal-right"
+                    onclick="closeAddModal()">&times;</button>
+
+            <div style="margin-top:10px;">
+                ${html}
+            </div>
+        `;
+
+    } catch (error) {
+        addModalContent.innerHTML = `
+            <button type="button"
+                    class="close-modal-right"
+                    onclick="closeAddModal()">&times;</button>
+
+            <p style="color:red;text-align:center;padding:20px;">
+                Gagal memuat form.
+            </p>
+        `;
+    }
+}
+</script>
 </body>
 
 </html>
