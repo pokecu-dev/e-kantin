@@ -93,14 +93,15 @@ if ($search_user !== '') {
             --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
             --radius: 18px;
 
-            /* GRID UTAMA - TIDAK DIUBAH SAMA SEKALI */
-            --col-id: 0.8fr;
+            /* GRID UTAMA - DISESUAIKAN UNTUK KOLOM STATUS */
+            --col-id: 0.6fr;
             --col-username: 1fr;
-            --col-name: 1.5fr;
-            --col-phone: 1.2fr;
-            --col-email: 1.8fr;
-            --col-role: .9fr;
-            --col-action: .8fr;
+            --col-name: 1.4fr;
+            --col-phone: 1.1fr;
+            --col-email: 1.6fr;
+            --col-role: 0.8fr;
+            --col-status: 0.9fr; /* Tambahan kolom baru */
+            --col-action: 0.7fr;
         }
 
         * {
@@ -111,7 +112,6 @@ if ($search_user !== '') {
 
         html {
             overflow-y: scroll;
-
         }
 
         body {
@@ -123,7 +123,7 @@ if ($search_user !== '') {
             padding: 0;
         }
 
-        /* NAVBAR STYLE - TIDAK DIUBAH */
+        /* NAVBAR STYLE */
         .nav-links a {
             text-decoration: none;
             color: #888;
@@ -137,9 +137,7 @@ if ($search_user !== '') {
             padding-bottom: 5px;
         }
 
-        /* =====================
-           CONTAINER
-        ===================== */
+        /* CONTAINER */
         .container {
             width: 100%;
             max-width: 1400px;
@@ -149,9 +147,7 @@ if ($search_user !== '') {
             margin-top: 60px;
         }
 
-        /* =====================
-           HEADER
-        ===================== */
+        /* HEADER */
         .header {
             margin-bottom: 30px;
         }
@@ -165,10 +161,7 @@ if ($search_user !== '') {
             color: var(--text-muted);
         }
 
-        /* =====================
-           SEARCH BOX
-        ===================== */
-
+        /* SEARCH BOX */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -193,14 +186,10 @@ if ($search_user !== '') {
             display: flex;
             align-items: center;
             gap: 12px;
-
             background: white;
-
             border: 1px solid #e2e8f0;
             border-radius: 999px;
-
             padding: 0 18px;
-
             width: 300px;
             height: 52px;
         }
@@ -222,19 +211,14 @@ if ($search_user !== '') {
             border: none;
             background: #f47b20;
             color: white;
-
             height: 52px;
             padding: 0 24px;
-
             border-radius: 999px;
-
             display: flex;
             align-items: center;
             gap: 10px;
-
             font-weight: 600;
             cursor: pointer;
-
             transition: .2s;
         }
 
@@ -248,38 +232,29 @@ if ($search_user !== '') {
             cursor: pointer;
             color: #94a3b8;
             font-size: 16px;
-
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         @media(max-width:768px) {
-
             .top-bar {
                 flex-direction: column;
                 align-items: stretch;
             }
-
             .top-actions {
                 width: 100%;
             }
-
             .search-input-wrapper {
                 width: 100%;
             }
-
             .btn-add {
                 width: 100%;
                 justify-content: center;
             }
-
         }
 
-        /* =====================
-           STATS
-        ===================== */
-
+        /* STATS */
         .stats-grid {
             display: flex;
             gap: 20px;
@@ -288,6 +263,10 @@ if ($search_user !== '') {
             max-width: 100%;
             scrollbar-width: none;
             -ms-overflow-style: none;
+        }
+
+        .stats-grid::-webkit-scrollbar {
+            display: none;
         }
 
         .stat-card {
@@ -299,7 +278,6 @@ if ($search_user !== '') {
             gap: 18px;
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-soft);
-
             width: 32%;
             overflow: hidden;
             min-width: 260px;
@@ -317,17 +295,9 @@ if ($search_user !== '') {
             flex-shrink: 0;
         }
 
-        .icon-total {
-            background: #fff7ed;
-        }
-
-        .icon-low {
-            background: #fef2f2;
-        }
-
-        .icon-active {
-            background: #f0fdf4;
-        }
+        .icon-total { background: #fff7ed; }
+        .icon-low { background: #fef2f2; }
+        .icon-active { background: #f0fdf4; }
 
         .stat-info span {
             display: block;
@@ -340,11 +310,7 @@ if ($search_user !== '') {
             font-size: 26px;
         }
 
-        /* =====================
-           ACTION BAR
-        ===================== */
-
-
+        /* ACTION BAR */
         .btn-action {
             background: white;
             border: 1px solid var(--border-color);
@@ -363,9 +329,7 @@ if ($search_user !== '') {
             border-color: var(--primary-orange);
         }
 
-        /* =====================
-           USER TABLE & GRID - RESERVED & UNTOUCHED
-        ===================== */
+        /* USER TABLE & GRID */
         .user-table {
             background: white;
             border-radius: var(--radius);
@@ -379,13 +343,12 @@ if ($search_user !== '') {
             overflow-x: auto;
         }
 
-
         .user-table__header,
         .user-table__row {
             min-width: 1100px;
-
             display: grid;
-            grid-template-columns: var(--col-id) var(--col-username) var(--col-name) var(--col-phone) var(--col-email) var(--col-role) var(--col-action);
+            /* Update susunan kolom agar mengikutsertakan kolom status */
+            grid-template-columns: var(--col-id) var(--col-username) var(--col-name) var(--col-phone) var(--col-email) var(--col-role) var(--col-status) var(--col-action);
             gap: 16px;
             align-items: center;
             padding: 18px 20px;
@@ -428,6 +391,17 @@ if ($search_user !== '') {
             color: #ea580c;
         }
 
+        /* Tambahan style warna badge untuk Status */
+        .badge-active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-inactive {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
         .user-table__link {
             display: inline-flex;
             align-items: center;
@@ -437,35 +411,27 @@ if ($search_user !== '') {
             font-weight: 600;
         }
 
-        /* =====================
-           MOBILE RESPONSIVE
-        ===================== */
+        /* MOBILE RESPONSIVE */
         @media (max-width: 768px) {
             .container {
                 padding: 16px;
             }
-
             .action-bar {
                 flex-direction: column;
             }
-
             .btn-action {
                 width: 100%;
                 text-align: center;
             }
-
             .search-wrapper {
                 padding: 14px;
             }
-
             .stat-card {
                 padding: 18px;
             }
         }
 
-        /* =====================
-           MODAL DIALOG DIOPTIMALKAN
-        ===================== */
+        /* MODAL DIALOG */
         #editUserModal {
             border: none;
             margin: auto;
@@ -482,13 +448,11 @@ if ($search_user !== '') {
 
         #editUserModal::-webkit-scrollbar {
             display: none;
-
         }
 
         #editUserModal::backdrop {
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
-            /* Efek blur modern pada latar belakang modal */
             transition: all 0.3s ease;
         }
 
@@ -506,24 +470,14 @@ if ($search_user !== '') {
             display: flex;
         }
 
-        .modal-content {
-            background: white;
-            padding: 24px;
-            border-radius: 16px;
-            width: 420px;
-            max-width: 90%;
-        }
-
         .close-modal {
             float: right;
             cursor: pointer;
             font-size: 20px;
         }
 
-        /* Pastikan modal-content bertindak sebagai patokan posisi (relative) */
         .modal-content {
             position: relative;
-            /* Kunci utama agar tombol absolut tidak lari keluar kotak */
             background: white;
             padding: 30px;
             border-radius: 16px;
@@ -534,38 +488,29 @@ if ($search_user !== '') {
             overflow-y: auto;
         }
 
-        /* STYLE TOMBOL X DI KANAN ATAS */
         .close-modal-right {
             position: absolute;
             top: 20px;
-            /* Jarak dari batas atas kotak putih */
             right: 25px;
-            /* Jarak dari batas kanan kotak putih */
             background: none;
             border: none;
             font-size: 24px;
-            /* Ukuran huruf X */
             font-weight: bold;
             color: #94a3b8;
-            /* Warna abu-abu soft */
             cursor: pointer;
             line-height: 1;
             padding: 5px;
             z-index: 10;
-            /* Memastikan tombol berada di lapisan paling atas */
             transition: color 0.2s ease;
         }
 
-        /* Efek ketika tombol disorot kursor mouse */
         .close-modal-right:hover {
             color: #1e293b;
-            /* Berubah menjadi abu-abu gelap tajam */
         }
     </style>
 </head>
 
 <body>
-    <!-- NAVBAR (UNTOUCHED) -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
@@ -585,50 +530,37 @@ if ($search_user !== '') {
         </div>
     </nav>
 
-    <!-- MAIN CONTAINER -->
     <main class="container">
         <div class="top-bar">
-
             <div class="header-title">
                 <h1>Kelola User</h1>
                 <p>Pantau dan atur semua akun pengguna dalam sistem.</p>
             </div>
 
             <div class="top-actions">
-
                 <form action="" method="GET" class="search-form">
-
                     <div class="search-input-wrapper">
-
                         <button type="submit" class="search-btn">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
-
                         <input
                             type="text"
                             name="query"
                             placeholder="Cari user..."
                             value="<?= htmlspecialchars($search_user) ?>">
-
                     </div>
-
                 </form>
 
                 <button class="btn-add" onclick="openAddUserModal()">
                     <i class="fa-solid fa-plus"></i>
                     Tambah Outlet
                 </button>
-
             </div>
-
         </div>
 
-        <!-- STATS -->
         <div class="stats-grid">
-
             <div class="stat-card">
                 <div class="icon-box icon-total">📦</div>
-
                 <div class="stat-info">
                     <span>TOTAL PEMBELI</span>
                     <h2><?= $totalPembeli ?></h2>
@@ -637,7 +569,6 @@ if ($search_user !== '') {
 
             <div class="stat-card">
                 <div class="icon-box icon-low">⚠️</div>
-
                 <div class="stat-info">
                     <span>TOTAL PENJUAL</span>
                     <h2><?= $totalPenjual ?></h2>
@@ -646,20 +577,15 @@ if ($search_user !== '') {
 
             <div class="stat-card">
                 <div class="icon-box icon-active">✅</div>
-
                 <div class="stat-info">
                     <span>TOTAL ADMIN</span>
                     <h2><?= $totalAdmin ?></h2>
                 </div>
             </div>
-
         </div>
-        <!-- USER TABLE -->
-        <!-- USER TABLE -->
+
         <div class="user-table">
-
             <div class="table-wrapper">
-
                 <div class="user-table__header">
                     <div>Id</div>
                     <div>Username</div>
@@ -667,185 +593,119 @@ if ($search_user !== '') {
                     <div>No Tlp</div>
                     <div>Email</div>
                     <div>Role</div>
-                    <div>Aksi</div>
+                    <div>Status</div> <div>Aksi</div>
                 </div>
 
                 <?php if ($query && $query->num_rows > 0): ?>
-
                     <?php while ($user = $query->fetch_assoc()): ?>
-
                         <div class="user-table__row">
-                            <div class="user-table__cell">#
-                                <?= htmlspecialchars($user['ID']) ?>
+                            <div class="user-table__cell">#<?= htmlspecialchars($user['ID']) ?></div>
+                            <div class="user-table__cell">
+                                <strong><?= htmlspecialchars($user['USERNAME']) ?></strong>
+                            </div>
+                            <div class="user-table__cell"><?= htmlspecialchars($user['NAMA_LENGKAP']) ?></div>
+                            <div class="user-table__cell"><?= htmlspecialchars($user['NO_TLP']) ?></div>
+                            <div class="user-table__cell"><?= htmlspecialchars($user['EMAIL']) ?></div>
+                            <div class="user-table__cell">
+                                <span class="badge"><?= htmlspecialchars($user['ROLE']) ?></span>
+                            </div>
+                            
+                            <div class="user-table__cell">
+                                <?php if (isset($user['STATUS']) && $user['STATUS'] == '1'): ?>
+                                    <span class="badge badge-active">Aktif</span>
+                                <?php else: ?>
+                                    <span class="badge badge-inactive">Nonaktif</span>
+                                <?php endif; ?>
                             </div>
 
                             <div class="user-table__cell">
-                                <strong>
-                                    <?= htmlspecialchars($user['USERNAME']) ?>
-                                </strong>
-                            </div>
-
-                            <div class="user-table__cell">
-                                <?= htmlspecialchars($user['NAMA_LENGKAP']) ?>
-                            </div>
-
-                            <div class="user-table__cell">
-                                <?= htmlspecialchars($user['NO_TLP']) ?>
-                            </div>
-
-                            <div class="user-table__cell">
-                                <?= htmlspecialchars($user['EMAIL']) ?>
-                            </div>
-
-                            <div class="user-table__cell">
-                                <span class="badge">
-                                    <?= htmlspecialchars($user['ROLE']) ?>
-                                </span>
-                            </div>
-
-                            <div class="user-table__cell">
-
                                 <button
                                     type="button"
                                     class="user-table__link"
                                     style="background:none;border:none;cursor:pointer;"
                                     onclick="openEditModal(<?= (int)$user['ID'] ?>)">
-
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     Edit
-
                                 </button>
-
                             </div>
-
                         </div>
-
                     <?php endwhile; ?>
-
                 <?php else: ?>
-
-                    <div style="
-                padding:40px;
-                text-align:center;
-                color:#94a3b8;
-                font-weight:600;
-            ">
+                    <div style="padding:40px; text-align:center; color:#94a3b8; font-weight:600;">
                         User tidak ditemukan.
                     </div>
-
                 <?php endif; ?>
-
             </div>
-
         </div>
     </main>
 
     <div id="addModal" class="modal-overlay">
         <div class="modal-content">
-
             <span class="close-modal" onclick="closeAddModal()">&times;</span>
-
             <h3 style="margin-bottom:15px;">Pilih Jenis Akun</h3>
 
-            <button class="btn-action" style="width:100%; margin-bottom:10px;"
-                onclick="loadForm('addPembeli.php')">
+            <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="loadForm('addPembeli.php')">
                 Tambah Pembeli
             </button>
-
-            <button class="btn-action" style="width:100%; margin-bottom:10px;"
-                onclick="loadForm('addPenjual.php')">
+            <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="loadForm('addPenjual.php')">
                 Tambah Penjual
             </button>
-
-            <button class="btn-action" style="width:100%;"
-                onclick="loadForm('addAdmin.php')">
+            <button class="btn-action" style="width:100%;" onclick="loadForm('addAdmin.php')">
                 Tambah Admin
             </button>
 
             <hr style="margin:15px 0;">
-
             <div id="formArea">
-                <p style="text-align:center; color:#888;">
-                    Pilih salah satu dulu
-                </p>
+                <p style="text-align:center; color:#888;">Pilih salah satu dulu</p>
             </div>
-
         </div>
     </div>
 
-    <!-- POIN UTAMA PERBAIKAN: STRUKTUR KODE DIALOG MODAL YANG SEBELUMNYA HILANG -->
     <dialog id="editUserModal">
         <div id="modalBody">
-            <!-- Data dari AJAX edituser.php akan di-render di sini -->
-        </div>
+            </div>
     </dialog>
+
 <script>
-  // =========================
+// =========================
 // EDIT USER MODAL (dialog)
 // =========================
-
 const editModal = document.getElementById("editUserModal");
 const modalBody = document.getElementById("modalBody");
 
 async function openEditModal(userId) {
-
     modalBody.innerHTML = `
         <div style="text-align:center;padding:30px;">
-            <i class="fa-solid fa-spinner fa-spin"
-               style="font-size:30px;color:#f36f21;"></i>
+            <i class="fa-solid fa-spinner fa-spin" style="font-size:30px;color:#f36f21;"></i>
             <p style="margin-top:10px;">Memuat data...</p>
         </div>
     `;
-
     editModal.showModal();
 
     try {
         const response = await fetch(`edituser.php?id=${userId}`);
-
-        if (!response.ok) {
-            throw new Error("Fetch gagal");
-        }
-
+        if (!response.ok) throw new Error("Fetch gagal");
         const html = await response.text();
         modalBody.innerHTML = html;
-
     } catch (error) {
         modalBody.innerHTML = `
             <div style="padding:30px;text-align:center;">
-                <i class="fa-solid fa-circle-exclamation"
-                   style="font-size:30px;color:red;"></i>
-
-                <p style="margin-top:10px;">
-                    Gagal memuat data user.
-                </p>
-
-                <button onclick="closeEditModal()"
-                        style="margin-top:15px;padding:8px 14px;">
-                    Tutup
-                </button>
+                <i class="fa-solid fa-circle-exclamation" style="font-size:30px;color:red;"></i>
+                <p style="margin-top:10px;">Gagal memuat data user.</p>
+                <button onclick="closeEditModal()" style="margin-top:15px;padding:8px 14px;">Tutup</button>
             </div>
         `;
     }
 }
 
-function closeEditModal() {
-    editModal.close();
-}
+function closeEditModal() { editModal.close(); }
 
-// klik luar modal = close
 editModal.addEventListener("click", (e) => {
     const rect = editModal.getBoundingClientRect();
-
-    const isOutside =
-        e.clientX < rect.left ||
-        e.clientX > rect.right ||
-        e.clientY < rect.top ||
-        e.clientY > rect.bottom;
-
+    const isOutside = e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom;
     if (isOutside) closeEditModal();
 });
 
-// ESC key close
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         closeEditModal();
@@ -853,11 +713,9 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-
 // =========================
 // ADD USER MODAL
 // =========================
-
 const addModal = document.getElementById("addModal");
 const addModalContent = addModal.querySelector(".modal-content");
 
@@ -868,89 +726,42 @@ function openAddUserModal() {
 
 function closeAddModal() {
     addModal.classList.remove("active");
-
-    // reset setelah animasi nutup
-    setTimeout(() => {
-        resetAddMenu();
-    }, 200);
+    setTimeout(() => { resetAddMenu(); }, 200);
 }
 
-// reset tampilan awal modal add
 function resetAddMenu() {
     addModalContent.innerHTML = `
         <button class="close-modal" onclick="closeAddModal()">&times;</button>
-
-        <h3 style="margin-bottom:15px; text-align:center;">
-            Pilih Jenis Akun
-        </h3>
-
-        <button class="btn-action"
-                style="width:100%; margin-bottom:10px;"
-                onclick="loadForm('addPembeli.php')">
-            Tambah Pembeli
-        </button>
-
-        <button class="btn-action"
-                style="width:100%; margin-bottom:10px;"
-                onclick="loadForm('addPenjual.php')">
-            Tambah Penjual
-        </button>
-
-        <button class="btn-action"
-                style="width:100%;"
-                onclick="loadForm('addAdmin.php')">
-            Tambah Admin
-        </button>
+        <h3 style="margin-bottom:15px; text-align:center;">Pilih Jenis Akun</h3>
+        <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="loadForm('addPembeli.php')">Tambah Pembeli</button>
+        <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="loadForm('addPenjual.php')">Tambah Penjual</button>
+        <button class="btn-action" style="width:100%;" onclick="loadForm('addAdmin.php')">Tambah Admin</button>
     `;
 }
 
-// load form via fetch
 async function loadForm(file) {
-
     addModalContent.innerHTML = `
-        <button type="button"
-                class="close-modal-right"
-                onclick="closeAddModal()">&times;</button>
-
+        <button type="button" class="close-modal-right" onclick="closeAddModal()">&times;</button>
         <div style="text-align:center;padding:30px;">
-            <i class="fa-solid fa-spinner fa-spin"
-               style="font-size:30px;color:#f36f21;"></i>
+            <i class="fa-solid fa-spinner fa-spin" style="font-size:30px;color:#f36f21;"></i>
             <p style="margin-top:10px;">Memuat form...</p>
         </div>
     `;
-
     try {
         const response = await fetch(file);
-
-        if (!response.ok) {
-            throw new Error("Gagal load form");
-        }
-
+        if (!response.ok) throw new Error("Gagal load form");
         const html = await response.text();
-
         addModalContent.innerHTML = `
-            <button type="button"
-                    class="close-modal-right"
-                    onclick="closeAddModal()">&times;</button>
-
-            <div style="margin-top:10px;">
-                ${html}
-            </div>
+            <button type="button" class="close-modal-right" onclick="closeAddModal()">&times;</button>
+            <div style="margin-top:10px;">${html}</div>
         `;
-
     } catch (error) {
         addModalContent.innerHTML = `
-            <button type="button"
-                    class="close-modal-right"
-                    onclick="closeAddModal()">&times;</button>
-
-            <p style="color:red;text-align:center;padding:20px;">
-                Gagal memuat form.
-            </p>
+            <button type="button" class="close-modal-right" onclick="closeAddModal()">&times;</button>
+            <p style="color:red;text-align:center;padding:20px;">Gagal memuat form.</p>
         `;
     }
 }
 </script>
 </body>
-
 </html>

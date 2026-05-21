@@ -200,6 +200,76 @@ if ($result->num_rows > 0) {
                 grid-template-columns: 1fr;
             }
         }
+        /* Container Group */
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+/* Style untuk Label */
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b; /* --text-dark */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Wrapper untuk kustomisasi panah dropdown */
+.select-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 200px; /* Membatasi lebar agar pas dengan teks 'Aktif / Nonaktif' */
+    display: flex;
+    align-items: center;
+}
+
+/* Style Utama Tag Select */
+.select-wrapper select {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: #1e293b;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0; /* --border-color */
+    border-radius: 10px;
+    outline: none;
+    cursor: pointer;
+    
+    /* Menghilangkan panah bawaan browser agar bisa diganti ikon FontAwesome */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    transition: all 0.2s ease;
+}
+
+/* Efek pas dropdown diklik/fokus */
+.select-wrapper select:focus {
+    border-color: #f36f21; /* --primary-orange */
+    box-shadow: 0 0 0 3px rgba(243, 111, 33, 0.15); /* Efek glow oranye tipis */
+}
+
+/* Posisi Ikon Panah FontAwesome di kanan */
+.select-wrapper .select-icon {
+    position: absolute;
+    right: 16px;
+    color: #94a3b8;
+    font-size: 14px;
+    pointer-events: none; /* Biar kalau ikonnya diklik, dropdown-nya tetep kebuka */
+    transition: color 0.2s ease;
+}
+
+/* Mengubah warna ikon panah saat select aktif */
+.select-wrapper select:focus + .select-icon {
+    color: #f36f21;
+}
     </style>
 </head>
 
@@ -254,12 +324,16 @@ if ($result->num_rows > 0) {
                     <span class="category-title">Status Akun</span>
                     <div class="card">
                         <div class="form-group">
-                            <label>Status</label>
-                            <select name="status">
-                                
-                                <option value="1" <?= $dataUsers['STATUS']=='1'?'selected':'' ?>>1 atau aktif</option>
-                                <option value="0" <?= $dataUsers['STATUS']=='0'?'selected':'' ?>>0 atau nonaktif</option>
-                            </select>
+                           <div class="form-group">
+    <label for="status"><i class="fa-solid fa-toggle-on"></i> Status Pengguna</label>
+    <div class="select-wrapper">
+        <select name="status" id="status">
+            <option value="1" <?= $dataUsers['STATUS'] == '1' ? 'selected' : '' ?> >🟢 1 atau Aktif</option>
+            <option value="0" <?= $dataUsers['STATUS'] == '0' ? 'selected' : '' ?>>🔴 0 atau Nonaktif</option>
+        </select>
+        <i class="fa-solid fa-chevron-down select-icon"></i>
+    </div>
+</div>
                         </div>
                     </div>
 
