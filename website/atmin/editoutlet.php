@@ -9,12 +9,7 @@ require_once __DIR__ . "/../include/koneksi.php";
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// =======================
-// PROTEKSI LOGIN
-// =======================
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['PENJUAL', 'ADMIN'])) {
-    die("Akses ditolak. Login dulu.");
-}
+
 
 // =======================
 // VALIDASI ID KANTIN
