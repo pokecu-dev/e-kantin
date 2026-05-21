@@ -26,7 +26,7 @@ if ($trxId > 0) {
         SELECT t.*, k.NAMA_KANTIN
         FROM transaksi t
         JOIN list_kantin k ON t.id_kantin = k.ID
-        WHERE t.id = $trxId AND t.id_user = $id_user
+        WHERE t.ID_TRANSAKSI = $trxId AND t.id_user = $id_user
         LIMIT 1
     ");
 

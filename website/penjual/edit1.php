@@ -453,7 +453,7 @@ $result_menu = mysqli_stmt_get_result($stmt);
 
                         <div class="rating">
                             <i class="fas fa-star"></i>
-                           <?= $row['RATING'] ?>
+                           <?= $row['RATING'] ?? 'belum ada rating' ?>
                         </div>
 
                         <p class="harga">
@@ -603,6 +603,92 @@ $result_menu = mysqli_stmt_get_result($stmt);
 
         });
 
+    </script>
+    <script src="./../shared/js/script.js"></script>
+    <!-- btn -->
+    <script>
+        // =================================================================
+        // 1. DAFTARKAN FUNGSI SECARA GLOBAL (Di luar DOMContentLoaded)
+        // Agar inline onclick="UpdateHarga()" di pop-up / modal bisa membaca fungsinya langsung
+        // =================================================================
+        
+        window.UpdateHarga = function (step){
+            const inputHARGA = document.getElementById("harga");
+            if (!inputHARGA) return;
+
+            let newValH = parseInt(inputHARGA.value) + step;
+
+            // Validasi kelipatan 500 dan minimal 500
+            if(newValH >= 500 && newValH % 500 == 0){
+                inputHARGA.value = newValH;
+            } 
+        }
+
+        window.UpdateStock = function (step){
+            const inputSTOCK = document.getElementById("stok");
+            const inputSTATUS = document.getElementById("status");
+            if (!inputSTOCK) return;
+
+            let newValS = parseInt(inputSTOCK.value) + step;
+
+            if (newValS >= 0) {
+                inputSTOCK.value = newValS;
+                
+                // Update status otomatis
+                if (inputSTATUS) {
+                    inputSTATUS.value = (newValS <= 0) ? "habis" : "tersedia";
+                }
+            }
+        }
+
+        // =================================================================
+        // 2. LOGIKA UNTUK INPUT MANUAL (Ketika user mengetik angka)
+        // =================================================================
+        document.addEventListener("DOMContentLoaded", () => {
+            const inputSTOCK = document.getElementById("stok");
+            const inputHARGA = document.getElementById("harga");
+            const inputSTATUS = document.getElementById("status");
+       
+            if (!inputHARGA || !inputSTOCK || !inputSTATUS) return;
+
+            const hargaAwal = parseInt(inputHARGA.value) || 500;
+
+            function statusCek(StokSekarang){
+                if(StokSekarang <= 0){
+                    inputSTATUS.value = "habis";
+                } else {
+                    inputSTATUS.value = "tersedia";
+                }
+            }
+
+            // Handler ketik manual untuk stok
+            inputSTOCK.oninput = (e) => {
+                let target = e.target;
+                let Value = parseInt(target.value);
+
+                if(target.value === "" || isNaN(Value) || Value < 0){
+                    target.value = 0;
+                    Value = 0;
+                }
+
+                statusCek(Value);
+            }
+
+            // Handler ketik manual untuk harga
+            inputHARGA.oninput = (e) => {
+                let target = e.target;
+                let Value = parseInt(target.value);
+
+                if(target.value === "" || isNaN(Value) || Value < 500){
+                    target.value = 500;
+                } else if(Value % 500 != 0){
+                    // Jika tidak kelipatan 500, kembalikan ke harga awal database
+                    target.value = hargaAwal;
+                }
+            }
+        });
+        
+        // CATATAN: Semua kode duplikat di bawah yang bikin numpuk sudah dihapus bersih!
     </script>
 
 </body>

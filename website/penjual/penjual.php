@@ -45,7 +45,7 @@ $sql_produk = "
 SELECT SUM(dt.qty) AS total_produk
 FROM detail_transaksi dt
 JOIN transaksi t 
-ON dt.id_transaksi = t.id
+ON dt.id_transaksi = t.ID_TRANSAKSI
 WHERE t.id_kantin = '$id_kantin_toko'
 AND DATE(t.tgl) = CURDATE()
 ";
@@ -73,17 +73,17 @@ $avg_rating = $data_rating['avg_rating'] ?? 0;
 // ===============================
 $sql_transaksi = "
 SELECT 
-    t.id AS id_transaksi,
+    t.ID_TRANSAKSI AS id_transaksi,
     SUM(dt.qty) AS total_qty,
     SUM(dt.subtotal) AS total_harga,
     t.waktu,
     t.status
 FROM transaksi t
 JOIN detail_transaksi dt 
-ON t.id = dt.id_transaksi
+ON t.ID_TRANSAKSI = dt.id_transaksi
 WHERE t.id_kantin = '$id_kantin_toko'
 AND t.status = 'selesai'
-GROUP BY t.id, t.waktu, t.status
+GROUP BY t.ID_TRANSAKSI, t.waktu, t.status
 ORDER BY t.waktu DESC
 LIMIT 5
 ";
@@ -112,9 +112,9 @@ $sql_pendapatan = "
 SELECT SUM(dt.subtotal) AS total
 FROM detail_transaksi dt
 JOIN transaksi t 
-ON dt.id_transaksi = t.id
+ON dt.ID_TRANSAKSI = t.ID_TRANSAKSI
 WHERE DATE(t.tgl) = CURDATE()
-AND t.id_kantin = '$id_kantin_toko'
+AND t.ID_KANTIN = '$id_kantin_toko'
 ";
 
 $query_pendapatan = $conn->query($sql_pendapatan);
@@ -128,7 +128,7 @@ $total_hari_ini = $data_pendapatan['total'] ?? 0;
 $sql_produk = "
 SELECT SUM(dt.qty) AS total_produk
 FROM detail_transaksi dt
-JOIN transaksi t ON dt.id_transaksi = t.id
+JOIN transaksi t ON dt.id_transaksi = t.ID_TRANSAKSI
 WHERE t.id_kantin = '$id_kantin_toko'
 AND DATE(t.tgl) = CURDATE()
 ";

@@ -310,14 +310,6 @@ select{
             }
 
         }
-        // inputHARGA.oninput = (e) => {
-        //     let Value = parseInt(e.value);
-
-        //     if(e.value === "" || isNaN(Value) || Value < 1){
-        //         e.value = 500;
-        //     }
-            
-        // }
 
     </script>
 </body>

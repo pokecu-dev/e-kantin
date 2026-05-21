@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_transaksi']) && is
     $status_baru = $conn->real_escape_string($_POST['status_baru']);
     
     // Update status transaksi di database
-    $sql_update = "UPDATE transaksi SET status = '$status_baru' WHERE id = '$id_transaksi_update' AND id_kantin = '$id_kantin_toko'";
+    $sql_update = "UPDATE transaksi SET status = '$status_baru' WHERE ID_TRANSAKSI = '$id_transaksi_update' AND id_kantin = '$id_kantin_toko'";
     if ($conn->query($sql_update)) {
         // Refresh halaman agar perubahan terlihat
         header("Location: tespesanan.php?msg=success");
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_transaksi']) && is
 // Serta ringkasan menu yang dipesan menggunakan GROUP_CONCAT
 $sql_transaksi = "
     SELECT 
-        t.id AS id_transaksi, 
+        t.ID_TRANSAKSI AS id_transaksi, 
         t.kode_pesanan, 
         t.waktu, 
         t.tgl,
@@ -50,7 +50,7 @@ $sql_transaksi = "
         (
             SELECT GROUP_CONCAT(CONCAT(dt.nama_menu, ' (', dt.qty, ')') SEPARATOR '<br>') 
             FROM detail_transaksi dt 
-            WHERE dt.id_transaksi = t.id
+            WHERE dt.id_transaksi = t.ID_TRANSAKSI
         ) AS detail_menu
     FROM transaksi t
     LEFT JOIN users u ON t.id_user = u.ID

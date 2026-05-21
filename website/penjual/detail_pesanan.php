@@ -22,7 +22,7 @@ if (!$id_transaksi) {
 $sql_induk = "SELECT t.*, u.NAMA_LENGKAP 
               FROM transaksi t
               LEFT JOIN users u ON t.id_user = u.ID
-              WHERE t.id = '$id_transaksi' LIMIT 1";
+              WHERE t.ID_TRANSAKSI = '$id_transaksi' LIMIT 1";
 
 $query_induk = $conn->query($sql_induk);
 $transaksi_utama = $query_induk->fetch_assoc();
@@ -133,11 +133,11 @@ $query_item = $conn->query($sql_item);
         <div class="info-section">
             <div class="info-row">
                 <span class="info-label">ID Transaksi</span>
-                <span class="info-value">#-<?php echo $transaksi_utama['id']; ?></span>
+                <span class="info-value">#-<?php echo $transaksi_utama['ID_TRANSAKSI']; ?></span>
             </div>
             <div class="info-row">
                 <span class="info-label">Tanggal / Waktu</span>
-                <span class="info-value"><?php echo date('d M Y', strtotime($transaksi_utama['tgl'])); ?> | <?php echo date('H:i', strtotime($transaksi_utama['waktu'])); ?> WIB</span>
+                <span class="info-value"><?php echo date('d M Y', strtotime($transaksi_utama['TGL'])); ?> | <?php echo date('H:i', strtotime($transaksi_utama['WAKTU'])); ?> WIB</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Nama Pembeli</span>
@@ -155,17 +155,17 @@ $query_item = $conn->query($sql_item);
             <?php 
             $grand_total = 0;
             while($item = $query_item->fetch_assoc()): 
-                $grand_total += $item['subtotal']; // Total penjumlahan subtotal otomatis
+                $grand_total += $item['SUBTOTAL']; // Total penjumlahan subtotal otomatis
             ?>
                 <div class="item-grid">
                     <div class="item-nama">
-                        <?php echo htmlspecialchars($item['nama_menu']); ?>
+                        <?php echo htmlspecialchars($item['NAMA_MENU']); ?>
                         <div style="font-size: 11px; color: #888; font-weight: 400;">
-                            @Rp <?php echo number_format($item['harga'], 0, ',', '.'); ?>
+                            @Rp <?php echo number_format($item['HARGA'], 0, ',', '.'); ?>
                         </div>
                     </div>
-                    <div class="item-qty"><?php echo $item['qty']; ?>x</div>
-                    <div class="item-subtotal">Rp <?php echo number_format($item['subtotal'], 0, ',', '.'); ?></div>
+                    <div class="item-qty"><?php echo $item['QTY']; ?>x</div>
+                    <div class="item-subtotal">Rp <?php echo number_format($item['SUBTOTAL'], 0, ',', '.'); ?></div>
                 </div>
             <?php endwhile; ?>
         </div>
