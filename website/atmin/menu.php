@@ -34,6 +34,26 @@ $ready = $conn->query($sql_ready)->fetch_assoc()['ready'] ?? 0;
 // =====================
 $sql_rating = "SELECT AVG(RATING) AS avg_rating FROM tb_menu";
 $avg_rating = $conn->query($sql_rating)->fetch_assoc()['avg_rating'] ?? 0;
+
+
+$search = $_GET['query'] ?? '';
+
+if ($search !== '') {
+    $keyword = "%$search%";
+
+    $sql = "SELECT * FROM tb_menu
+            WHERE NAMA_MENU LIKE ?
+            OR KATEGORI LIKE ?
+            OR CAST(ID_MENU AS CHAR) LIKE ?
+            OR CAST(ID_KANTIN AS CHAR) LIKE ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssss", $keyword, $keyword, $keyword, $keyword);
+    $stmt->execute();
+    $query = $stmt->get_result();
+} else {
+    $query = $conn->query("SELECT * FROM tb_menu");
+}
 ?>
 
 
@@ -562,14 +582,12 @@ NAVBAR
         <div class="header">
             <div class="header-title">
                 <h1>Kelola Produk</h1>
-                <form action="cariProduk.php" method="GET" class="input-group">
+                <form action="" method="GET" class="input-group">
                     <input type="text"
                         name="query"
-                        placeholder="Cari Nama, ID Menu, atau ID Kantin..."
-                        required>
-                    <button type="submit" class="btn-orange">
-                        Cari Menu
-                    </button>
+                        placeholder="Cari menu..."
+                        value="<?= htmlspecialchars($search ?? '') ?>">
+                    <button type="submit" class="btn-orange">Cari</button>
                 </form>
                 <p>
                     Pantau dan kelola inventaris produk secara real-time.
@@ -624,7 +642,7 @@ NAVBAR
             <!-- TOOLBAR -->
             <div class="toolbar">
                 <p>Daftar menu</p>
-               
+
             </div>
 
             <div class="grid-wrapper">
