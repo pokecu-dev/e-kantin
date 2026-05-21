@@ -270,7 +270,31 @@ RESPONSIVE
     }
 
 }
+/* Gaya dasar untuk badge status */
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+}
 
+/* Warna masing-masing status */
+.badge-warning {
+    background-color: #FFF3CD;
+    color: #856404;
+}
+
+.badge-success {
+    background-color: #D4EDDA;
+    color: #155724;
+}
+
+.badge-danger {
+    background-color: #F8D7DA;
+    color: #721C24;
+}
 </style>
 </head>
 
@@ -344,17 +368,43 @@ RESPONSIVE
 
         <!-- TRANSAKSI -->
 
+
+        
         <div class="card">
+<h3>Transaksi Terbaru</h3>
 
-            <h3>Transaksi Terbaru</h3>
+<div class="table">
 
-            <div class="table">
+    <div class="table-row table-header">
+        <div>ID</div>
+        <div>Total</div>
+        <div>Status</div>
+    </div>
 
-                <div class="table-row table-header">
-                    <div>ID</div>
-                    <div>Total</div>
-                    <div>Status</div>
-                </div>
+    <?php while($trx = mysqli_fetch_assoc($transaksi)): ?>
+    <?php 
+        // 1. Logika penentuan class CSS tetap di sini (hanya PHP, tidak ada output HTML dulu)
+        $statusClass = '';
+        if ($trx['STATUS'] == 'pending') {
+            $statusClass = 'badge-warning'; 
+        } elseif ($trx['STATUS'] == 'success' || $trx['STATUS'] == 'selesai') {
+            $statusClass = 'badge-success'; 
+        } else {
+            $statusClass = 'badge-danger';  
+        }
+    ?>
+    
+    <div class="table-row">
+        <div>#<?= htmlspecialchars($trx['ID_TRANSAKSI']) ?></div>
+        
+        <div>Rp <?= number_format($trx['TOTAL'], 0, ',', '.') ?></div>
+        
+        <div>
+            <span class="status-badge <?= $statusClass ?>">
+                <?= htmlspecialchars($trx['status']) ?>
+            </span>
+        </div>
+    </div>
 
                 <?php while($trx = mysqli_fetch_assoc($transaksi)): ?>
 
@@ -368,6 +418,9 @@ RESPONSIVE
 
             </div>
 
+    <?php endwhile; ?>
+
+</div>
         </div>
 
         <!-- SIDEBAR -->
@@ -395,7 +448,7 @@ RESPONSIVE
 
             </div>
 
-            <!-- QUICK ACTION -->
+            <!-- QUICK ACTION
 
             <div class="card">
 
@@ -435,7 +488,7 @@ RESPONSIVE
 
                 </div>
 
-            </div>
+            </div> -->
 
         </div>
 
