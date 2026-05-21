@@ -1,3 +1,43 @@
+<?php
+
+require_once __DIR__ . "/../include/koneksi.php";
+require_once __DIR__ . "/../include/session/penjualC.php";
+
+$id_user_login = $_SESSION['id_user'] ?? 24;
+
+// Cari ID Kantin yang dimiliki oleh penjual ini dari tabel list_kantin
+$sql_kantin = "SELECT ID FROM list_kantin WHERE id_penjual = '$id_user_login' LIMIT 1";
+$query_kantin = $conn->query($sql_kantin);
+$data_kantin = $query_kantin->fetch_assoc();
+
+$id_kantin_toko = $data_kantin['ID'] ?? 1;
+
+
+// 2. QUERY RIWAYAT TRANSAKSI (Sesuai kolom tabel detail_transaksi kamu)
+// Kita gunakan kolom `nama_menu`, `qty`, dan `subtotal` langsung dari detail_transaksi
+$sql_transaksi = "SELECT t.id AS id_transaksi, dt.nama_menu, dt.qty, dt.subtotal, t.waktu 
+                  FROM transaksi t
+                  JOIN detail_transaksi dt ON t.id = dt.id_transaksi
+                  WHERE t.id_kantin = '$id_kantin_toko'
+                  ORDER BY t.waktu DESC 
+                  LIMIT 5";
+
+$query_transaksi = $conn->query($sql_transaksi);
+
+
+// 3. QUERY MENGHITUNG PESANAN MASUK HARI INI
+$sql_count = "SELECT COUNT(*) as total_order 
+              FROM transaksi 
+              WHERE id_kantin = '$id_kantin_toko' AND DATE(tgl) = CURDATE()";
+
+$query_count = $conn->query($sql_count);
+$res_count = $query_count->fetch_assoc();
+$pesanan_masuk_hari_ini = $res_count['total_order'] ?? 0;
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -219,7 +259,38 @@
                         <button class="btn">Terima Pesanan</button>
                     </div>
                 </div>
+                
             </div>
+            <div class="header-tabel">
+                <div>ID Transaksi</div>
+                <div>Menu</div>
+                <div>Jumlah</div>
+                <div>Total Harga</div>
+                <div>Waktu</div>
+                <div>Aksi</div>
+            </div>
+
+                <?php if ($query_transaksi && $query_transaksi->num_rows > 0): ?>
+                        <?php while ($row = $query_transaksi->fetch_assoc()): ?>
+                            <div class="grid-row-data">
+                                <div>#-<?php echo $row['id_transaksi']; ?></div>
+                                <strong><?php echo htmlspecialchars($row['nama_menu']); ?></strong>
+                                <div><?php echo $row['qty']; ?> Porsi</div>
+                                <div>Rp <?php echo number_format($row['subtotal'], 0, ',', '.'); ?></div>
+                                <div><?php echo date('H:i', strtotime($row['waktu'])); ?> WIB</div>
+
+                                <div>
+                                    <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">
+                                        Detail
+                                    </button>
+                                </div>
+                            </div>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <div class="grid-row-data" style="grid-template-columns: 1fr; text-align: center; color: #888;">
+                            Belum ada riwayat transaksi untuk kantin ini.
+                        </div>
+                    <?php endif; ?>
         </div>
     </div>
     <br>

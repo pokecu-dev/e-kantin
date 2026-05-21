@@ -326,6 +326,8 @@ if (!$data) {
                 $foto = !empty($data['FOTO_USERS']) ? "../../source/fotopengguna/" . $data['FOTO_USERS'] : "../../source/fotopengguna/default.jpg";
                 ?>
                 <img src="<?php echo $foto; ?>" class="profile-pic" alt="User Avatar">
+                <p>ganti pp:D</p>
+                <form action=""></form>
             </div>
             <h2><?php echo $data['NAMA_LENGKAP']; ?></h2>
             <p>@<?php echo $data['USERNAME']; ?></p>
@@ -373,22 +375,22 @@ if (!$data) {
                     </div>
                 </div>
 
-                <div class="input-group">
+                <!-- <div class="input-group">
                     <label>Canteen Name</label>
 
                     <div class="input-box">
                         Kantin Bakso Bu Joko
                     </div>
-                </div>
+                </div> -->
 
 
-                <div class="input-group">
+                <!-- <div class="input-group">
                     <label>Outlet Status</label>
 
                     <div class="status">
                         Aktif
                     </div>
-                </div>
+                </div> -->
             </div>
 
         </div>

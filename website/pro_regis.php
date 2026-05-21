@@ -1,6 +1,6 @@
 <?php
-    require_once __DIR__ . "/../../include/koneksi.php";
-    require_once __DIR__ . "/../../include/classes/adduserClasses/users.php";
+    require_once __DIR__ . "/include/koneksi.php";
+    require_once __DIR__ . "/include/classes/adduserClasses/users.php";
     // deklarasi
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -30,10 +30,28 @@
                 '1'
                 );
 
-            if($hasil){
+
+            if($hasil == 1){
                 echo json_encode([
                     'status'=>'success',
-                    'message'=>'berhasil menambahkan PEMBELI!'
+                    'message'=>'pendaftaran telah berhasil,silahkan kembali ke halaman login!' . $hasil
+                ]);
+            }
+            else if ($hasil == "usn dupe") {
+                echo json_encode([
+                    'error'=>'error',
+                    'message' => 'username sudah terpakai!' . $hasil 
+                ]);
+            }
+            else if ($hasil == "no tlp dupe") {
+                echo json_encode([
+                    'error'=>'error',
+                    'message' => 'nomor telepon sudah terpakai!' . $hasil
+                ]);
+            }else if ($hasil == "email dupe") {
+                echo json_encode([
+                    'error'=>'error',
+                    'message' => 'email sudah terpakai!' . $hasil
                 ]);
             }
 
