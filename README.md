@@ -13,7 +13,7 @@ Pertama Kali Clone
 2. bikin .env (copy dari .env.example, isi valuenya)
 3. docker-compose up -d --build
 4. tunggu container jalan
-5. jalanin script import → ./script_DB/import_db.sh
+5. jalanin script import →git
 6. buka localhost:8080
 
 Kalau Pull

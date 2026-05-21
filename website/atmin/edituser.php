@@ -3,7 +3,7 @@ require_once __DIR__ . "/../include/koneksi.php";
 session_start();
 if ($_SESSION['role'] != 'ADMIN') {
     header('Location: ../login.php');
-    exit;
+   
 }
 
 

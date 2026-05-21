@@ -404,7 +404,7 @@ body {
         </div>
     </nav>
     <div class="container">
-
+<a href="editoutlet.php"></a>
         <div class="page-header">
 
             <h1>Kantin Esemkita</h1>
