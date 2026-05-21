@@ -54,7 +54,7 @@ $dataHabis = mysqli_fetch_assoc($produkHabis);
 $transaksi = mysqli_query($conn, "
     SELECT * 
     FROM transaksi
-    ORDER BY id DESC
+    ORDER BY ID_TRANSAKSI DESC
     LIMIT 5
 ");
 
@@ -360,7 +360,7 @@ RESPONSIVE
 
                 <div class="table-row">
                     <div>#<?= $trx['ID_TRANSAKSI'] ?></div>
-                    <div>Rp <?= number_format($trx['TOTAL_HARGA']) ?></div>
+                    <div>Rp <?= number_format($trx['TOTAL']) ?></div>
                     <div><?= $trx['STATUS'] ?></div>
                 </div>
 

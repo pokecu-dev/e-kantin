@@ -23,18 +23,18 @@ DROP TABLE IF EXISTS `detail_transaksi`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `detail_transaksi` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `id_transaksi` int NOT NULL,
-  `id_menu` int NOT NULL,
-  `nama_menu` varchar(150) NOT NULL COMMENT 'Snapshot nama menu saat checkout',
-  `harga` int NOT NULL COMMENT 'Snapshot harga saat checkout',
-  `qty` int NOT NULL DEFAULT '1',
-  `subtotal` int NOT NULL COMMENT 'harga * qty',
-  PRIMARY KEY (`id`),
-  KEY `idx_dt_transaksi` (`id_transaksi`),
-  KEY `fk_dt_menu` (`id_menu`),
-  CONSTRAINT `fk_dt_menu` FOREIGN KEY (`id_menu`) REFERENCES `tb_menu` (`ID_MENU`),
-  CONSTRAINT `fk_dt_transaksi` FOREIGN KEY (`id_transaksi`) REFERENCES `transaksi` (`id`) ON DELETE CASCADE
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `ID_TRANSAKSI` int NOT NULL,
+  `ID_MENU` int NOT NULL,
+  `NAMA_MENU` varchar(150) NOT NULL COMMENT 'Snapshot nama menu saat checkout',
+  `HARGA` int NOT NULL COMMENT 'Snapshot harga saat checkout',
+  `QTY` int NOT NULL DEFAULT '1',
+  `SUBTOTAL` int NOT NULL COMMENT 'harga * qty',
+  PRIMARY KEY (`ID`),
+  KEY `idx_dt_transaksi` (`ID_TRANSAKSI`),
+  KEY `fk_dt_menu` (`ID_MENU`),
+  CONSTRAINT `fk_dt_menu` FOREIGN KEY (`ID_MENU`) REFERENCES `tb_menu` (`ID_MENU`),
+  CONSTRAINT `fk_dt_transaksi` FOREIGN KEY (`ID_TRANSAKSI`) REFERENCES `transaksi` (`ID_TRANSAKSI`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -238,21 +238,21 @@ DROP TABLE IF EXISTS `transaksi`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `transaksi` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `kode_pesanan` varchar(25) NOT NULL DEFAULT '',
-  `id_kantin` int DEFAULT NULL,
-  `id_user` int DEFAULT NULL,
-  `tgl` date DEFAULT (curdate()),
-  `waktu` time DEFAULT (curtime()),
-  `total` int NOT NULL DEFAULT '0',
-  `status` enum('pending','dikonfirmasi','diproses','selesai','dibatalkan') NOT NULL DEFAULT 'pending',
-  `catatan` text,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_kode_pesanan` (`kode_pesanan`),
-  KEY `id_kantin_fk` (`id_kantin`),
-  KEY `id_user_fk` (`id_user`),
-  CONSTRAINT `id_kantin_fk` FOREIGN KEY (`id_kantin`) REFERENCES `list_kantin` (`ID`),
-  CONSTRAINT `id_user_fk` FOREIGN KEY (`id_user`) REFERENCES `users` (`ID`)
+  `ID_TRANSAKSI` int NOT NULL AUTO_INCREMENT,
+  `KODE_PESANAN` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `ID_KANTIN` int DEFAULT NULL,
+  `ID_USER` int DEFAULT NULL,
+  `TGL` date DEFAULT (curdate()),
+  `WAKTU` time DEFAULT (curtime()),
+  `TOTAL` int NOT NULL DEFAULT '0',
+  `STATUS` enum('pending','dikonfirmasi','diproses','selesai','dibatalkan') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'pending',
+  `CATATAN` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  PRIMARY KEY (`ID_TRANSAKSI`),
+  UNIQUE KEY `idx_kode_pesanan` (`KODE_PESANAN`),
+  KEY `id_kantin_fk` (`ID_KANTIN`),
+  KEY `id_user_fk` (`ID_USER`),
+  CONSTRAINT `id_kantin_fk` FOREIGN KEY (`ID_KANTIN`) REFERENCES `list_kantin` (`ID`),
+  CONSTRAINT `id_user_fk` FOREIGN KEY (`ID_USER`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -287,7 +287,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `USERNAME` (`USERNAME`),
   UNIQUE KEY `NO_TLP` (`NO_TLP`),
   UNIQUE KEY `EMAIL` (`EMAIL`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -296,7 +296,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'adin','$2y$10$Sr8PkbInbzNv6zb27qWPmuHUPWkHDa.7mdNxiPeDLdDfVwV2MhPlu','MUHAMMAD SAIFUDDIN','+62 81235807937','adin@dnproject.my.id','PEMBELI','6bee6143c5f90bf6e241e21b79cc2feb.jpeg','1'),(2,'penjual1','ADMIN!@#','penjual santoso eak','+62 123654789','PENJUAL@gmail.com','PENJUAL',NULL,'1'),(3,'mulyono','mobil esemka','bapak mulyono','+62 097384324736','ratapansolo@solo.com','PEMBELI',NULL,'1'),(4,'atemin_nyata','ini atemin ygy','pokok admin','+62 097384434736','adminUntukNyata@gmail.com','ADMIN',NULL,'1'),(5,'EBADRUS','GURU PPLG','PAK BADRUS','+62 097344434736','guru@ebadrus.com','PEMBELI',NULL,'1'),(7,'tuwes','tuwes123','buwat tuwes','+60 1234567890','tuwes@tuwes.com','PEMBELI',NULL,'1'),(8,'bagus','bagus14','prasetiyo','+62 87521098','vinas@gmail.com','PEMBELI',NULL,'1'),(9,'murid','murid1','murid aseli','+62 765432189','murid@gmail.com','PEMBELI',NULL,'1'),(11,'murid1','$2y$10$6Z/AiyeIOEsVwEzERnX/SepRZ0XCD8TPQTy51pTCjHNLWgJeq/9UG','murid aselioi','+62 7654321892','murid1@gmail.com','PEMBELI',NULL,'1'),(12,'siswa','$2y$10$J6p0a3AulK3YR/GavIjrSOY3r0C6391uLO13wfsR9WMS4H6TIl18K','siswa','+62 7687678678','siswa@gmail.com','PEMBELI',NULL,'1'),(13,'admin','$2y$10$Jr4drTCswbJ6U3QtLGUY5.YbuH9.be2FEvWon.kQ307/8gx8rPlNu','admin nyata banget coy versi password hash','+62 56789765','atemin@gmail.com','ADMIN',NULL,'1'),(15,'penjual','$2y$10$WBeInwwZtc7Vv5WCUQPtauWHIl/knlhdD.AlbvA5ua/.TY4rF3k1W','penjual nyata banget tipe pass hash','+62 456789876','wpenjual@gmail.com','PENJUAL',NULL,'1'),(24,'penjual3','$2y$10$Ub2yzG9hWc8TvF3oqxWRsuqDdcKkZuMH5ClKjKf50gRnXriU1yyUi','jual makan','+62 81235807939','penju1al@gmail.com','PENJUAL',NULL,'1'),(32,'yowghkd','$2y$10$fl6Tj2kTrXtiP0GyNH.veu1sZngqnyGQoaq0c018L3fZc5diaU37W','yowgh','+62 56789709','ow@gmail.cmm','PEMBELI',NULL,'1'),(33,'haiii1','$2y$10$ta9Axut2Yl.IIc3rRAYbnehEKjVwKZ8DwcBm1yMdRncNfbR4LRBTO','iyah gitu','+62 567897091','iyah@gmail.comm','PEMBELI',NULL,'1'),(34,'haiii1j','$2y$10$xgJQgk/5dse2NbsficDmN.o8QScURK0YY44w7IOY5QiDaB6pVz1hC','iyah gituk','+62 5678970910','iyah@gmail.commn','PEMBELI',NULL,'1');
+INSERT INTO `users` VALUES (1,'adin','$2y$10$Sr8PkbInbzNv6zb27qWPmuHUPWkHDa.7mdNxiPeDLdDfVwV2MhPlu','MUHAMMAD SAIFUDDIN','+62 81235807937','adin@dnproject.my.id','PEMBELI','6bee6143c5f90bf6e241e21b79cc2feb.jpeg','1'),(2,'penjual1','ADMIN!@#','penjual santoso eak','+62 123654789','PENJUAL@gmail.com','PENJUAL',NULL,'1'),(3,'mulyono','mobil esemka','bapak mulyono','+62 097384324736','ratapansolo@solo.com','PEMBELI',NULL,'1'),(4,'atemin_nyata','ini atemin ygy','pokok admin','+62 097384434736','adminUntukNyata@gmail.com','ADMIN',NULL,'1'),(5,'EBADRUS','GURU PPLG','PAK BADRUS','+62 097344434736','guru@ebadrus.com','PEMBELI',NULL,'1'),(7,'tuwes','tuwes123','buwat tuwes','+60 1234567890','tuwes@tuwes.com','PEMBELI',NULL,'1'),(8,'bagus','bagus14','prasetiyo','+62 87521098','vinas@gmail.com','PEMBELI',NULL,'1'),(9,'murid','murid1','murid aseli','+62 765432189','murid@gmail.com','PEMBELI',NULL,'1'),(11,'murid1','$2y$10$6Z/AiyeIOEsVwEzERnX/SepRZ0XCD8TPQTy51pTCjHNLWgJeq/9UG','murid aselioi','+62 7654321892','murid1@gmail.com','PEMBELI',NULL,'1'),(12,'siswa','$2y$10$J6p0a3AulK3YR/GavIjrSOY3r0C6391uLO13wfsR9WMS4H6TIl18K','siswa','+62 7687678678','siswa@gmail.com','PEMBELI',NULL,'1'),(13,'admin','$2y$10$Jr4drTCswbJ6U3QtLGUY5.YbuH9.be2FEvWon.kQ307/8gx8rPlNu','admin nyata banget coy versi password hash','+62 56789765','atemin@gmail.com','ADMIN',NULL,'1'),(15,'penjual','$2y$10$WBeInwwZtc7Vv5WCUQPtauWHIl/knlhdD.AlbvA5ua/.TY4rF3k1W','penjual nyata banget tipe pass hash','+62 456789876','wpenjual@gmail.com','PENJUAL',NULL,'1'),(24,'penjual3','$2y$10$Ub2yzG9hWc8TvF3oqxWRsuqDdcKkZuMH5ClKjKf50gRnXriU1yyUi','jual makan','+62 81235807939','penju1al@gmail.com','PENJUAL',NULL,'1'),(36,'admin baru','$2y$10$NgsjbotUK3aD6RHRhdGCgunZ3pe4ynIrjBncS2UQWQEnwzG3e3B3G','atemin','+62 111111111','adminaslkdfj@gmail.com','ADMIN',NULL,'1'),(37,'penjual5','$2y$10$LI9EfH.8URFpQhtUVMkbv.ptjM2n3cTfs17vBbU3UO8mmKQo0MD26','penjual baru','+62 2233342','penjuaddl@gmail.com','PENJUAL',NULL,'1'),(38,'','$2y$10$8YAVa0TvpvVoRdVGQYkHPuGs.IHqzYW3Eu171ke8hQ1dYHSU4k7Tm','','','','PENJUAL',NULL,'1');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -309,4 +309,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-21  3:33:11
+-- Dump completed on 2026-05-21  4:10:41
