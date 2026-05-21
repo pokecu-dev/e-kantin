@@ -1,6 +1,6 @@
 <?php
 
-    require_once __DIR__ . "/../classes/upfile/upfile.php";
+    require_once __DIR__ . "/../classes/upfile/";
     require_once __DIR__ . "/../koneksi.php";
 
 

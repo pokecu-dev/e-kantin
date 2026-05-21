@@ -205,6 +205,7 @@
             <div id="notif">
                 <!-- berisi notif peringatan error dan sejenisnya -->
             </div>
+            <p>belum punya akun? <a href="./register.php">Daftar!</a></p>
 
         </section>
     </main>
@@ -226,7 +227,7 @@
 
                 const data = await respon.json();
                 if (data.status === 'success') {
-                    notiftes.innerText = data.status;
+                    // notiftes.innerText = data.status;
 
                     if (data.role === 'PENJUAL') {
                         window.location.href = 'penjual/penjual.php';

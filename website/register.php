@@ -1,18 +1,13 @@
-<?php
-    require_once __DIR__ . "/../include/session/adminC.php";
-
-?>
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>test tambah murid</title>
 </head>
 <body>
-    <form data-ajax="true" data-action="./process/pro_addpenjual.php" data-notif="notif">
+    <h2>daftar</h2>
+    <p>note:usn akan di ubah menjadi huruf kecil semua</p>
+    <form data-ajax="true" data-action="./pro_regis.php" data-notif="notif">
         
         <label>Username</label><br>
         <input type="text" name="usn"><br><br>
@@ -29,13 +24,16 @@
         <label>Email</label><br>
         <input type="email" name="email"><br><br>
 
-        <button type="submit">submit</button>
+        <button type="submit">daftar</button>
 
     </form>
 
     <div id="notif"></div>
-    <script src="./../shared/js/script.js"></script>
+
+    <p>sudah punya akun? <a href="./login.php">Login!</a></p>
+    
+    
+
+    <script src="./shared/js/script.js"></script>
 </body>
 </html>
-
-
