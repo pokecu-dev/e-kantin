@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 require_once '../include/koneksi.php';
 require_once __DIR__ . "/../include/session/pembeliC.php";
 
@@ -403,35 +403,44 @@ if (!$data) {
         <div id="rating">
 
             <br>
-            <h2>tulis rating mu gan:D</h2>
             <!-- ini bagian rating wak,kalau udah buat tb transaksi nanti revisi dikit alur logika nya:D -->
             <div id="form-rate">
                 <?php 
                     $rating = false;
-                    $sql = "SELECT * FROM transaksi where ID_USER = $iduser AND status = 'selesai'";
+                    $sql = "SELECT t.ID_TRANSAKSI 
+                        FROM transaksi t
+                        INNER JOIN detail_transaksi dt ON t.ID_TRANSAKSI = dt.ID_TRANSAKSI
+                        WHERE t.ID_USER = $iduser 
+                        AND t.STATUS = 'selesai'
+                        AND dt.ID_MENU = $data[ID_MENU]";
+
                     $query = $conn->query($sql);
-                    if($query->num_rows >= 0){
+                    if($query->num_rows > 0){
                         $rating = true;
                     }
-                    
 
+                    if($rating):
                 ?>
 
+                        
+                        <h2>tulis rating mu gan:D</h2>
+                        <form action="pro_tesrate.php" method="post">
+                            <input type="hidden" name="id_menu" value="<?= $data['ID_MENU'] ?>">
+                            <input type="hidden" name="id_user" value="<?= $iduser ?>">
+                            <input type="hidden" name="id_kantin" value="<?= $data['ID_KANTIN'] ?>">    
+                            <label>rating coy:D</label>
+                            <button type="button" onclick="ratinginput(-1)">-</button>
+                            <input type="number" name="rating" id="ratingin" max="5" min="0" value="0" readonly>
+                            <button type="button" onclick="ratinginput(1)">+</button>
+                            <br>
+                            <label>komentar gan:D</label>
+                            <textarea name="desk" id="desk"></textarea>
+                            <button type="submit" name="submit">kirim:D</button>
 
-                <form action="pro_tesrate.php" method="post">
-                    <input type="hidden" name="id_menu" value="<?= $data['ID_MENU'] ?>">
-                    <input type="hidden" name="id_user" value="<?= $iduser ?>">
-                    <input type="hidden" name="id_kantin" value="<?= $data['ID_KANTIN'] ?>">    
-                    <label>rating coy:D</label>
-                    <button type="button" onclick="ratinginput(-1)">-</button>
-                    <input type="number" name="rating" id="ratingin" max="5" min="0" value="0" readonly>
-                    <button type="button" onclick="ratinginput(1)">+</button>
-                    <br>
-                    <label>komentar gan:D</label>
-                    <textarea name="desk" id="desk"></textarea>
-                    <button type="submit" name="submit">kirim:D</button>
-                    
-                </form>
+                        </form>
+                    <?php else: ?>
+                        <p>beli dulu gan,baru bisa rating:D</p>
+                <?php endif ?>
             </div>
             <br>
             

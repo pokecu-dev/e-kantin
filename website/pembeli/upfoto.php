@@ -20,10 +20,11 @@
 <body>
     
     <form id="upfile-form">
-        <input type="hidden" name="id_users" value="<?= $idusers ?>">
+        <input type="hidden" name="type" value="photo-profile">
+        <input type="hidden" name="id" value="<?= $idusers ?>">
         <label>foto</label>
-        <input type="file" name="foto" >
-        <button name="submit-pembeli" type="submit">ganti foto profil!</button>
+        <input type="file" name="upfile" >
+        <button name="submit-pp" type="submit" value="submit">ganti foto profil!</button>
     </form>
 
     <div id="notif"></div>
@@ -32,16 +33,20 @@
     document.getElementById("upfile-form").onsubmit = async (events) => {
 
         events.preventDefault();
-        const dataForm = new FormData(this);
+        const Target = events.target;
+        const dataForm = new FormData(Target);
         const notif = document.getElementById("notif");
         try {
 
+            console.log('yow')
             const respon = await fetch('./../include/proses(universal)/upfile.php', {
                 method: "POST",
                 body: dataForm
             });
+            console.log('hai')
 
             const data = await respon.json();
+            console.log('wpoi')
             notif.innerText = data.message;
         } 
         

@@ -26,15 +26,15 @@ if ($trxId > 0) {
         SELECT t.*, k.NAMA_KANTIN
         FROM transaksi t
         JOIN list_kantin k ON t.id_kantin = k.ID
-        WHERE t.id = $trxId AND t.id_user = $id_user
+        WHERE t.ID_TRANSAKSI = $trxId AND t.id_user = $id_user
         LIMIT 1
     ");
 
     if ($transaction = mysqli_fetch_assoc($qTrx)) {
         $kantinName = $transaction['NAMA_KANTIN'];
-        $tglTrx     = $transaction['tgl'];
-        $waktuTrx   = $transaction['waktu'];
-        $trxIdStr   = $transaction['kode_pesanan'] ?? 'TRX-' . $trxId;
+        $tglTrx     = $transaction['TGL'];
+        $waktuTrx   = $transaction['WAKTU'];
+        $trxIdStr   = $transaction['KODE_PESANAN'] ?? 'TRX-' . $trxId;
 
         $qItems = mysqli_query($conn, "
             SELECT nama_menu, harga, qty, subtotal

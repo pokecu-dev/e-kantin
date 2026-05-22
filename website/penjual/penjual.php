@@ -51,8 +51,11 @@ SELECT SUM(dt.qty) AS total_produk
 FROM detail_transaksi dt
 JOIN transaksi t 
 ON dt.id_transaksi = t.ID_TRANSAKSI
-WHERE t.ID_KANTIN = '$id_kantin_toko'
-AND DATE(t.TGL) = CURDATE()
+
+
+WHERE t.id_kantin = '$id_kantin_toko'
+AND DATE(t.tgl) = CURDATE()
+
 ";
 $query_produk = $conn->query($sql_produk);
 
@@ -96,10 +99,17 @@ SELECT
 FROM transaksi t
 JOIN detail_transaksi dt 
 ON t.ID_TRANSAKSI = dt.id_transaksi
+<<<<<<< HEAD
 WHERE t.ID_KANTIN = '$id_kantin_toko'
 AND t.STATUS = 'selesai'
 GROUP BY t.ID_TRANSAKSI, t.WAKTU, t.STATUS
 ORDER BY t.WAKTU DESC
+=======
+WHERE t.id_kantin = '$id_kantin_toko'
+AND t.status = 'selesai'
+GROUP BY t.ID_TRANSAKSI, t.waktu, t.status
+ORDER BY t.waktu DESC
+>>>>>>> f1d528f7e174c0107addb05bfedf399d57eadc3b
 LIMIT 5
 ";
 
@@ -136,8 +146,9 @@ $sql_pendapatan = "
 SELECT SUM(dt.subtotal) AS total
 FROM detail_transaksi dt
 JOIN transaksi t 
-ON dt.id_transaksi = t.ID_TRANSAKSI
-WHERE DATE(t.TGL) = CURDATE()
+ON dt.ID_TRANSAKSI = t.ID_TRANSAKSI
+WHERE DATE(t.tgl) = CURDATE()
+
 AND t.ID_KANTIN = '$id_kantin_toko'
 ";
 
@@ -150,6 +161,23 @@ if (!$query_pendapatan) {
 $data_pendapatan = $query_pendapatan->fetch_assoc();
 
 $total_hari_ini = $data_pendapatan['total'] ?? 0;
+
+// ===============================
+// PRODUK TERJUAL HARI INI
+// ===============================
+$sql_produk = "
+SELECT SUM(dt.qty) AS total_produk
+FROM detail_transaksi dt
+JOIN transaksi t ON dt.id_transaksi = t.ID_TRANSAKSI
+WHERE t.id_kantin = '$id_kantin_toko'
+AND DATE(t.tgl) = CURDATE()
+";
+
+$query_produk = $conn->query($sql_produk);
+$data_produk = $query_produk->fetch_assoc();
+
+$total_produk_terjual = $data_produk['total_produk'] ?? 0;
+
 ?>
 <!DOCTYPE html>
 <html lang="id">

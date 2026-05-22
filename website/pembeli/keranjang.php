@@ -477,12 +477,12 @@ $total_all = array_sum(array_column($grouped, 'total'));
             var responTeks = xhr.responseText.trim();
             if (xhr.status === 200) {
                 if (responTeks !== "success") { 
-                    alert("Pesan dari sistem: " + responTeks);
+                    // alert("Pesan dari sistem: " + responTeks);
                 }
                 location.reload();
                 console.log("hai");
             } else {
-                alert('Gagal update qty');
+                // alert('Gagal update qty');
             }
         };
         xhr.send('id_keranjang=' + idKeranjang + '&qty=' + qtyBaru);

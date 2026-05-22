@@ -697,8 +697,9 @@ if ($search !== '') {
                 <span class="close-btn" onclick="closeEditModal()">&times;</span>
             </div>
 
-            <form action="proses_edit_menu.php" method="POST" enctype="multipart/form-data" class="modal-body">
-                <input type="hidden" name="id_menu" id="edit_id_menu">
+            <!-- action="./process/proses_edit_menu.php" method="POST" -->
+            <form enctype="multipart/form-data" class="modal-body">
+                <input type="hidden" name="id" id="edit_id_menu">
 
                 <div class="form-group">
                     <label for="edit_nama">Nama Menu</label>
@@ -712,20 +713,24 @@ if ($search !== '') {
 
                 <div class="form-group">
                     <label for="edit_harga">Harga (Rp)</label>
-                    <input type="number" name="harga" id="edit_harga" required>
+                    <button></button>
+                    <input type="number" name="harga" id="edit_harga" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="edit_stok">Jumlah Stok</label>
-                    <input type="number" name="stok" id="edit_stok" required>
+                    <input type="number" name="stok" id="edit_stok" readonly>
                 </div>
 
                 <div class="form-group">
                     <label>Foto Menu (Kosongkan jika tidak diubah)</label>
+                    <input type="hidden" name="type" value="photo-menu">
+                    
                     <label for="edit_foto" class="custom-file-upload">
                         <i class="fa-solid fa-cloud-arrow-up"></i> <span id="file-chosen">Pilih Foto Menu...</span>
                     </label>
-                    <input type="file" name="foto_menu" id="edit_foto" accept="image/*" style="display: none;" onchange="updateFileName(this)">
+                    
+                    <input type="file" name="upfile" id="edit_foto" accept="image/*" style="display: none;" onchange="updateFileName(this)">
                 </div>
                 <button type="submit" class="btn-submit-modal">Simpan Perubahan</button>
             </form>
@@ -764,6 +769,51 @@ if ($search !== '') {
                 closeEditModal();
             }
         }
+
+        function updateFileName(input){
+            const fileNameDisplay = document.getElementById('file-chosen');
+            if(input.files.length > 0){
+                fileNameDisplay.textContent = input.files[0].name;
+            }
+            else{
+                fileNameDisplay.textContent = 'Pilih Foto Menu... '
+            }
+        }
+
+        // ajax
+        document.querySelector('.modal-body').onsubmit = async (e) => {
+            e.preventDefault();
+            const formdata = new FormData(e.target);
+
+            try{
+                
+                const response = await fetch('./process/pro_edit_menu.php',{
+                    method: 'POST',
+                    'body': formdata
+                });
+                console.log('woi')
+                const result = await response.json();
+
+                if(result.status == 'success'){
+                    alert('menu berhasil di ubah!');
+                    location.reload();
+                }
+                else{
+                    alert('Error:', result.message)
+                }
+
+
+            }
+            catch(e){
+                alert('error:', e)
+            }
+        }
+
+
+
+
+
+
     </script>
 </body>
 
