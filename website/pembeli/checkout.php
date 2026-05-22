@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+// session_start();
 require_once '../include/koneksi.php';
 require_once __DIR__ . "/../include/session/pembeliC.php";
 

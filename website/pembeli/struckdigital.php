@@ -32,9 +32,9 @@ if ($trxId > 0) {
 
     if ($transaction = mysqli_fetch_assoc($qTrx)) {
         $kantinName = $transaction['NAMA_KANTIN'];
-        $tglTrx     = $transaction['tgl'];
-        $waktuTrx   = $transaction['waktu'];
-        $trxIdStr   = $transaction['kode_pesanan'] ?? 'TRX-' . $trxId;
+        $tglTrx     = $transaction['TGL'];
+        $waktuTrx   = $transaction['WAKTU'];
+        $trxIdStr   = $transaction['KODE_PESANAN'] ?? 'TRX-' . $trxId;
 
         $qItems = mysqli_query($conn, "
             SELECT nama_menu, harga, qty, subtotal

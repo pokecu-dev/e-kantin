@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_transaksi']) && is
     $sql_update = "UPDATE transaksi SET status = '$status_baru' WHERE ID_TRANSAKSI = '$id_transaksi_update' AND id_kantin = '$id_kantin_toko'";
     if ($conn->query($sql_update)) {
         // Refresh halaman agar perubahan terlihat
-        header("Location: tespesanan.php?msg=success");
+        header("Location: pesanan.php?msg=success");
         exit;
     }
 }
