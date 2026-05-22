@@ -629,6 +629,7 @@ if ($search !== '') {
                 <div class="stat-info">
                     <span>PRODUK HABIS</span>
                     <h2><?= $produk_habis ?></h2>
+                    
                 </div>
             </div>
         </div>

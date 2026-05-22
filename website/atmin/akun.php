@@ -553,7 +553,7 @@ if ($search_user !== '') {
 
                 <button class="btn-add" onclick="openAddUserModal()">
                     <i class="fa-solid fa-plus"></i>
-                    Tambah Outlet
+                    Tambah User
                 </button>
             </div>
         </div>

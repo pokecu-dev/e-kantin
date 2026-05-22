@@ -91,7 +91,7 @@ FROM transaksi t
 JOIN users u ON t.id_user = u.ID
 WHERE t.id_kantin = ?
 ORDER BY t.tgl DESC, t.waktu DESC
-LIMIT 50
+LIMIT 5
 ";
 
 $stmt_tl = $conn->prepare($query_trx_list);

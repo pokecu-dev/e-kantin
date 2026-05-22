@@ -4,23 +4,23 @@
 // ===============================
 require_once __DIR__ . "/../include/koneksi.php";
 
-
 session_start();
 
-// 1. Proteksi Halaman
+// ===============================
+// PROTEKSI HALAMAN
+// ===============================
 if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
     header("location: ../login.php");
     exit();
 }
+
 // ===============================
 // USER LOGIN
 // ===============================
 $id_user_login = $_SESSION['id_user'] ?? 0;
 
-
-
 // ===============================
-// AMBIL KANTIN
+// AMBIL DATA KANTIN PENJUAL
 // ===============================
 $sql_kantin = "
 SELECT ID 
@@ -30,6 +30,11 @@ LIMIT 1
 ";
 
 $query_kantin = $conn->query($sql_kantin);
+
+if (!$query_kantin) {
+    die("Query kantin error: " . $conn->error);
+}
+
 $data_kantin = $query_kantin->fetch_assoc();
 
 $id_kantin_toko = $data_kantin['ID'] ?? 0;
@@ -39,24 +44,28 @@ if ($id_kantin_toko == 0) {
 }
 
 // ===============================
-// TOTAL PRODUK TERJUAL HARI INI (FIX)
+// TOTAL PRODUK TERJUAL HARI INI
 // ===============================
 $sql_produk = "
 SELECT SUM(dt.qty) AS total_produk
 FROM detail_transaksi dt
 JOIN transaksi t 
-ON dt.id_transaksi = t.id
-WHERE t.id_kantin = '$id_kantin_toko'
-AND DATE(t.tgl) = CURDATE()
+ON dt.id_transaksi = t.ID_TRANSAKSI
+WHERE t.ID_KANTIN = '$id_kantin_toko'
+AND DATE(t.TGL) = CURDATE()
 ";
-
 $query_produk = $conn->query($sql_produk);
+
+if (!$query_produk) {
+    die("Query produk error: " . $conn->error);
+}
+
 $data_produk = $query_produk->fetch_assoc();
 
 $total_produk_terjual = $data_produk['total_produk'] ?? 0;
 
 // ===============================
-// RATING RATA-RATA DARI TB_MENU
+// RATING RATA-RATA
 // ===============================
 $sql_rating = "
 SELECT AVG(rating) AS avg_rating
@@ -65,42 +74,57 @@ WHERE id_kantin = '$id_kantin_toko'
 ";
 
 $query_rating = $conn->query($sql_rating);
+
+if (!$query_rating) {
+    die("Query rating error: " . $conn->error);
+}
+
 $data_rating = $query_rating->fetch_assoc();
 
 $avg_rating = $data_rating['avg_rating'] ?? 0;
+
 // ===============================
-// RIWAYAT TRANSAKSI (GROUP PER TRANSAKSI)
+// RIWAYAT TRANSAKSI
 // ===============================
 $sql_transaksi = "
 SELECT 
-    t.id AS id_transaksi,
+    t.ID_TRANSAKSI AS id_transaksi,
     SUM(dt.qty) AS total_qty,
     SUM(dt.subtotal) AS total_harga,
-    t.waktu,
-    t.status
+    t.WAKTU,
+    t.STATUS
 FROM transaksi t
 JOIN detail_transaksi dt 
-ON t.id = dt.id_transaksi
-WHERE t.id_kantin = '$id_kantin_toko'
-AND t.status = 'selesai'
-GROUP BY t.id, t.waktu, t.status
-ORDER BY t.waktu DESC
+ON t.ID_TRANSAKSI = dt.id_transaksi
+WHERE t.ID_KANTIN = '$id_kantin_toko'
+AND t.STATUS = 'selesai'
+GROUP BY t.ID_TRANSAKSI, t.WAKTU, t.STATUS
+ORDER BY t.WAKTU DESC
 LIMIT 5
 ";
 
 $query_transaksi = $conn->query($sql_transaksi);
 
+if (!$query_transaksi) {
+    die("Query transaksi error: " . $conn->error);
+}
+
 // ===============================
-// PESANAN HARI INI
+// PESANAN MASUK HARI INI
 // ===============================
 $sql_count = "
 SELECT COUNT(*) AS total_order
 FROM transaksi
-WHERE id_kantin = '$id_kantin_toko'
-AND DATE(tgl) = CURDATE()
+WHERE ID_KANTIN = '$id_kantin_toko'
+AND DATE(TGL) = CURDATE()
 ";
 
 $query_count = $conn->query($sql_count);
+
+if (!$query_count) {
+    die("Query count error: " . $conn->error);
+}
+
 $data_count = $query_count->fetch_assoc();
 
 $pesanan_masuk_hari_ini = $data_count['total_order'] ?? 0;
@@ -112,31 +136,20 @@ $sql_pendapatan = "
 SELECT SUM(dt.subtotal) AS total
 FROM detail_transaksi dt
 JOIN transaksi t 
-ON dt.id_transaksi = t.id
-WHERE DATE(t.tgl) = CURDATE()
-AND t.id_kantin = '$id_kantin_toko'
+ON dt.id_transaksi = t.ID_TRANSAKSI
+WHERE DATE(t.TGL) = CURDATE()
+AND t.ID_KANTIN = '$id_kantin_toko'
 ";
 
 $query_pendapatan = $conn->query($sql_pendapatan);
+
+if (!$query_pendapatan) {
+    die("Query pendapatan error: " . $conn->error);
+}
+
 $data_pendapatan = $query_pendapatan->fetch_assoc();
 
 $total_hari_ini = $data_pendapatan['total'] ?? 0;
-
-// ===============================
-// PRODUK TERJUAL HARI INI
-// ===============================
-$sql_produk = "
-SELECT SUM(dt.qty) AS total_produk
-FROM detail_transaksi dt
-JOIN transaksi t ON dt.id_transaksi = t.id
-WHERE t.id_kantin = '$id_kantin_toko'
-AND DATE(t.tgl) = CURDATE()
-";
-
-$query_produk = $conn->query($sql_produk);
-$data_produk = $query_produk->fetch_assoc();
-
-$total_produk_terjual = $data_produk['total_produk'] ?? 0;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -581,7 +594,7 @@ $total_produk_terjual = $data_produk['total_produk'] ?? 0;
                                 </div>
 
                                 <div>
-                                    <?php echo date('H:i', strtotime($row['waktu'])); ?> WIB
+                                    <?php echo date('H:i', strtotime($row['WAKTU'])); ?> WIB
                                 </div>
 
                                 <div>

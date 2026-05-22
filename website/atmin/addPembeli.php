@@ -1,34 +1,129 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>test tambah murid</title>
+    <style>
+       
+
+       
+    
+
+        h2 {
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 2rem;
+        }
+
+        .note {
+            text-align: center;
+            font-size: 12px;
+            color: #64748B;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 13px;
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-bottom: 1px solid #CBD5E1;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        input:focus {
+            border-bottom: 2px solid #F47B20;
+        }
+
+        .pass-box {
+            display: flex;
+            align-items: center;
+        }
+
+        .pass-box button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            background: #F47B20;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #64748B;
+        }
+
+        .auth-footer a {
+            color: #F47B20;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+
+        /* Mengubah ukuran saat layar di bawah 768px (Tablet & HP) */
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h2>Form Test Tambah Murid</h2>
-    <p>note:usn akan di ubah menjadi huruf kecil semua</p>
-    <form data-ajax="true" data-action="process/pro_daftar.php" data-notif="notif" >
-        
-        <label>Username</label><br>
-        <input type="text" name="usn"><br><br>
+    <div class="card1">
+        <h2>Tambah Pembeli</h2>
+       <p class="note">note:usn akan di ubah menjadi huruf kecil semua</p>
+        <form data-ajax="true" data-action="process/pro_daftar.php" data-notif="notif">
 
-        <label>Password</label><br>
-        <input type="text" name="pass"><br><br>
+            <label>Username</label><br>
+            <input type="text" name="usn">
 
-        <label>Nama Lengkap</label><br>
-        <input type="text" name="nama_lengkap"><br><br>
+            <label>Password</label><br>
+            <input type="text" name="pass">
 
-        <label>Nomor telpeon</label><br>
-        <input type="text" name="no_tlp"><br><br>
+            <label>Nama Lengkap</label><br>
+            <input type="text" name="nama_lengkap">
 
-        <label>Email</label><br>
-        <input type="email" name="email"><br><br>
+            <label>Nomor telpeon</label><br>
+            <input type="text" name="no_tlp">
 
-        <button type="submit">Tambah Murid</button>
+            <label>Email</label><br>
+            <input type="email" name="email">
 
-    </form>
+            <button type="submit">Tambah Murid</button>
 
-    <div id="notif"></div>
+        </form>
+
+        <div id="notif"></div>
+    </div>
     <script src="./../shared/js/script.js"></script>
+
 </body>
+
 </html>

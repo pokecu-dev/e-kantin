@@ -2,15 +2,12 @@
 // =========================
 // SESSION & KONEKSI
 // =========================
-
 session_start();
-
 require_once '../include/koneksi.php';
 
 // =========================
 // PROTEKSI LOGIN
 // =========================
-
 if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php");
     exit();
@@ -21,16 +18,13 @@ $id_login = $_SESSION['id_user'];
 // =========================
 // SEARCH
 // =========================
-
 $search = $_GET['search'] ?? '';
 
 // =========================
 // QUERY MENU
 // =========================
-
 $query_menu = "
-SELECT m.* 
-FROM tb_menu m
+SELECT m.* FROM tb_menu m
 JOIN list_kantin k ON m.id_kantin = k.id
 WHERE k.id_penjual = ?
 ";
@@ -42,29 +36,14 @@ if (!empty($search)) {
 $stmt = mysqli_prepare($conn, $query_menu);
 
 if (!empty($search)) {
-
     $searchValue = "%$search%";
-
-    mysqli_stmt_bind_param(
-        $stmt,
-        "is",
-        $id_login,
-        $searchValue
-    );
-
+    mysqli_stmt_bind_param($stmt, "is", $id_login, $searchValue);
 } else {
-
-    mysqli_stmt_bind_param(
-        $stmt,
-        "i",
-        $id_login
-    );
+    mysqli_stmt_bind_param($stmt, "i", $id_login);
 }
 
 mysqli_stmt_execute($stmt);
-
 $result_menu = mysqli_stmt_get_result($stmt);
-
 ?>
 
 <!DOCTYPE html>
@@ -72,329 +51,205 @@ $result_menu = mysqli_stmt_get_result($stmt);
 
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Produk Saya</title>
-
     <link rel="stylesheet" href="style.css">
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
-        rel="stylesheet"
-    >
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    >
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:'Poppins',sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        body{
-            background:#f5f5f5;
-            color:#333;
-            overflow-x:hidden;
+        body {
+            background: #f5f5f5;
+            color: #333;
+            overflow-x: hidden;
         }
 
-        /* =========================
-           SCROLLBAR HIDE
-        ========================= */
+        /* Hide scrollbar */
+        ::-webkit-scrollbar { width: 0; height: 0; }
+        * { scrollbar-width: none; }
 
-        ::-webkit-scrollbar{
-            width:0;
-            height:0;
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 20px;
+            margin-top: 70px;
         }
 
-        *{
-            scrollbar-width:none;
+        /* SEARCH */
+        .search-box { margin-bottom: 20px; }
+        .search-form { display: flex; gap: 12px; }
+        .search-form input {
+            flex: 1;
+            padding: 14px 16px;
+            border: none;
+            border-radius: 14px;
+            outline: none;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,.05);
+        }
+        .search-form button {
+            padding: 14px 22px;
+            border: none;
+            border-radius: 14px;
+            background: #F47B20;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .search-form button:hover { background: #dd6b1d; }
+
+        /* GRID */
+        .parent {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
         }
 
-        /* =========================
-           CONTAINER
-        ========================= */
-
-        .container{
-            max-width:1400px;
-            margin:auto;
-            padding:20px;
-            margin-top:70px;
+        /* CARD */
+        .child {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.06);
+            transition: .25s;
+            display: flex;
+            flex-direction: column;
+        }
+        .child:hover { transform: translateY(-5px); }
+        .child img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 14px;
+            margin-bottom: 12px;
+        }
+        .child h3 { font-size: 16px; margin-bottom: 6px; }
+        
+        .rating {
+            color: #F47B20;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .harga {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 16px;
         }
 
-        /* =========================
-           SEARCH
-        ========================= */
-
-        .search-box{
-            margin-bottom:20px;
+        /* GROUP BUTTONS */
+        .action-group {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+            width: 100%;
         }
 
-        .search-form{
-            display:flex;
-            gap:12px;
+        .edit-btn, .review-btn {
+            flex: 1;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: .2s;
+            cursor: pointer;
         }
 
-        .search-form input{
-            flex:1;
-
-            padding:14px 16px;
-
-            border:none;
-            border-radius:14px;
-
-            outline:none;
-
-            background:white;
-
-            box-shadow:
-            0 2px 10px rgba(0,0,0,.05);
+        .edit-btn {
+            border: 1.5px solid #F47B20;
+            color: #F47B20;
+            background: transparent;
+        }
+        .edit-btn:hover {
+            background: #F47B20;
+            color: white;
         }
 
-        .search-form button{
-            padding:14px 22px;
-
-            border:none;
-            border-radius:14px;
-
-            background:#F47B20;
-
-            color:white;
-            font-weight:600;
-
-            cursor:pointer;
-
-            transition:.2s;
+        .review-btn {
+            border: 1.5px solid #2563eb;
+            color: #2563eb;
+            background: transparent;
+        }
+        .review-btn:hover {
+            background: #2563eb;
+            color: white;
         }
 
-        .search-form button:hover{
-            background:#dd6b1d;
+        /* MODAL OVERLAY */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
         }
-
-        /* =========================
-           GRID
-        ========================= */
-
-        .parent{
-            display:grid;
-
-            grid-template-columns:
-            repeat(auto-fit,minmax(220px,123px));
-
-            gap:20px;
+        .modal-overlay.active { display: flex; }
+        
+        .modal-box {
+            width: min(500px, 92%);
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-
-        /* =========================
-           CARD
-        ========================= */
-
-        .child{
-            background:white;
-
-            border-radius:20px;
-
-            padding:15px;
-
-            box-shadow:
-            0 5px 15px rgba(0,0,0,.06);
-
-            transition:.25s;
-
-            display:flex;
-            flex-direction:column;
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            border: none;
+            background: none;
+            font-size: 26px;
+            cursor: pointer;
+            color: #666;
         }
+        .modal-close:hover { color: #000; }
 
-        .child:hover{
-            transform:translateY(-5px);
+        .empty {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
         }
-
-        .child img{
-            width:100%;
-            aspect-ratio:1/1;
-
-            object-fit:cover;
-
-            border-radius:14px;
-
-            margin-bottom:12px;
-        }
-
-        .child h3{
-            font-size:16px;
-            margin-bottom:6px;
-        }
-
-        .rating{
-            color:#F47B20;
-            font-size:13px;
-            font-weight:600;
-
-            margin-bottom:10px;
-        }
-
-        .harga{
-            font-size:15px;
-            font-weight:700;
-
-            margin-bottom:16px;
-        }
-
-        /* =========================
-           BUTTON
-        ========================= */
-
-        .edit-btn{
-            margin-top:auto;
-
-            height:42px;
-
-            border-radius:12px;
-
-            border:1.5px solid #F47B20;
-
-            display:flex;
-            align-items:center;
-            justify-content:center;
-
-            text-decoration:none;
-
-            color:#F47B20;
-
-            font-size:14px;
-            font-weight:600;
-
-            transition:.2s;
-        }
-
-        .edit-btn:hover{
-            background:#F47B20;
-            color:white;
-        }
-
-        /* =========================
-           MODAL
-        ========================= */
-
-        .modal-overlay{
-            position:fixed;
-            inset:0;
-
-            background:rgba(0,0,0,.45);
-
-            display:none;
-
-            align-items:center;
-            justify-content:center;
-
-            z-index:999;
-        }
-
-        .modal-overlay.active{
-            display:flex;
-        }
-
-        .modal-box{
-            width:min(450px,92%);
-
-            background:white;
-
-            border-radius:20px;
-
-            padding:20px;
-
-            position:relative;
-
-            max-height:90vh;
-
-            overflow-y:auto;
-        }
-
-        .modal-close{
-            position:absolute;
-
-            top:10px;
-            right:14px;
-
-            border:none;
-            background:none;
-
-            font-size:28px;
-
-            cursor:pointer;
-        }
-
-        /* =========================
-           EMPTY
-        ========================= */
-
-        .empty{
-            grid-column:1/-1;
-
-            text-align:center;
-
-            padding:60px 20px;
-
-            color:#999;
-        }
-
-        /* =========================
-           MOBILE
-        ========================= */
 
         @media(max-width:768px){
-
-            .container{
-                padding:14px;
-            }
-
-            .parent{
-                grid-template-columns:
-                repeat(2,1fr);
-
-                gap:14px;
-            }
-
-            .search-form{
-                flex-direction:column;
-            }
-
-            .search-form button{
-                width:100%;
-            }
+            .container { padding: 14px; }
+            .parent { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+            .search-form { flex-direction: column; }
+            .search-form button { width: 100%; }
+            .action-group { flex-direction: column; gap: 6px; }
+            .edit-btn, .review-btn { height: 38px; font-size: 12px; }
         }
-
     </style>
 </head>
 
 <body>
 
-    <!-- NAVBAR -->
-
     <nav class="navbar">
-
         <div class="nav-container">
-
             <div class="logo">
                 <img src="../../source/icon/logo1.svg" alt="">
             </div>
-
             <input type="checkbox" id="check">
-
             <label for="check" class="checkbtn">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </label>
-
             <ul class="nav-links">
                 <li><a href="penjual.php">Beranda</a></li>
                 <li><a href="pesanan.php">Pesanan</a></li>
@@ -402,208 +257,106 @@ $result_menu = mysqli_stmt_get_result($stmt);
                 <li><a href="profil.php">Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
-
         </div>
-
     </nav>
 
-    <!-- CONTENT -->
-
     <div class="container">
-
-        <!-- SEARCH -->
-
         <div class="search-box">
-
             <form method="GET" class="search-form">
-
-                <input
-                    type="text"
-                    name="search"
-                    placeholder="Cari menu..."
-                    value="<?= htmlspecialchars($search) ?>"
-                >
-
-                <button type="submit">
-                    Cari
-                </button>
-
+                <input type="text" name="search" placeholder="Cari menu..." value="<?= htmlspecialchars($search) ?>">
+                <button type="submit">Cari</button>
             </form>
-
         </div>
-
-        <!-- GRID -->
 
         <div class="parent">
-
-            <?php if(mysqli_num_rows($result_menu) > 0): ?>
-
-                <?php while($row = mysqli_fetch_assoc($result_menu)): ?>
-
+            <?php if (mysqli_num_rows($result_menu) > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($result_menu)): ?>
                     <div class="child">
-
-                        <img
-                            src="../../source/gambar_menu/<?= htmlspecialchars($row['FOTO_MENU'] ?? 'default.jpg') ?>"
-                            alt="<?= htmlspecialchars($row['NAMA_MENU']) ?>"
-                        >
-
-                        <h3>
-                            <?= htmlspecialchars($row['NAMA_MENU']) ?>
-                        </h3>
-
+                        <img src="../../source/gambar_menu/<?= htmlspecialchars($row['FOTO_MENU'] ?? 'default.jpg') ?>" alt="<?= htmlspecialchars($row['NAMA_MENU']) ?>">
+                        <h3><?= htmlspecialchars($row['NAMA_MENU']) ?></h3>
+                        
                         <div class="rating">
-                            <i class="fas fa-star"></i>
-                           <?= $row['RATING'] ?>
+                            <i class="fas fa-star"></i> <?= number_format($row['RATING'] ?? 0, 1) ?>
                         </div>
+                        <p class="harga">Rp <?= number_format($row['HARGA'], 0, ',', '.') ?></p>
 
-                        <p class="harga">
-                            Rp <?= number_format($row['HARGA'],0,',','.') ?>
-                        </p>
-
-                        <a
-                            href="#"
-                            class="edit-btn js-edit-btn"
-                            data-id="<?= urlencode($row['ID_MENU']) ?>"
-                        >
-                            <i class="fas fa-edit"></i>
-                            &nbsp;
-                            Edit
-                        </a>
-
+                        <div class="action-group">
+                            <a href="#" class="edit-btn js-edit-btn" data-id="<?= urlencode($row['ID_MENU']) ?>">
+                                <i class="fas fa-edit"></i>&nbsp;Edit
+                            </a>
+                            <button class="review-btn js-review-btn" data-id="<?= urlencode($row['ID_MENU']) ?>">
+                                <i class="fas fa-comments"></i>&nbsp;Ulasan
+                            </button>
+                        </div>
                     </div>
-
                 <?php endwhile; ?>
-
             <?php else: ?>
-
-                <div class="empty">
-                    Produk tidak ditemukan.
-                </div>
-
+                <div class="empty">Produk tidak ditemukan.</div>
             <?php endif; ?>
-
         </div>
-
     </div>
-
-    <!-- MODAL -->
 
     <div id="editModal" class="modal-overlay">
-
         <div class="modal-box">
-
-            <button
-                class="modal-close"
-                id="closeModal"
-            >
-                &times;
-            </button>
-
+            <button class="modal-close" id="closeModal">&times;</button>
             <div id="modalContent"></div>
-
         </div>
-
     </div>
 
-    <!-- SCRIPT -->
-
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const modal = document.getElementById("editModal");
+            const modalContent = document.getElementById("modalContent");
+            const closeModal = document.getElementById("closeModal");
 
-        document.addEventListener("DOMContentLoaded",()=>{
+            const showLoading = () => {
+                modalContent.innerHTML = `<div style="text-align:center; padding:40px;">Loading...</div>`;
+                modal.classList.add("active");
+                document.body.style.overflow = "hidden";
+            };
 
-            const modal =
-            document.getElementById("editModal");
-
-            const modalContent =
-            document.getElementById("modalContent");
-
-            const closeModal =
-            document.getElementById("closeModal");
-
-            document
-            .querySelectorAll(".js-edit-btn")
-            .forEach(btn=>{
-
-                btn.addEventListener("click",async(e)=>{
-
+            // 1. EVENT KLIK TOMBOL EDIT (MEMANGGIL editproduk.php)
+            document.querySelectorAll(".js-edit-btn").forEach(btn => {
+                btn.addEventListener("click", async (e) => {
                     e.preventDefault();
-
                     const id = btn.dataset.id;
-
-                    try{
-
-                        modalContent.innerHTML = `
-                            <div style="
-                                text-align:center;
-                                padding:40px;
-                            ">
-                                Loading...
-                            </div>
-                        `;
-
-                        modal.classList.add("active");
-
-                        document.body.style.overflow =
-                        "hidden";
-
-                        const res =
-                        await fetch(
-                            `editproduk.php?id=${id}`
-                        );
-
-                        const html =
-                        await res.text();
-
-                        modalContent.innerHTML =
-                        html;
-
-                    }catch(err){
-
-                        modalContent.innerHTML = `
-                            <div style="
-                                text-align:center;
-                                padding:40px;
-                                color:red;
-                            ">
-                                Gagal memuat data.
-                            </div>
-                        `;
-
-                        console.error(err);
+                    try {
+                        showLoading();
+                        const res = await fetch(`editproduk.php?id=${id}`);
+                        modalContent.innerHTML = await res.text();
+                    } catch (err) {
+                        modalContent.innerHTML = `<div style="text-align:center; padding:40px; color:red;">Gagal memuat data edit.</div>`;
                     }
-
                 });
-
             });
 
-            const close = ()=>{
+            // 2. EVENT KLIK TOMBOL RATING/ULASAN (MEMANGGIL detail_ulasan.php BARU)
+            document.querySelectorAll(".js-review-btn").forEach(btn => {
+                btn.addEventListener("click", async (e) => {
+                    e.preventDefault();
+                    const id = btn.dataset.id;
+                    try {
+                        showLoading();
+                        const res = await fetch(`detail_ulasan.php?id=${id}`);
+                        modalContent.innerHTML = await res.text();
+                    } catch (err) {
+                        modalContent.innerHTML = `<div style="text-align:center; padding:40px; color:red;">Gagal memuat data ulasan.</div>`;
+                    }
+                });
+            });
 
+            // TUTUP MODAL FUNGSI
+            const close = () => {
                 modal.classList.remove("active");
-
                 modalContent.innerHTML = "";
-
                 document.body.style.overflow = "";
             };
 
-            closeModal.addEventListener(
-                "click",
-                close
-            );
-
-            modal.addEventListener(
-                "click",
-                (e)=>{
-
-                    if(e.target === modal){
-                        close();
-                    }
-
-                }
-            );
-
+            closeModal.addEventListener("click", close);
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) close();
+            });
         });
-
     </script>
-
 </body>
 </html>
