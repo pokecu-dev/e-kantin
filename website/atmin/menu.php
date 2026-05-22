@@ -56,7 +56,6 @@ if ($search !== '') {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -65,6 +64,7 @@ if ($search !== '') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Produk Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -104,13 +104,11 @@ if ($search !== '') {
         }
 
         /* =========================
-NAVBAR
-========================= */
-
+        NAVBAR
+        ========================= */
         .nav-links a {
             text-decoration: none;
             color: #888;
-            /* Warna abu-abu */
             font-weight: 500;
             transition: 0.3s;
         }
@@ -121,12 +119,9 @@ NAVBAR
             padding-bottom: 5px;
         }
 
-
-
         /* =========================
-   CONTAINER
-========================= */
-
+        CONTAINER
+        ========================= */
         .container {
             width: 100%;
             max-width: 1400px;
@@ -136,9 +131,8 @@ NAVBAR
         }
 
         /* =========================
-   HEADER
-========================= */
-
+        HEADER
+        ========================= */
         .header {
             margin-bottom: 30px;
         }
@@ -158,15 +152,13 @@ NAVBAR
         }
 
         /* =========================
-   SEARCH
-========================= */
-
+        SEARCH
+        ========================= */
         .input-group {
             width: 100%;
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-
             background: #fff7ed;
             padding: 18px;
             border-radius: var(--radius);
@@ -176,11 +168,9 @@ NAVBAR
         .input-group input {
             flex: 1 1 300px;
             min-width: 0;
-
             padding: 14px 16px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
-
             font-size: 14px;
             outline: none;
         }
@@ -193,13 +183,10 @@ NAVBAR
             border: none;
             background: var(--primary-orange);
             color: white;
-
             padding: 14px 24px;
             border-radius: 12px;
-
             font-weight: 600;
             cursor: pointer;
-
             transition: .3s;
         }
 
@@ -208,14 +195,12 @@ NAVBAR
         }
 
         /* =========================
-   STATS
-========================= */
-
+        STATS
+        ========================= */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
-
             margin-bottom: 30px;
         }
 
@@ -223,11 +208,9 @@ NAVBAR
             background: white;
             border-radius: var(--radius);
             padding: 24px;
-
             display: flex;
             align-items: center;
             gap: 16px;
-
             box-shadow: var(--shadow-soft);
             border: 1px solid var(--border-color);
         }
@@ -235,13 +218,10 @@ NAVBAR
         .icon-box {
             width: 56px;
             height: 56px;
-
             border-radius: 14px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             font-size: 22px;
             flex-shrink: 0;
         }
@@ -269,9 +249,8 @@ NAVBAR
         }
 
         /* =========================
-   DATA CARD
-     ========================= */
-
+        DATA CARD & TOOLBAR
+        ========================= */
         .data-card {
             background: white;
             border-radius: var(--radius);
@@ -279,31 +258,22 @@ NAVBAR
             border: 1px solid var(--border-color);
         }
 
-        /* =========================
-   TOOLBAR
-========================= */
-
         .toolbar {
             padding: 20px;
-
             display: flex;
             flex-wrap: wrap;
             gap: 14px;
-
             justify-content: space-between;
             align-items: center;
-
             border-bottom: 1px solid var(--border-color);
         }
 
         .search-input {
             flex: 1 1 280px;
             min-width: 0;
-
             padding: 12px 16px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
-
             background: #f8fafc;
         }
 
@@ -316,10 +286,8 @@ NAVBAR
         .btn-page {
             border: 1px solid var(--border-color);
             background: white;
-
             padding: 10px 16px;
             border-radius: 10px;
-
             cursor: pointer;
             transition: .2s;
         }
@@ -329,9 +297,8 @@ NAVBAR
         }
 
         /* =========================
-   TABLE GRID
-========================= */
-
+        TABLE GRID
+        ========================= */
         .grid-wrapper {
             background-color: var(--white);
             width: 100%;
@@ -342,26 +309,19 @@ NAVBAR
         .grid-header,
         .grid-row {
             min-width: 900px;
-
             display: grid;
-            grid-template-columns:
-                var(--col-product) var(--col-category) var(--col-price) var(--col-stock) var(--col-status) var(--col-action);
-
+            grid-template-columns: var(--col-product) var(--col-category) var(--col-price) var(--col-stock) var(--col-status) var(--col-action);
             gap: 16px;
             align-items: center;
-
             padding: 18px 20px;
         }
 
         .grid-header {
             background: #fafafa;
-
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
-
             color: var(--text-muted);
-
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -378,7 +338,6 @@ NAVBAR
             display: flex;
             align-items: center;
             gap: 14px;
-
             min-width: 0;
         }
 
@@ -391,25 +350,20 @@ NAVBAR
         .img-placeholder {
             width: 48px;
             height: 48px;
-
             border-radius: 12px;
-
             background: #f1f5f9;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             flex-shrink: 0;
         }
 
         /* =========================
-   BADGES
-========================= */
+        BADGES
+        ========================= */
         .badge {
             padding: 6px 12px;
             border-radius: 999px;
-
             font-size: 12px;
             font-weight: 600;
         }
@@ -430,93 +384,173 @@ NAVBAR
         }
 
         /* =========================
-   SWITCH
-========================= */
-
-        .switch {
-            position: relative;
-            width: 44px;
-            height: 24px;
-            display: inline-block;
-        }
-
-        .switch input {
-            display: none;
-        }
-
-        .slider {
-            position: absolute;
-            inset: 0;
-            background: #cbd5e1;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: .3s;
-        }
-
-        .slider::before {
-            content: "";
-
-            position: absolute;
-            width: 18px;
-            height: 18px;
-
-            left: 3px;
-            top: 3px;
-
-            background: white;
-            border-radius: 50%;
-
-            transition: .3s;
-        }
-
-        .switch input:checked+.slider {
-            background: var(--primary-orange);
-        }
-
-        .switch input:checked+.slider::before {
-            transform: translateX(20px);
-        }
-
-        /* =========================
-   ACTIONS
-========================= */
-
+        ACTIONS
+        ========================= */
         .actions {
             display: flex;
             justify-content: flex-end;
             gap: 14px;
-
             font-size: 18px;
             cursor: pointer;
         }
 
         /* =========================
-   FOOTER
-========================= */
-
-        .footer {
-            padding: 20px;
-
+        CSS POP-UP MODAL (BARU)
+        ========================= */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
             display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
 
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--white);
+            width: 90%;
+            max-width: 500px;
+            border-radius: var(--radius);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            background: #fafafa;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
             justify-content: space-between;
             align-items: center;
+        }
 
+        .modal-header h2 {
+            font-size: 18px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .close-btn {
+            font-size: 28px;
+            font-weight: bold;
             color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #ef4444;
+        }
+
+        .modal-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .modal-body .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .modal-body label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .modal-body input {
+            width: 100%;
+            height: 44px;
+            padding: 0 14px;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .modal-body input:focus {
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(243, 111, 32, 0.15);
+        }
+
+        .btn-submit-modal {
+            background: var(--primary-orange);
+            color: var(--white);
+            border: none;
+            height: 46px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit-modal:hover {
+            background: #e05d1a;
+        }
+
+        /* Style untuk Tombol Pilih File Kustom */
+        .custom-file-upload {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            height: 44px;
+            background-color: #fff7ed;
+            /* Warna latar orange pudar biar soft */
+            border: 2px dashed #fed7aa;
+            /* Border putus-putus khas upload file */
+            color: var(--primary-orange);
+            border-radius: 10px;
+            padding: 0 14px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #ffedd5;
+            border-color: var(--primary-orange);
+        }
+
+
+        #file-chosen {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 90%;
         }
 
         /* =========================
-   MOBILE
-========================= */
-
+        MOBILE RESPONSIVE
+        ========================= */
         @media (max-width: 768px) {
-
             .container {
                 padding: 16px;
             }
-
 
             .toolbar {
                 flex-direction: column;
@@ -531,11 +565,6 @@ NAVBAR
                 flex: 1;
             }
 
-            .footer {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
             .input-group {
                 padding: 14px;
             }
@@ -543,27 +572,15 @@ NAVBAR
             .stat-card {
                 padding: 18px;
             }
-
         }
     </style>
 </head>
 
 <body>
 
-    <!-- NAVBAR -->
-
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
-
-            <!-- Burger Menu (Mobile Only) -->
-            <input type="checkbox" id="check">
-            <label for="check" class="checkbtn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </label>
-
             <ul class="nav-links">
                 <li><a href="admin.php">Beranda</a></li>
                 <li><a href="akun.php">Akun</a></li>
@@ -573,41 +590,24 @@ NAVBAR
             </ul>
         </div>
     </nav>
-    <!-- CONTAINER -->
 
     <div class="container">
-
-        <!-- HEADER -->
 
         <div class="header">
             <div class="header-title">
                 <h1>Kelola Produk</h1>
                 <form action="" method="GET" class="input-group">
-                    <input type="text"
-                        name="query"
-                        placeholder="Cari menu..."
-                        value="<?= htmlspecialchars($search ?? '') ?>">
+                    <input type="text" name="query" placeholder="Cari menu..." value="<?= htmlspecialchars($search ?? '') ?>">
                     <button type="submit" class="btn-orange">Cari</button>
                 </form>
-                <p>
-                    Pantau dan kelola inventaris produk secara real-time.
-                </p>
+                <p>Pantau dan kelola inventaris produk secara real-time.</p>
             </div>
         </div>
 
-        <!-- STATS -->
         <?php
-        // TOTAL PRODUK
-        $total_produk = $conn->query("SELECT COUNT(*) AS total FROM tb_menu")
-            ->fetch_assoc()['total'] ?? 0;
-
-        // STOK RENDAH (<=5)
-        $stok_rendah = $conn->query("SELECT COUNT(*) AS total FROM tb_menu WHERE STOK <= 5")
-            ->fetch_assoc()['total'] ?? 0;
-
-        // PRODUK HABIS (STOK = 0)
-        $produk_habis = $conn->query("SELECT COUNT(*) AS total FROM tb_menu WHERE STOK = 0")
-            ->fetch_assoc()['total'] ?? 0;
+        $total_produk = $conn->query("SELECT COUNT(*) AS total FROM tb_menu")->fetch_assoc()['total'] ?? 0;
+        $stok_rendah = $conn->query("SELECT COUNT(*) AS total FROM tb_menu WHERE STOK <= 5")->fetch_assoc()['total'] ?? 0;
+        $produk_habis = $conn->query("SELECT COUNT(*) AS total FROM tb_menu WHERE STOK = 0")->fetch_assoc()['total'] ?? 0;
         ?>
         <div class="stats-grid">
             <div class="stat-card">
@@ -624,25 +624,18 @@ NAVBAR
                     <h2><?= $stok_rendah ?></h2>
                 </div>
             </div>
-
             <div class="stat-card">
                 <div class="icon-box icon-active">❌</div>
                 <div class="stat-info">
-                    <span>PRODUK AKTIF</span>
+                    <span>PRODUK HABIS</span>
                     <h2><?= $produk_habis ?></h2>
                 </div>
             </div>
         </div>
 
-        <!-- DATA CARD -->
-
-
-
         <div class="data-card">
-            <!-- TOOLBAR -->
             <div class="toolbar">
                 <p>Daftar menu</p>
-
             </div>
 
             <div class="grid-wrapper">
@@ -656,62 +649,171 @@ NAVBAR
                 </div>
 
                 <?php while ($menu = $query->fetch_assoc()): ?>
-                    <?php
-                    $status = ((int)$menu['STOK'] <= 0) ? 'habis' : 'tersedia';
-                    ?>
                     <div class="grid-row">
-
-                        <!-- PRODUK -->
                         <div class="product-info">
                             <div class="img-placeholder">
-                                <img
-                                    src="../../source/gambar_menu/<?= htmlspecialchars($menu['FOTO_MENU']) ?>"
-                                    width="45"
-                                    height="45"
-                                    style="border-radius:10px; object-fit:cover;">
+                                <img src="../../source/gambar_menu/<?= htmlspecialchars($menu['FOTO_MENU']) ?>" width="45" height="45" style="border-radius:10px; object-fit:cover;">
                             </div>
-
                             <strong><?= htmlspecialchars($menu['NAMA_MENU']) ?></strong>
                         </div>
 
-                        <!-- KATEGORI -->
                         <div><?= htmlspecialchars($menu['KATEGORI']) ?></div>
 
-                        <!-- HARGA -->
                         <div>Rp <?= number_format($menu['HARGA'], 0, ',', '.') ?></div>
 
-                        <!-- STOK -->
                         <div>
-                            <div>
-                                <?php if ((int)$menu['STOK'] <= 0): ?>
-                                    <span class="badge badge-red">
-                                        Habis
-                                    </span>
-                                <?php else: ?>
-                                    <span class="badge badge-green">
-                                        <?= (int)$menu['STOK'] ?> Tersedia
-                                    </span>
-                                <?php endif; ?>
-                            </div>
+                            <?php if ((int)$menu['STOK'] <= 0): ?>
+                                <span class="badge badge-red">Habis</span>
+                            <?php else: ?>
+                                <span class="badge badge-green"><?= (int)$menu['STOK'] ?> Tersedia</span>
+                            <?php endif; ?>
                         </div>
 
-                        <!-- RATING -->
-                        <div>
-                            ⭐ <?= number_format($menu['RATING'] ?? 0, 1) ?>/5
-                        </div>
+                        <div>⭐ <?= number_format($menu['RATING'] ?? 0, 1) ?>/5</div>
 
-                        <!-- AKSI -->
                         <div class="actions">
-                            📝 🗑️
+                            <span onclick="openEditModal(this)"
+                                data-id="<?= $menu['ID_MENU'] ?>"
+                                data-nama="<?= htmlspecialchars($menu['NAMA_MENU']) ?>"
+                                data-kategori="<?= htmlspecialchars($menu['KATEGORI']) ?>"
+                                data-harga="<?= $menu['HARGA'] ?>"
+                                data-stok="<?= $menu['STOK'] ?>"
+                                style="cursor: pointer; margin-right: 8px;">
+                                📝
+                            </span>
+                            <span style="cursor: pointer;">🗑️</span>
                         </div>
-
                     </div>
                 <?php endwhile; ?>
             </div>
-            <!-- FOOTER -->
-
         </div>
     </div>
+
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-pen-to-square"></i> Edit Data Produk</h2>
+                <span class="close-btn" onclick="closeEditModal()">&times;</span>
+            </div>
+
+            <!-- action="./process/proses_edit_menu.php" method="POST" -->
+            <form enctype="multipart/form-data" class="modal-body">
+                <input type="hidden" name="id" id="edit_id_menu">
+
+                <div class="form-group">
+                    <label for="edit_nama">Nama Menu</label>
+                    <input type="text" name="nama_menu" id="edit_nama" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_kategori">Kategori</label>
+                    <input type="text" name="kategori" id="edit_kategori" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_harga">Harga (Rp)</label>
+                    <button></button>
+                    <input type="number" name="harga" id="edit_harga" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_stok">Jumlah Stok</label>
+                    <input type="number" name="stok" id="edit_stok" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Foto Menu (Kosongkan jika tidak diubah)</label>
+                    <input type="hidden" name="type" value="photo-menu">
+                    
+                    <label for="edit_foto" class="custom-file-upload">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> <span id="file-chosen">Pilih Foto Menu...</span>
+                    </label>
+                    
+                    <input type="file" name="upfile" id="edit_foto" accept="image/*" style="display: none;" onchange="updateFileName(this)">
+                </div>
+                <button type="submit" class="btn-submit-modal">Simpan Perubahan</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openEditModal(button) {
+            // Ambil data dari baris tabel yang diklik
+            const id = button.getAttribute('data-id');
+            const nama = button.getAttribute('data-nama');
+            const kategori = button.getAttribute('data-kategori');
+            const harga = button.getAttribute('data-harga');
+            const stok = button.getAttribute('data-stok');
+
+            // Petakan nilainya masuk ke dalam input modal box
+            document.getElementById('edit_id_menu').value = id;
+            document.getElementById('edit_nama').value = nama;
+            document.getElementById('edit_kategori').value = kategori;
+            document.getElementById('edit_harga').value = harga;
+            document.getElementById('edit_stok').value = stok;
+
+            // Picu CSS untuk menampilkan modal overlay dengan class .show
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        function closeEditModal() {
+            // Sembunyikan kembali modal overlay
+            document.getElementById('editModal').classList.remove('show');
+        }
+
+        // Fungsi otomatis tutup modal jika admin klik di luar kotak putih modal
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+
+        function updateFileName(input){
+            const fileNameDisplay = document.getElementById('file-chosen');
+            if(input.files.length > 0){
+                fileNameDisplay.textContent = input.files[0].name;
+            }
+            else{
+                fileNameDisplay.textContent = 'Pilih Foto Menu... '
+            }
+        }
+
+        // ajax
+        document.querySelector('.modal-body').onsubmit = async (e) => {
+            e.preventDefault();
+            const formdata = new FormData(e.target);
+
+            try{
+                
+                const response = await fetch('./process/pro_edit_menu.php',{
+                    method: 'POST',
+                    'body': formdata
+                });
+                console.log('woi')
+                const result = await response.json();
+
+                if(result.status == 'success'){
+                    alert('menu berhasil di ubah!');
+                    location.reload();
+                }
+                else{
+                    alert('Error:', result.message)
+                }
+
+
+            }
+            catch(e){
+                alert('error:', e)
+            }
+        }
+
+
+
+
+
+
+    </script>
 </body>
 
 </html>

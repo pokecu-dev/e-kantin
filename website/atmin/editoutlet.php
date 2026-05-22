@@ -568,10 +568,12 @@ $stmt_m->close();
                     <?php while ($row_menu = $result_menu->fetch_assoc()):
                         $is_habis = (strtolower($row_menu['STOK']) === 'habis' || $row_menu['STOK'] == 0);
                         $foto = !empty($row_menu['FOTO_MENU']) ? $row_menu['FOTO_MENU'] : 'default.jpg';
+                        $foto = ltrim($foto);
                     ?>
                         <div class="product-card">
                             <div class="product-img-wrapper">
-                                <img src="../../source/foto_menu/<?php echo htmlspecialchars($foto); ?>" onerror="this.src='https://via.placeholder.com/300x180?text=Menu+Kantin'" alt="Menu">
+                                <!-- <img src="../../source/foto_menu/" onerror="this.src='https://via.placeholder.com/300x180?text=Menu+Kantin'" alt="Menu"> -->
+                                <img src="./../../source/gambar_menu/<?=htmlspecialchars($foto) ?>" alt="Menu">
                                 <?php if (!$is_habis): ?>
                                     <span class="badge badge-available">Tersedia</span>
                                 <?php else: ?>

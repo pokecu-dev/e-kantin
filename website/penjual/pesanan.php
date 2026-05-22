@@ -1,7 +1,15 @@
 <?php
-
+// 1. Hubungkan ke file koneksi bawaan kamu
 require_once __DIR__ . "/../include/koneksi.php";
-require_once __DIR__ . "/../include/session/penjualC.php";
+
+// Aktifkan session jika belum aktif untuk tahu siapa yang login
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+if ($conn->connect_error) {
+    die("Koneksi gagal: " . $conn->connect_error);
+}
 
 $id_user_login = $_SESSION['id_user'] ?? 24;
 
@@ -12,181 +20,339 @@ $data_kantin = $query_kantin->fetch_assoc();
 
 $id_kantin_toko = $data_kantin['ID'] ?? 1;
 
+// --- PROSES UPDATE STATUS PESANAN ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_transaksi']) && isset($_POST['status_baru'])) {
+    $id_transaksi_update = $conn->real_escape_string($_POST['id_transaksi']);
+    $status_baru = $conn->real_escape_string($_POST['status_baru']);
+    
+    // Update status transaksi di database
+    $sql_update = "UPDATE transaksi SET status = '$status_baru' WHERE ID_TRANSAKSI = '$id_transaksi_update' AND id_kantin = '$id_kantin_toko'";
+    if ($conn->query($sql_update)) {
+        // Refresh halaman agar perubahan terlihat
+        header("Location: tespesanan.php?msg=success");
+        exit;
+    }
+}
 
-// 2. QUERY RIWAYAT TRANSAKSI (Sesuai kolom tabel detail_transaksi kamu)
-// Kita gunakan kolom `nama_menu`, `qty`, dan `subtotal` langsung dari detail_transaksi
-$sql_transaksi = "SELECT t.id AS id_transaksi, dt.nama_menu, dt.qty, dt.subtotal, t.waktu 
-                  FROM transaksi t
-                  JOIN detail_transaksi dt ON t.id = dt.id_transaksi
-                  WHERE t.id_kantin = '$id_kantin_toko'
-                  ORDER BY t.waktu DESC 
-                  LIMIT 5";
+// --- QUERY DAFTAR PESANAN MENGGUNAKAN JOIN ---
+// Mengambil data transaksi dan nama pembeli dari tabel users
+// Serta ringkasan menu yang dipesan menggunakan GROUP_CONCAT
+$sql_transaksi = "
+    SELECT 
+        t.ID_TRANSAKSI AS id_transaksi, 
+        t.kode_pesanan, 
+        t.waktu, 
+        t.tgl,
+        t.total, 
+        t.status, 
+        t.catatan,
+        u.NAMA_LENGKAP AS nama_pembeli,
+        (
+            SELECT GROUP_CONCAT(CONCAT(dt.nama_menu, ' (', dt.qty, ')') SEPARATOR '<br>') 
+            FROM detail_transaksi dt 
+            WHERE dt.id_transaksi = t.ID_TRANSAKSI
+        ) AS detail_menu
+    FROM transaksi t
+    LEFT JOIN users u ON t.id_user = u.ID
+    WHERE t.id_kantin = '$id_kantin_toko'
+    ORDER BY t.tgl DESC, t.waktu DESC 
+";
 
 $query_transaksi = $conn->query($sql_transaksi);
-
-
-// 3. QUERY MENGHITUNG PESANAN MASUK HARI INI
-$sql_count = "SELECT COUNT(*) as total_order 
-              FROM transaksi 
-              WHERE id_kantin = '$id_kantin_toko' AND DATE(tgl) = CURDATE()";
-
-$query_count = $conn->query($sql_count);
-$res_count = $query_count->fetch_assoc();
-$pesanan_masuk_hari_ini = $res_count['total_order'] ?? 0;
-
-
 ?>
 
-
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-     <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Kantin</title>
+    <title>Kelola Pesanan Masuk</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-    
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            padding-top: 80px;
+        }
+
         .container {
-            margin: 90px auto 30px;
-            padding: 0 20px;
-            max-width: 1300px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
         }
 
-        .parent {
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-            overflow-x: auto;
-        }
-
-        /* HEADER + ROW */
-        .header-tabel,
-        .produk {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            align-items: center;
-            gap: 20px;
-            padding: 16px 18px;
-            min-width: 750px;
-        }
-
-        /* HEADER */
-        .header-tabel {
-            background: #fff5eb;
-            border-radius: 14px;
-            font-weight: 600;
-            color: #492509;
-            margin-bottom: 10px;
-        }
-
-        /* CARD */
-        .card {
-            background: #fff;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid #eee;
-        }
-
-        /* ROW */
-        .produk {
-            border-bottom: 1px solid #f1f1f1;
-        }
-
-        .produk:last-child {
-            border-bottom: none;
-        }
-
-        /* PRODUK KIRI */
-        .div1 {
+        /* --- HEADER SECTION --- */
+        .header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 14px;
+            margin-bottom: 24px;
         }
 
-        /* FOTO */
-        .detail {
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* --- MAIN LAYOUT CONTENT --- */
+        .card-section {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        /* --- CSS GRID TABLE --- */
+        .grid-table {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .detail img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 12px;
-        }
-
-        /* ANTREAN */
-        .antri {
-            font-size: 11px;
-            background: #fff5eb;
-            color: #F47B20;
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-
-        /* NAMA */
-        .div1 p {
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .div1 small {
-            color: #64748b;
-        }
-
-        /* BUTTON */
-        .btn {
-            border: none;
-            outline: none;
-            padding: 12px 18px;
-            border-radius: 10px;
-            background: #F47B20;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.25s;
             width: 100%;
         }
 
-        .btn:hover {
-            background: #d86412;
-            transform: translateY(-2px);
+        .grid-row-header,
+        .grid-row-data {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 2fr 1fr 1.5fr 1fr;
+            align-items: start;
+            padding: 12px 16px;
+            gap: 12px;
         }
 
-        /* MOBILE */
-        @media (max-width: 768px) {
+        .grid-row-header {
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #475569;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
 
-            .header-tabel,
-            .produk {
-                min-width: 650px;
+        .grid-row-data {
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #334155;
+            padding: 16px;
+            transition: background-color 0.2s;
+        }
+        
+        .grid-row-data:hover {
+            background-color: #f8fafc;
+        }
+
+        .kode-pesanan {
+            font-weight: 600;
+            color: #e06313;
+        }
+
+        .detail-menu-list {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        /* --- STYLING DROPDOWN STATUS --- */
+        .form-status {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .select-status {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            background-color: #fff;
+            color: #334155;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .select-status:focus {
+            border-color: #e06313;
+            box-shadow: 0 0 0 2px rgba(224, 99, 19, 0.2);
+        }
+
+        /* Warna border samping berdasarkan status */
+        .status-pending { border-left: 4px solid #f59e0b; }
+        .status-dikonfirmasi { border-left: 4px solid #3b82f6; }
+        .status-diproses { border-left: 4px solid #8b5cf6; }
+        .status-selesai { border-left: 4px solid #10b981; }
+        .status-dibatalkan { border-left: 4px solid #ef4444; }
+
+        .btn-detail {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #fff5eb;
+            color: #e06313;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-detail:hover {
+            background-color: #e06313;
+            color: #ffffff;
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 992px) {
+            .grid-row-header {
+                display: none;
             }
 
-            .container {
-                padding: 0 12px;
+            .grid-row-data {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                background-color: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                margin-bottom: 16px;
+                padding: 16px;
             }
 
-            .btn {
-                font-size: 13px;
-                padding: 10px;
+            .grid-row-data > div {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
             }
+
+            .grid-row-data > div::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #64748b;
+                font-size: 12px;
+                text-transform: uppercase;
+                margin-bottom: 4px;
+            }
+            
+            .detail-menu-list {
+                text-align: left;
+            }
+            
+            .form-status {
+                width: 100%;
+                margin-top: 8px;
+            }
+            
+            .btn-detail {
+                margin-top: 8px;
+            }
+        }
+        
+        /* --- MODAL POPUP STYLE --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: 400;
+            color: #94a3b8;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            color: #0f172a;
         }
     </style>
 </head>
-
 <body>
+
+    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
+            <div class="logo"> <img src="../../source/icon/logo1.svg" alt="Logo"></div>
 
-            <!-- Burger Menu (Mobile Only) -->
             <input type="checkbox" id="check">
             <label for="check" class="checkbtn">
                 <span></span>
@@ -196,107 +362,155 @@ $pesanan_masuk_hari_ini = $res_count['total_order'] ?? 0;
 
             <ul class="nav-links">
                 <li><a href="penjual.php">Beranda</a></li>
-                <li><a href="pesanan.php" class="active">Pesanan</a></li>
+                <li><a href="tespesanan.php" class="active">Pesanan</a></li>
                 <li><a href="edit1.php">Produk</a></li>
                 <li><a href="profil.php">Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
     </nav>
-    <!------------------------- PESANAN -------------------------->
 
+    <!-- CONTENT -->
     <div class="container">
-        <h2 class="text">Daftar Pesanan</h2>
-        <div class="parent">
-            <div class="header-tabel">
-                <div>Produk</div>
-                <div>Payment</div>
-                <div>Total</div>
-                <div>Status</div>
+        <header class="header">
+            <div class="header-title">
+                <h1>Daftar Pesanan Masuk</h1>
+                <p>Kelola dan perbarui status pesanan pelanggan.</p>
             </div>
-            <div class="card">
-                <div class="produk">
-                    <div class="div1">
-                        <div class="detail">
-                            <small class="antri">Antrean: 10</small>
-                            <img src="nasi-goreng.jpg">
-                        </div>
-                        <div>
-                            <p>Nasi Goreng</p>
-                            <small>Varian: Spesial</small>
-                        </div>
-                    </div>
+        </header>
 
-                    <div>CASH</div>
+        <!-- Pesan Sukses -->
+        <?php if (isset($_GET['msg']) && $_GET['msg'] == 'success'): ?>
+            <div class="alert-success">
+                Status pesanan berhasil diperbarui!
+            </div>
+        <?php endif; ?>
 
-                    <div>8.000</div>
+        <main class="card-section">
+            <div class="section-header">
+                <h3>Semua Pesanan</h3>
+            </div>
 
-                    <div>
-                        <button class="btn">Terima Pesanan</button>
-                    </div>
+            <div class="grid-table">
+                <!-- Header Tabel Desktop -->
+                <div class="grid-row-header">
+                    <div>Waktu & Kode</div>
+                    <div>Pembeli</div>
+                    <div>Detail Pesanan</div>
+                    <div>Total Harga</div>
+                    <div>Ubah Status</div>
+                    <div>Aksi</div>
                 </div>
 
-                <div class="produk">
-                    <div class="div1">
-                        <div class="detail">
-                            <small class="antri">Antrean: 10</small>
-                            <img src="nasi-goreng.jpg">
-                        </div>
-
-                        <div>
-
-                            <p>Nasi Goreng</p>
-                            <!-- <small>Varian: Spesial</small> -->
-                            <small style="color: #F47B20;">Detail</small>
-                        </div>
-                    </div>
-
-                    <div>CASH</div>
-
-                    <div>8.000</div>
-
-                    <div>
-                        <button class="btn">Terima Pesanan</button>
-                    </div>
-                </div>
-                
-            </div>
-            <div class="header-tabel">
-                <div>ID Transaksi</div>
-                <div>Menu</div>
-                <div>Jumlah</div>
-                <div>Total Harga</div>
-                <div>Waktu</div>
-                <div>Aksi</div>
-            </div>
-
+                <!-- Loop Data Transaksi -->
                 <?php if ($query_transaksi && $query_transaksi->num_rows > 0): ?>
-                        <?php while ($row = $query_transaksi->fetch_assoc()): ?>
-                            <div class="grid-row-data">
-                                <div>#-<?php echo $row['id_transaksi']; ?></div>
-                                <strong><?php echo htmlspecialchars($row['nama_menu']); ?></strong>
-                                <div><?php echo $row['qty']; ?> Porsi</div>
-                                <div>Rp <?php echo number_format($row['subtotal'], 0, ',', '.'); ?></div>
-                                <div><?php echo date('H:i', strtotime($row['waktu'])); ?> WIB</div>
-
-                                <div>
-                                    <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">
-                                        Detail
-                                    </button>
-                                </div>
+                    <?php while ($row = $query_transaksi->fetch_assoc()): 
+                        // Tambahkan kelas CSS berdasarkan status untuk warna border
+                        $status_class = 'status-' . strtolower($row['status']);
+                    ?>
+                        <div class="grid-row-data <?php echo $status_class; ?>">
+                            
+                            <div data-label="Waktu & Kode">
+                                <span style="font-size: 12px; color: #94a3b8;"><?php echo date('d M Y, H:i', strtotime($row['tgl'] . ' ' . $row['waktu'])); ?></span><br>
+                                <span class="kode-pesanan"><?php echo htmlspecialchars($row['kode_pesanan'] ?: '#TRX-'.$row['id_transaksi']); ?></span>
                             </div>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <div class="grid-row-data" style="grid-template-columns: 1fr; text-align: center; color: #888;">
-                            Belum ada riwayat transaksi untuk kantin ini.
+                            
+                            <div data-label="Pembeli">
+                                <strong><?php echo htmlspecialchars($row['nama_pembeli'] ?? 'Guest / Anonim'); ?></strong>
+                            </div>
+                            
+                            <div data-label="Detail Pesanan">
+                                <div class="detail-menu-list">
+                                    <?php echo $row['detail_menu'] ? $row['detail_menu'] : '-'; ?>
+                                </div>
+                                <?php if (!empty($row['catatan'])): ?>
+                                    <div style="font-size:12px; color:#ef4444; margin-top:6px; font-style:italic;">
+                                        Catatan: <?php echo htmlspecialchars($row['catatan']); ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <div data-label="Total Harga">
+                                <strong style="color: #0f172a; font-size: 15px;">Rp <?php echo number_format($row['total'], 0, ',', '.'); ?></strong>
+                            </div>
+                            
+                            <div data-label="Ubah Status">
+                                <form action="" method="POST" class="form-status">
+                                    <input type="hidden" name="id_transaksi" value="<?php echo $row['id_transaksi']; ?>">
+                                    <select name="status_baru" onchange="this.form.submit()" class="select-status">
+                                        <option value="pending" <?php echo $row['status'] == 'pending' ? 'selected' : ''; ?>>🟡 Pending</option>
+                                        <option value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi</option>
+                                        <option value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses</option>
+                                        <option value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
+                                        <option value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan</option>
+                                    </select>
+                                </form>
+                            </div>
+
+                            <div data-label="Aksi">
+                                <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">
+                                    Lihat Nota
+                                </button>
+                            </div>
+
                         </div>
-                    <?php endif; ?>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <div style="text-align: center; padding: 40px; color: #94a3b8; width: 100%; grid-column: span 6;">
+                        Belum ada pesanan yang masuk ke kantin Anda.
+                    </div>
+                <?php endif; ?>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL POPUP NOTA -->
+    <div class="modal-overlay" id="modalDetailPesanan">
+        <div class="modal-content">
+            <span class="close-modal" id="btnTutupModal">&times;</span>
+            <div id="kontenModalNota">
+                <div style="text-align:center; padding: 20px;">
+                    <p style="color:#64748b;">Memuat rincian nota...</p>
+                </div>
+            </div>
         </div>
     </div>
-    <br>
-    <br>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const modal = document.getElementById("modalDetailPesanan");
+            const tutupModal = document.getElementById("btnTutupModal");
+            const kontenModal = document.getElementById("kontenModalNota");
+            const tombolBuka = document.querySelectorAll(".btn-buka-modal");
 
+            tombolBuka.forEach(button => {
+                button.addEventListener("click", function() {
+                    const idTransaksi = this.getAttribute("data-id");
+                    modal.classList.add("active");
+                    kontenModal.innerHTML = '<div style="text-align:center; padding: 20px;"><p style="color:#64748b;">Memuat rincian nota...</p></div>';
+
+                    // Fetch ke file detail_pesanan.php menggunakan ID
+                    fetch(`detail_pesanan.php?id=${idTransaksi}`)
+                        .then(response => response.text())
+                        .then(html => {
+                            kontenModal.innerHTML = html;
+                        })
+                        .catch(error => {
+                            kontenModal.innerHTML = '<div style="text-align:center; padding: 20px;"><p style="color:#ef4444;">Gagal memuat rincian nota!</p></div>';
+                        });
+                });
+            });
+
+            tutupModal.addEventListener("click", function() {
+                modal.classList.remove("active");
+            });
+
+            window.addEventListener("click", function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove("active");
+                }
+            });
+        });
+    </script>
 </body>
-
 </html>

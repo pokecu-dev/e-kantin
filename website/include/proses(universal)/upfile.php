@@ -17,11 +17,11 @@
                 $output = $objUp->upload($file,UploadTarget::PROFILE,$id);
                 echo $output;
             }
-            elseif (isset($_POST['type']) && $_POST['type'] == 'photo-profile') {
+            elseif (isset($_POST['type']) && $_POST['type'] == 'photo-kantin') {
                 $output = $objUp->upload($file,UploadTarget::KANTIN,$id);
                 echo $output;
             }
-            elseif (isset($_POST['type']) && $_POST['type'] == 'photo-profile') {
+            elseif (isset($_POST['type']) && $_POST['type'] == 'photo-menu') {
                 $output = $objUp->upload($file,UploadTarget::MENU,$id);
                 echo $output;
             }

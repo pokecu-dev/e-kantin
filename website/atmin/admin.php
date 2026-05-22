@@ -301,23 +301,25 @@ RESPONSIVE
 <body>
 
 <!-- NAVBAR -->
-<nav class="navbar">
-    <div class="nav-container">
-
-        <div class="logo">
-            <img src="../../source/icon/logo1.svg" alt="">
+ <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+            <ul class="nav-links">
+                <li><a href="admin.php">Beranda</a></li>
+                <li><a href="akun.php" class="active">Akun</a></li>
+                <li><a href="menu.php">Produk</a></li>
+                <li><a href="oulet.php">Outlet</a></li>
+                <li><a href="./../logout.php">Log Out</a></li>
+            </ul>
         </div>
+    </nav>
 
-        <ul class="nav-links">
-            <li><a href="admin.php" class="active">Beranda</a></li>
-            <li><a href="akun.php">Akun</a></li>
-            <li><a href="menu.php">Produk</a></li>
-            <li><a href="oulet.php">Outlet</a></li>
-            <li><a href="./../logout.php">Log Out</a></li>
-        </ul>
-
-    </div>
-</nav>
 
 <div class="container">
 
@@ -401,22 +403,12 @@ RESPONSIVE
         
         <div>
             <span class="status-badge <?= $statusClass ?>">
-                <?= htmlspecialchars($trx['status']) ?>
+                <?= htmlspecialchars($trx['STATUS']) ?>
             </span>
         </div>
     </div>
 
-                <?php while($trx = mysqli_fetch_assoc($transaksi)): ?>
-
-                <div class="table-row">
-                    <div>#<?= $trx['ID_TRANSAKSI'] ?></div>
-                    <div>Rp <?= number_format($trx['TOTAL']) ?></div>
-                    <div><?= $trx['STATUS'] ?></div>
-                </div>
-
-                <?php endwhile; ?>
-
-            </div>
+               
 
     <?php endwhile; ?>
 
