@@ -2,14 +2,12 @@
 session_start();
 require_once __DIR__ . "/../include/koneksi.php";
 
-$id_kantin = intval($_GET['id']);
+// Pastikan parameter ID kantin aman diambil dari URL
+$id_kantin = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-
-// =======================
-// 3. TRANSAKSI TERBARU (DIBATASI BIAR GAK LAG)
-// =======================
+// Perbaikan SQL: Ambil kolom tanggal sekalian untuk pengaman ORDER BY
 $query_trx_list = "
-SELECT t.kode_pesanan, t.waktu, u.NAMA_LENGKAP as siswa, t.total, t.status
+SELECT t.kode_pesanan, t.tgl, t.waktu, u.NAMA_LENGKAP as siswa, t.total, t.status
 FROM transaksi t
 JOIN users u ON t.id_user = u.ID
 WHERE t.id_kantin = ?
@@ -23,7 +21,6 @@ $stmt_tl->bind_param("i", $id_kantin);
 $stmt_tl->execute();
 $result_transactions = $stmt_tl->get_result();
 $stmt_tl->close();
-
 ?>
 
 <!DOCTYPE html>
@@ -31,7 +28,7 @@ $stmt_tl->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Riwayat Transaksi Outlet</title>
 </head>
 <body>
      <section class="transaction-section">
@@ -44,7 +41,7 @@ $stmt_tl->close();
                     <thead>
                         <tr>
                             <th>KODE PESANAN</th>
-                            <th>WAKTU</th>
+                            <th>TANGGAL</th> <th>WAKTU</th>
                             <th>SISWA</th>
                             <th>TOTAL</th>
                             <th>STATUS</th>
@@ -53,12 +50,19 @@ $stmt_tl->close();
                     <tbody>
                         <?php if ($result_transactions->num_rows > 0): ?>
                             <?php while ($row_tx = $result_transactions->fetch_assoc()):
+                                // Management Class Badge Status
                                 $badge_class = 'status-pending';
-                                if (strtolower($row_tx['status']) === 'success' || strtolower($row_tx['status']) === 'selesai') $badge_class = 'status-success';
-                                if (strtolower($row_tx['status']) === 'cancel' || strtolower($row_tx['status']) === 'dibatalkan') $badge_class = 'status-danger';
+                                $status_clean = strtolower($row_tx['status']);
+                                
+                                if ($status_clean === 'success' || $status_clean === 'selesai') {
+                                    $badge_class = 'status-success';
+                                } elseif ($status_clean === 'cancel' || $status_clean === 'dibatalkan') {
+                                    $badge_class = 'status-danger';
+                                }
                             ?>
                                 <tr>
                                     <td class="tx-id">#<?php echo htmlspecialchars($row_tx['kode_pesanan']); ?></td>
+                                    <td><?php echo date('d-m-Y', strtotime($row_tx['tgl'])); ?></td>
                                     <td><?php echo date('H:i', strtotime($row_tx['waktu'])); ?></td>
                                     <td><?php echo htmlspecialchars($row_tx['siswa']); ?></td>
                                     <td>Rp <?php echo number_format($row_tx['total'], 0, ',', '.'); ?></td>
@@ -67,13 +71,12 @@ $stmt_tl->close();
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="5" style="text-align:center; color:var(--text-muted);">Belum ada data transaksi hari ini pada kantin ini.</td>
+                                <td colspan="6" style="text-align:center; color:var(--text-muted); padding: 20px;">Belum ada data transaksi pada kantin ini.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
         </section>
-
 </body>
 </html>

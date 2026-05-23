@@ -521,7 +521,7 @@ $stmt_m->close();
         <section class="transaction-section">
             <div class="section-header">
                 <h2>Riwayat Transaksi Outlet Terbaru</h2>
-                <a href="#" style="color:var(--primary-color); text-decoration:none; font-size:14px; font-weight:600;">Lihat Semua →</a>
+                <a href="transaksi.php" style="color:var(--primary-color); text-decoration:none; font-size:14px; font-weight:600;">Lihat Semua →</a>
             </div>
             <div class="table-responsive">
                 <table class="transaction-table">
