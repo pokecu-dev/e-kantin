@@ -401,7 +401,8 @@ if (!$data) {
     <section class="container section-separator">
         <div class="profile-card">
             <div class="profile-image" style="border-radius: 20px;">
-                <img src="../../source/foto_kantin/<?= htmlspecialchars($row['FOTO_KANTIN'] ?? 'default.jpg') ?>">
+                <img src="../../source/foto_kantin/<?= htmlspecialchars($data['FOTO_KANTIN'] ?? 'default.jpg') ?>">
+                <img src="../../source/foto_kantin/kantin1.jpeg" alt="">
             </div>
             <h2><?php echo htmlspecialchars($data['NAMA_KANTIN'] ?? 'Belum Ada Kantin'); ?></h2>
             <p class="username">Status Kepemilikan: Penjual</p>

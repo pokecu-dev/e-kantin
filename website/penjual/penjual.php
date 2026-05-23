@@ -104,7 +104,6 @@ WHERE t.id_kantin = '$id_kantin_toko'
 AND t.status = 'selesai'
 GROUP BY t.ID_TRANSAKSI, t.waktu, t.status
 ORDER BY t.waktu DESC
-
 ";
 
 $query_transaksi = $conn->query($sql_transaksi);

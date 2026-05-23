@@ -708,18 +708,26 @@ if ($search !== '') {
 
                 <div class="form-group">
                     <label for="edit_kategori">Kategori</label>
-                    <input type="text" name="kategori" id="edit_kategori" required>
+                    <!-- <input type="text" name="kategori" id="edit_kategori" required> -->
+                    <select name="kategori" id="edit_kategori">
+                        <option value="makanan">makanan</option>
+                        <option value="minuman">minuman</option>
+                        <option value="snack">snack</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
                     <label for="edit_harga">Harga (Rp)</label>
-                    <button></button>
+                    <button type="button" onclick="updateHarga(500)">+500</button>
                     <input type="number" name="harga" id="edit_harga" readonly>
+                    <button type="button" onclick="updateHarga(-500)" >-500</button>
                 </div>
 
                 <div class="form-group">
                     <label for="edit_stok">Jumlah Stok</label>
+                    <button type="button" onclick="updateStock(1)">+</button>
                     <input type="number" name="stok" id="edit_stok" readonly>
+                    <button type="button" onclick="updateStock(-1)">-</button>
                 </div>
 
                 <div class="form-group">
@@ -738,6 +746,7 @@ if ($search !== '') {
     </div>
 
     <script>
+        let hargaB;
         function openEditModal(button) {
             // Ambil data dari baris tabel yang diklik
             const id = button.getAttribute('data-id');
@@ -746,6 +755,7 @@ if ($search !== '') {
             const harga = button.getAttribute('data-harga');
             const stok = button.getAttribute('data-stok');
 
+            
             // Petakan nilainya masuk ke dalam input modal box
             document.getElementById('edit_id_menu').value = id;
             document.getElementById('edit_nama').value = nama;
@@ -755,6 +765,8 @@ if ($search !== '') {
 
             // Picu CSS untuk menampilkan modal overlay dengan class .show
             document.getElementById('editModal').classList.add('show');
+
+
         }
 
         function closeEditModal() {
@@ -780,6 +792,24 @@ if ($search !== '') {
             }
         }
 
+        function updateHarga(input){
+            const harga = document.getElementById('edit_harga')
+            var newVal = parseInt(harga.value) + input;
+
+            if(newVal > 0){
+                harga.value = newVal;
+            }
+        }
+        
+        function updateStock(input){
+            const stock = document.getElementById('edit_stok');
+            var newVal = parseInt(stock.value) + input;
+
+            if(newVal > 0){
+                stock.value = newVal;
+            }
+        }
+        
         // ajax
         document.querySelector('.modal-body').onsubmit = async (e) => {
             e.preventDefault();
@@ -808,6 +838,8 @@ if ($search !== '') {
                 alert('error:', e)
             }
         }
+
+
 
 
 

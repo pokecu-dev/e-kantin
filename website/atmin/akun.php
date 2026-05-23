@@ -666,6 +666,12 @@ if ($search_user !== '') {
             </div>
     </dialog>
 
+<script src="./../shared/js/script.js">
+    if (Response.status == 'success') {
+            window.reload();
+        }
+
+</script>
 <script>
 // =========================
 // EDIT USER MODAL (dialog)
@@ -687,6 +693,22 @@ async function openEditModal(userId) {
         if (!response.ok) throw new Error("Fetch gagal");
         const html = await response.text();
         modalBody.innerHTML = html;
+
+        // const notif = document.getElementById('notif').innerText;
+        // console.log(notif);
+
+        // const btn = document.querySelector('.btn-submit').onclick;
+
+        // console.log(btn)
+
+        
+
+        // btn.addEventListener('click',(e) => {
+        //     setTimeout(() => {
+        //         window.location.reload()
+        //     }, 2000);
+        // }) 
+
     } catch (error) {
         modalBody.innerHTML = `
             <div style="padding:30px;text-align:center;">
@@ -701,9 +723,14 @@ async function openEditModal(userId) {
 function closeEditModal() { editModal.close(); }
 
 editModal.addEventListener("click", (e) => {
+
+    if(e.target.closest('#status'))return;
+
     const rect = editModal.getBoundingClientRect();
     const isOutside = e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom;
+    
     if (isOutside) closeEditModal();
+
 });
 
 document.addEventListener("keydown", (e) => {
@@ -762,6 +789,18 @@ async function loadForm(file) {
         `;
     }
 }
+
+modalBody.addEventListener('click', (e) => {
+    const btn = modalBody.querySelector(".btn-submit");
+    btn.addEventListener('click', (e) => {
+        setTimeout(() => {
+            console.log("boom!")
+            window.location.reload();
+        }, 1000); // 1 detik
+
+    })
+})
+
 </script>
 </body>
 </html>

@@ -306,9 +306,6 @@ while ($row = mysqli_fetch_assoc($q_items)) {
 <div class="logo-mobile">
     <img src="../../source/icon/logo1.svg" alt="KantinKita">
 </div>
-<div class="logo-desktop">
-    <img src="../../source/icon/logo1.svg" alt="KantinKita">
-</div>
 
 <div class="top-nav">
     <nav class="menu">
