@@ -21,10 +21,10 @@ document.addEventListener('submit', async (event)=> {
             body: form_data
         });
 
-        const data = await response.json();
+        const dataR = await response.json();
 
-        if (data) {
-            notifElement.innerText = data.message;
+        if (dataR) {
+            notifElement.innerText = dataR.message;
         }
 
     }

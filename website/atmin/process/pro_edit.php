@@ -26,7 +26,7 @@
 
                 echo json_encode([
                     'status' => 'success',
-                    'message' => 'berhasil!,mohon refresh halaman!'
+                    'message' => 'berhasil!,mohon tunggu 1 detik untuk auto refresh!(jika dalam waktu 1 detik tidak refresh,mohon untuk refresh manual atau submit lagi)'
                 ]);
             }
             else{

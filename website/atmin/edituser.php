@@ -3,7 +3,6 @@ require_once __DIR__ . "/../include/koneksi.php";
 session_start();
 if ($_SESSION['role'] != 'ADMIN') {
     header('Location: ../login.php');
-   
 }
 
 
@@ -11,7 +10,7 @@ $dataUsers = [
     'NAMA_LENGKAP' => '',
     'USERNAME' => '',
     'ROLE' => '',
-    'FOTO_USERS' => '', 
+    'FOTO_USERS' => '',
     'PASS' => '',
     'NO_TLP' => '',
     'EMAIL' => ''
@@ -22,7 +21,7 @@ $id = $_GET['id'];
 $id = $conn->real_escape_string($id);
 $sql = "select * from users where ID=?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i",$id);
+$stmt->bind_param("i", $id);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -62,9 +61,10 @@ if ($result->num_rows > 0) {
             font-family: 'Inter', sans-serif;
         }
 
-        html{
-         width: 100%;
+        html {
+            width: 100%;
         }
+
         body {
             /* background-color: var(--bg-body);
             color: var(--text-main);
@@ -72,19 +72,19 @@ if ($result->num_rows > 0) {
             line-height: 1.5; */
         }
 
-    /* width: 100%;
+        /* width: 100%;
     max-width: 1400px;
     margin-inline: auto;
     padding: 24px;
     box-sizing: border-box;
     margin-top: 60px; */
 
-.main-grid {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin: auto;
-}
+        .main-grid {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin: auto;
+        }
 
         .category-title {
             display: block;
@@ -200,76 +200,83 @@ if ($result->num_rows > 0) {
                 grid-template-columns: 1fr;
             }
         }
+
         /* Container Group */
-.form-group {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-}
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
 
-/* Style untuk Label */
-.form-group label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #1e293b; /* --text-dark */
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
+        /* Style untuk Label */
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+            /* --text-dark */
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-/* Wrapper untuk kustomisasi panah dropdown */
-.select-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 200px; /* Membatasi lebar agar pas dengan teks 'Aktif / Nonaktif' */
-    display: flex;
-    align-items: center;
-}
+        /* Wrapper untuk kustomisasi panah dropdown */
+        .select-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 200px;
+            /* Membatasi lebar agar pas dengan teks 'Aktif / Nonaktif' */
+            display: flex;
+            align-items: center;
+        }
 
-/* Style Utama Tag Select */
-.select-wrapper select {
-    width: 100%;
-    height: 48px;
-    padding: 0 16px;
-    font-size: 14px;
-    font-family: 'Inter', sans-serif;
-    color: #1e293b;
-    background-color: #ffffff;
-    border: 1px solid #e2e8f0; /* --border-color */
-    border-radius: 10px;
-    outline: none;
-    cursor: pointer;
-    
-    /* Menghilangkan panah bawaan browser agar bisa diganti ikon FontAwesome */
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    
-    transition: all 0.2s ease;
-}
+        /* Style Utama Tag Select */
+        .select-wrapper select {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            /* --border-color */
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
 
-/* Efek pas dropdown diklik/fokus */
-.select-wrapper select:focus {
-    border-color: #f36f21; /* --primary-orange */
-    box-shadow: 0 0 0 3px rgba(243, 111, 33, 0.15); /* Efek glow oranye tipis */
-}
+            /* Menghilangkan panah bawaan browser agar bisa diganti ikon FontAwesome */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
 
-/* Posisi Ikon Panah FontAwesome di kanan */
-.select-wrapper .select-icon {
-    position: absolute;
-    right: 16px;
-    color: #94a3b8;
-    font-size: 14px;
-    pointer-events: none; /* Biar kalau ikonnya diklik, dropdown-nya tetep kebuka */
-    transition: color 0.2s ease;
-}
+            transition: all 0.2s ease;
+        }
 
-/* Mengubah warna ikon panah saat select aktif */
-.select-wrapper select:focus + .select-icon {
-    color: #f36f21;
-}
+        /* Efek pas dropdown diklik/fokus */
+        .select-wrapper select:focus {
+            border-color: #f36f21;
+            /* --primary-orange */
+            box-shadow: 0 0 0 3px rgba(243, 111, 33, 0.15);
+            /* Efek glow oranye tipis */
+        }
+
+        /* Posisi Ikon Panah FontAwesome di kanan */
+        .select-wrapper .select-icon {
+            position: absolute;
+            right: 16px;
+            color: #94a3b8;
+            font-size: 14px;
+            pointer-events: none;
+            /* Biar kalau ikonnya diklik, dropdown-nya tetep kebuka */
+            transition: color 0.2s ease;
+        }
+
+        /* Mengubah warna ikon panah saat select aktif */
+        .select-wrapper select:focus+.select-icon {
+            color: #f36f21;
+        }
     </style>
 </head>
 
@@ -285,7 +292,7 @@ if ($result->num_rows > 0) {
                         <div class="foto-container">
                             <img src="../../source/fotopengguna/<?= $dataUsers['FOTO_USERS'] ?>" alt="Profile" class="foto">
                         </div>
-                         <h6 style="margin-bottom: 5px; color:#94a3b8">#<?= $dataUsers['ID'] ?></h6>
+                        <h6 style="margin-bottom: 5px; color:#94a3b8">#<?= $dataUsers['ID'] ?></h6>
                         <h4 style="margin-bottom: 5px;"><?= $dataUsers['USERNAME'] ?></h4>
                         <span class="role-badge"><?= $dataUsers['ROLE'] ?></span>
                     </div>
@@ -299,10 +306,10 @@ if ($result->num_rows > 0) {
                         </div>
                         <div class="form-group">
                             <label>Password <span>(BEFORE: <?= $dataUsers['PASS'] ?>)</span></label>
-                            <input type="text" name="pass"  value="<?= $dataUsers['PASS'] ?>">
+                            <input type="text" name="pass" value="<?= $dataUsers['PASS'] ?>">
                         </div>
                     </div>
-                
+
                     <span class="category-title">Informasi Pribadi</span>
                     <div class="card">
                         <div class="form-group">
@@ -324,16 +331,17 @@ if ($result->num_rows > 0) {
                     <span class="category-title">Status Akun</span>
                     <div class="card">
                         <div class="form-group">
-                           <div class="form-group">
-    <label for="status"><i class="fa-solid fa-toggle-on"></i> Status Pengguna</label>
-    <div class="select-wrapper">
-        <select name="status" id="status">
-            <option value="1" <?= $dataUsers['STATUS'] == '1' ? 'selected' : '' ?> >🟢 1 atau Aktif</option>
-            <option value="0" <?= $dataUsers['STATUS'] == '0' ? 'selected' : '' ?>>🔴 0 atau Nonaktif</option>
-        </select>
-        <i class="fa-solid fa-chevron-down select-icon"></i>
-    </div>
-</div>
+                            <div class="form-group">
+                                <label for="status"><i class="fa-solid fa-toggle-on"></i> Status Pengguna</label>
+                                <div class="select-wrapper">
+                                    <select name="status" id="status">
+                                        <option value="1" <?= $dataUsers['STATUS'] == '1' ? 'selected' : '' ?>>🟢 1 atau Aktif</option>
+                                        <option value="0" <?= $dataUsers['STATUS'] == '0' ? 'selected' : '' ?>>🔴 0 atau Nonaktif</option>
+                                    </select>
+                                    
+                                    <i class="fa-solid fa-chevron-down select-icon"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -346,7 +354,18 @@ if ($result->num_rows > 0) {
         </form>
     </div>
 
-    <script src="./../shared/js/script.js"></script>
+    <script src="./../shared/js/script.js">
+        console.log("hai")
+        window.location.reload();
+    </script>
+    <script>
+        const btn = document.querySelector('.btn-submit')
+        btn.addEventListener('click', (e) => {
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000); // 2 detik
+        })
+    </script>
 </body>
 
 </html>

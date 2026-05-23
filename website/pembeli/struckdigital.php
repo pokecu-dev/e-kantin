@@ -405,9 +405,6 @@ $f = fn($n) => 'Rp ' . number_format((int)$n, 0, ',', '.');
 <div class="logo-mobile no-print">
     <img src="../../source/icon/logo1.svg" alt="KantinKita">
 </div>
-<div class="logo-desktop no-print">
-    <img src="../../source/icon/logo1.svg" alt="KantinKita">
-</div>
 
 <div class="top-nav no-print">
     <nav class="menu">

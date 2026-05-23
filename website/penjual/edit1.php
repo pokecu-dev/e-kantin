@@ -360,8 +360,7 @@ $result_menu = mysqli_stmt_get_result($stmt);
             });
         });
     </script>
-<<<<<<< HEAD
-=======
+
     <script src="./../shared/js/script.js"></script>
     <!-- btn -->
     <script>
@@ -446,9 +445,7 @@ $result_menu = mysqli_stmt_get_result($stmt);
             }
         });
         
-        // CATATAN: Semua kode duplikat di bawah yang bikin numpuk sudah dihapus bersih!
     </script>
 
->>>>>>> f1d528f7e174c0107addb05bfedf399d57eadc3b
 </body>
 </html>

@@ -99,17 +99,10 @@ SELECT
 FROM transaksi t
 JOIN detail_transaksi dt 
 ON t.ID_TRANSAKSI = dt.id_transaksi
-<<<<<<< HEAD
-WHERE t.ID_KANTIN = '$id_kantin_toko'
-AND t.STATUS = 'selesai'
-GROUP BY t.ID_TRANSAKSI, t.WAKTU, t.STATUS
-ORDER BY t.WAKTU DESC
-=======
 WHERE t.id_kantin = '$id_kantin_toko'
 AND t.status = 'selesai'
 GROUP BY t.ID_TRANSAKSI, t.waktu, t.status
 ORDER BY t.waktu DESC
->>>>>>> f1d528f7e174c0107addb05bfedf399d57eadc3b
 LIMIT 5
 ";
 

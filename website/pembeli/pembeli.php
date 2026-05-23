@@ -298,7 +298,7 @@
 
             <ul class="nav-links">
                 <li><a href="pembeli.php" class="active">Beranda</a></li>
-                <li><a href="keranjang.php">Akun</a></li>
+                <li><a href="keranjang.php">keranjang</a></li>
                 <li><a href="pesanan.php">Produk</a></li>
                 <li><a href="profil.php">Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
@@ -341,8 +341,8 @@
                 while ($row = mysqli_fetch_assoc($result_kantin)) {
                 ?>
                     <div class="slide">
-                        <img src="../../source/foto_kantin/<?php echo $row['FOTO_KANTIN']; ?>" alt="Gambar Kantin">
-
+                        <img src="./../../source/foto_kantin/<?php echo $row['FOTO_KANTIN']; ?>" alt="Gambar Kantin">
+                        
                         <button class="kantin-btn">Kantin <?php echo $no++; ?></button>
                     </div>
                 <?php 
