@@ -449,7 +449,7 @@ $query_transaksi = $conn->query($sql_transaksi);
 
                             <div data-label="Aksi">
                                 <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">
-                                    Lihat Nota
+                                    Detail
                                 </button>
                             </div>
 

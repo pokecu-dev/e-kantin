@@ -158,19 +158,19 @@ $total_hari_ini = $data_pendapatan['total'] ?? 0;
 // ===============================
 // PRODUK TERJUAL HARI INI
 // ===============================
+// Query diubah untuk menghitung total menu/produk yang dimiliki kantin
 $sql_produk = "
-SELECT SUM(dt.qty) AS total_produk
-FROM detail_transaksi dt
-JOIN transaksi t ON dt.id_transaksi = t.ID_TRANSAKSI
-WHERE t.id_kantin = '$id_kantin_toko'
-AND DATE(t.tgl) = CURDATE()
+SELECT COUNT(*) AS total_produk 
+FROM tb_menu 
+WHERE id_kantin = '$id_kantin_toko' 
+AND STATUS != 'nonaktif'
 ";
 
 $query_produk = $conn->query($sql_produk);
 $data_produk = $query_produk->fetch_assoc();
 
-$total_produk_terjual = $data_produk['total_produk'] ?? 0;
-
+// Menyimpan total produk yang aktif ke dalam variabel
+$total_produk = $data_produk['total_produk'] ?? 0;
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -569,7 +569,7 @@ $total_produk_terjual = $data_produk['total_produk'] ?? 0;
                     <span class="trend-label trend-stable"></span>
                 </div>
                 <p>Total Produk</p>
-                <h2><?= $total_produk_terjual; ?></h2>
+                <h2><?= $total_produk; ?></h2>
             </div>
             <div class="card-summary">
                 <div class="card-icon-trend">

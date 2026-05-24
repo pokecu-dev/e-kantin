@@ -122,12 +122,12 @@ $query_item = $conn->query($sql_item);
 </head>
 <body>
 <div class="container">
-    <p href="index.php" class="btn-kembali">Detail </p>
+    <p href="index.php" class="btn-kembali"> </p>
 
     <div class="nota-card">
         <div class="nota-header">
             <h2><img src="../../source/icon/logo1.svg" alt=""></h2>
-            <p>Rincian Transaksi Pembelian</p>
+            <p>Rincian Pembelian</p>
         </div>
 
         <div class="info-section">
