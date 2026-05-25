@@ -398,9 +398,10 @@ $total_all = array_sum(array_column($grouped, 'total'));
                     Total: <span>Rp <?= number_format($kantin['total'], 0, ',', '.') ?></span>
                 </p>
                 
-                <form action="checkout.php" method="GET">
-                    <input type="hidden" name="id_kantin" value="<?= $row_kantin['id_kantin']; ?>">
+                <form action="./checkout.php" method="GET">
+                    <input type="hidden" name="id_kantin" value="<?= $kantin['kantin_id']; ?>">
                     <button type="submit" class="kr-btn-checkout">Checkout</button>
+                </form>
              </div>
 
         </div>

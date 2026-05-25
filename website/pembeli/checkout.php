@@ -5,12 +5,14 @@ require_once '../include/koneksi.php';
 require_once __DIR__ . "/../include/session/pembeliC.php";
 
 $id_user   = (int)$_SESSION['id_user'];
-$id_kantin = isset($_GET['kantin']) ? (int)$_GET['kantin'] : 0;
+$id_kantin = isset($_GET['id_kantin']) ? (int)$_GET['id_kantin'] : 0;
 
 if ($id_kantin <= 0) { header("Location: keranjang.php"); exit(); }
+// if ($id_kantin <= 0) { echo $id_kantin; }
 
 $q_kantin = mysqli_query($conn, "SELECT * FROM list_kantin WHERE ID = $id_kantin LIMIT 1");
 $kantin   = mysqli_fetch_assoc($q_kantin);
+// if (!$kantin) {echo $kantin; }
 if (!$kantin) { header("Location: keranjang.php"); exit(); }
 
 $q_items = mysqli_query($conn, "

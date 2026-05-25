@@ -1,12 +1,13 @@
-# e-kantin 
-adalah website milik smkn 1 boyolangu
+# e-kantin  
+adalah website buatan kelompok 2
 
 
 untuk memulai
-pastikan sudah mempunyai docker
+- pastikan sudah mempunyai docker
+
 jalankan
 
-docker-compose up -d --build
+- docker-compose up -d --build
 
 Pertama Kali Clone
 1. git clone
@@ -17,25 +18,26 @@ Pertama Kali Clone
 6. buka localhost:8080
 
 Kalau Pull
-BE push perubahan PHP doang
+> fe / be push perubahan PHP doang
 → git pull
 → langsung refresh browser, selesai ✅ (karena volume)
 
-BE push update docker-compose.yml
+> fe / be push update docker-compose.yml
 → git pull
 → docker-compose up -d
 → selesai ✅
 
-BE push update Dockerfile
+> fe / be push update Dockerfile
 → git pull
 → docker-compose up -d --build
 → selesai ✅
 
-BE push update init.sql (struktur DB berubah)
+> fe / be push update init.sql (struktur DB berubah)
 → git pull
 → ./script_DB/import_db.sh
 → selesai ✅
 
+## struktur:
 
 
 penjelasan docker(ai)
@@ -66,10 +68,9 @@ Rekomendasi: Untuk ngoding sehari-hari, cukup gunakan stop dan start agar laptop
 ======================================
 
 
-jangan lupa untuk extension devcontainer
+tidak wajib untuk extension devcontainer
 
-
-
+> untuk container 
 kalau php tidak jalan,jalanin 
 ctrl + c untuk membuat php/apache berhenti
 
@@ -96,15 +97,15 @@ berisi 2 tipe extensi,bash dan powershell
 - gunakan powershell( .ps1) jika memakai powershell
 
 
-fe:sesudah pull jalanin impor,
+- fe / be :sesudah pull jalanin impor,
+- fe / be(jika db update):sebelum push jalanin ekspor
 
-be(jika db update):sebelum push jalanin ekspor
+>impor akan mengisi mysql_data menggunakan file init.sql,
 
-impor akan mengisi mysql_data menggunakan file init.sql,
-ekspor akan mengisi init.sql menggunakan folder mysql_data
+>ekspor akan mengisi init.sql menggunakan folder mysql_data
 
 db aseli terletak di mysql_data,karena di simpan di situ:v
 
-NOTE:
-- JIKA SC PS1 TIDAK BISA JALAN,BUKA POWERSHELL JALAN KAN "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser" LALU KETIK Y,JANGAN PROTES DULU,
-- JIKA SC SH TIDAK JALAN,KETIK "chmod +x script/import.sh script/export.sh"
+### NOTE:
+- JIKA SC PS1 TIDAK BISA JALAN,BUKA POWERSHELL JALAN KAN `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` LALU KETIK Y,JANGAN PROTES DULU,
+- JIKA SC SH TIDAK JALAN,KETIK `chmod +x script/import.sh script/export.sh`

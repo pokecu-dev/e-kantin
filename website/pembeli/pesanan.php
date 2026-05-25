@@ -210,7 +210,7 @@ $result_pesanan = $stmt->get_result();
                     </div>
 
                     <div class="card-footer">
-                        <a href="struckdigital.php?id=<?= $row['ID_TRANSAKSI'] ?? $row['id_transaksi']; ?>" class="btn-detail">Lihat Detail Struk</a>
+                        <a href="struckdigital.php?trx=<?= $row['ID_TRANSAKSI'] ?? $row['id_transaksi']; ?>" class="btn-detail">Lihat Detail Struk</a>
                     </div>
                 </div>
             <?php 
