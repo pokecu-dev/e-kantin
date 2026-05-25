@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../include/koneksi.php";
+require_once __DIR__ . "/../include/session/penjualC.php";
 
 $search_user = isset($_GET['id']) ? $_GET['id'] : '';
 
@@ -48,6 +49,33 @@ if (!empty($search_user)) {
         flex-direction: column;
         gap: 12px;
     }
+
+
+    .custom-file-upload {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            height: 44px;
+            background-color: #fff7ed;
+            /* Warna latar orange pudar biar soft */
+            border: 2px dashed #fed7aa;
+            /* Border putus-putus khas upload file */
+            color: var(--primary-orange);
+            border-radius: 10px;
+            padding: 0 14px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #ffedd5;
+            border-color: var(--primary-orange);
+        }
 
     /* LABEL */
     label {
@@ -170,8 +198,8 @@ if (!empty($search_user)) {
 
 <body>
 
-    <form data-ajax="true" data-action="./pro_editproduk.php" data-notif="notif">
-        <input type="hidden" name="id_menu" value="<?= $data['ID_MENU'] ?>">
+    <form data-ajax="true" data-action="./pro_editproduk.php" data-notif="notif" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="<?= $data['ID_MENU'] ?>">
 
         <label>Nama Menu</label>
         <input type="text" name="nama_menu" value="<?= htmlspecialchars($data['NAMA_MENU']) ?>">
@@ -208,21 +236,31 @@ if (!empty($search_user)) {
         <label>desk</label>
         <textarea name="desk"><?= $data['DESK'] ?></textarea>
 
-<div class="action-group-modal" style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
-<div class="modal-action-row" style="display: flex; gap: 12px; margin-top: 24px; width: 100%;">
-    
-    <button type="submit" class="btn-orange-main" style="flex: 2; height: 48px; justify-content: center; margin-top: 0;">
-        <i class="fas fa-save"></i> Simpan
-    </button>
-    
-    <a href="process/proses_nonaktif.php?id=<?= urlencode($data['ID_MENU']); ?>" 
-       onclick="return confirm('⚠️ Yakin ingin menghapus menu ini? Produk tidak akan tampil lagi di daftar menu.');"
-       style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; background: #fee2e2; color: #dc2626; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s;">
-       <i class="fas fa-trash-alt"></i> Hapus
-    </a>
-    
-</div>
-        <!-- stok, status, desk, foto preview + upload -->
+        <label>Foto Menu (Kosongkan jika tidak diubah)</label>
+        <input type="hidden" name="type" value="photo-menu">
+
+        <label for="edit_foto" class="custom-file-upload">
+            <i class="fa-solid fa-cloud-arrow-up"></i> <span id="file-chosen">Pilih Foto Menu...</span>
+        </label>
+
+        <input type="file" name="upfile" id="edit_foto" accept="image/*" style="display: none;" onchange="updateFileName(this)">
+
+
+        <div class="action-group-modal" style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+            <div class="modal-action-row" style="display: flex; gap: 12px; margin-top: 24px; width: 100%;">
+
+                <button type="submit" class="btn-orange-main" style="flex: 2; height: 48px; justify-content: center; margin-top: 0;">
+                    <i class="fas fa-save"></i> Simpan
+                </button>
+
+                <a href="process/proses_nonaktif.php?id=<?= urlencode($data['ID_MENU']); ?>"
+                    onclick="return confirm('⚠️ Yakin ingin menghapus menu ini? Produk tidak akan tampil lagi di daftar menu.');"
+                    style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; background: #fee2e2; color: #dc2626; border-radius: 12px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s;">
+                    <i class="fas fa-trash-alt"></i> Hapus
+                </a>
+
+            </div>
+            <!-- stok, status, desk, foto preview + upload -->
     </form>
 
     <div id="notif">
@@ -322,6 +360,20 @@ if (!empty($search_user)) {
             }
 
         }
+
+        
+        function updateFileName(input){
+            const fileNameDisplay = document.getElementById('file-chosen');
+            if(input.files.length > 0){
+                fileNameDisplay.textContent = input.files[0].name;
+            }
+            else{
+                fileNameDisplay.textContent = 'Pilih Foto Menu... '
+            }
+        }
+
+       
+        
     </script>
 </body>
 

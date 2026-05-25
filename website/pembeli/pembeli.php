@@ -1,27 +1,8 @@
 <?php
-    session_start();
-//     if(!isset($_SESSION['status']) || $_SESSION['status'] != 'success'){
-//         // echo $_SESSION['status'];
-//         header("location: ../login.php");
-//         exit();
-//     }
-
-
-// session_start();
-// if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
-//     // echo $_SESSION['status'];
-//     header("location: ../login.php");
-//     exit();
-// }
-
-//     echo ' sebagai pembeli';
-
-// $nama = $_SESSION['nama_lengkap'];
-
-// echo $nama . '<br> <br>';
+    // session_start();
 
 // echo ' sebagai pembeli';
-
+    require_once __DIR__ . "/../include/session/pembeliC.php";
     require_once '../include/koneksi.php'; 
 ?>
 
@@ -311,24 +292,24 @@
 
         <div class="mencari">
 
-        <form action="pembeli.php" method="GET">
-            <div class="search-box">
+            <form action="pembeli.php" method="GET">
+                <div class="search-box">
 
-                <input
-                    type="text"
-                    name="search"
-                    placeholder="Cari menu..."
-                    class="search"
-                    value="<?php echo $_GET['search'] ?? ''; ?>">
+                    <input
+                        type="text"
+                        name="search"
+                        placeholder="Cari menu..."
+                        class="search"
+                        value="<?php echo $_GET['search'] ?? ''; ?>">
 
-                <button type="submit" class="btn-search">
-                    <img src="../../source/icon/search.svg" class="iconsch">
-                </button>
+                    <button type="submit" class="btn-search">
+                        <img src="../../source/icon/search.svg" class="iconsch">
+                    </button>
 
-            </div>
-        </form>
+                </div>
+            </form>
 
-    </div>
+        </div>
 
         
 
@@ -375,41 +356,100 @@
                 }
 
                 while($row=mysqli_fetch_assoc($result_menu)):
+                    if($row['STATUS'] != 'nonaktif'):
                 ?>
-                <div class="child">
-                   <a href="detail_menu.php?id=<?php echo $row['ID_MENU']; ?>" class="menu-link">
+                    <div class="child">
+                        <a href="detail_menu.php?id=<?php echo $row['ID_MENU']; ?>" class="menu-link">
 
-                    <img src="/source/gambar_menu/<?php echo $row['FOTO_MENU']; ?>">
+                            <img src="/source/gambar_menu/<?php echo $row['FOTO_MENU']; ?>">
 
-                    <h3><?php echo $row['NAMA_MENU']; ?></h3>
+                            <h3><?php echo $row['NAMA_MENU']; ?></h3>
 
-                    <div class="rating">★ 5.0</div>
+                            <div class="rating">★ <?= $row['RATING'] ?? 'belum ada rating' ?></div>
 
-                    <p class="harga">
-                        Rp <?php echo number_format($row['HARGA'],0,',','.'); ?>
-                    </p>
+                            <p class="harga">
+                                Rp <?php echo number_format($row['HARGA'],0,',','.'); ?>
+                            </p>
 
-                </a>
-                <form action="keranjang.php" method="POST">
+                        </a>
+                        <form id="form-data" class="form-data">
 
-                    <input type="hidden"
-                    name="id_menu"
-                    value="<?php echo $row['ID_MENU']; ?>">
+                            <input type="hidden"
+                            name="id_menu"
+                            value="<?php echo $row['ID_MENU']; ?>">
 
-                    <input type="hidden"
-                    name="qty"
-                    value="1">
+                            <input type="hidden"
+                            name="qty"
+                            value="1">
 
-                    <button type="submit"
-                    name="add_to_cart"
-                    class="add-btn">+</button>
+                            <button type="submit"
+                            name="add_to_cart"
+                            class="add-btn">+</button>
 
-                </form>
+                        </form>
 
-            </div>
-            <?php endwhile; ?>
+                    </div>
+                <?php 
+                    endif;
+                endwhile;
+                ?>
         </div>
+    </div>
+    <script>
+        document.querySelectorAll('.form-data').forEach(form => {
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const dataform = new FormData(e.target);
+
+                try {
+                    const response = await fetch('keranjangDB.php', {
+                        method: 'POST',
+                        body: dataform
+                    });
+
+                    const data = await response.json();
+                    
+                    if(data.status === 'success'){
+                        alert('Berhasil menambahkan ke keranjang!');
+                        // window.location.href = './keranjang.php'; 
+                    } else {
+                        alert('Gagal: ' + data.message);
+                    }
+                }
+                catch(error) {
+                    alert("Error: " + error.message);
+                }
+            }
+        });
+        // document.getElementById('form-data').onsubmit = async (e) => {
+        //     e.preventDefault();
+        //     // const notif = document.getElementById('notif');
+        //     const dataform = new FormData(e.target);
+
+        //         try{
+        //             const response = await fetch('keranjangDB.php',{
+        //                 method:'POST',
+        //                 body: dataform
+        //             })
+        //             // console.log(1);
+
+        //             const data = await response.json();
+        //             // console.log(2);
+        //             alert(1);
+        //             if(data.status === 'success'){
+        //                 alert('hai')
+        //                 // window.location.href = './keranjang.php'; 
+        //             }
+        //             console.log(data.message);
+
+        //     }
+        //     catch(e){
+        //         alert("error : "+ e.message);
+        //         // notif.innerText = "error:" + e.message;
+        //     }
         
+        // }
+    </script>
 </body>
 
 </html>

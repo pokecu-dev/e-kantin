@@ -12,7 +12,7 @@
             $file = $_FILES['upfile']; 
             $id = $_POST['id'];
             $objUp = new upfile($conn);
-            
+        
             if(isset($_POST['type']) && $_POST['type'] == 'photo-profile'){
                 $output = $objUp->upload($file,UploadTarget::PROFILE,$id);
                 echo $output;

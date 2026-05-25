@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../include/koneksi.php';
+require_once __DIR__ . "/../include/session/pembeliC.php";
 
 
 if (isset($_POST['id'])) {

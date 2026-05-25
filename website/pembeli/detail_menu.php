@@ -1,3 +1,4 @@
+
 <?php
 // session_start();
 require_once '../include/koneksi.php';
@@ -516,10 +517,10 @@ if (!$data) {
                 method:'POST',
                 body: dataform
             })
-            console.log(1);
+            // console.log(1);
 
             const data = await response.json();
-            console.log(2);
+            // console.log(2);
             if(data.status === 'success'){
                 window.location.href = './keranjang.php'; 
             }

@@ -28,16 +28,6 @@
             }
             $stmt->close();
 
-            if (isset($_FILES['foto_menu']) && $_FILES['foto_menu']['error'] === UPLOAD_ERR_OK) {
-                $objUp = new upfile($conn);
-                $upload_result = $objUp->upload($_FILES['foto_menu'], UploadTarget::MENU, $id_menu);
-                
-                $upload_data = json_decode($upload_result, true);
-
-                if ($upload_data['status'] === 'error') {
-                    throw new Exception("Data teks berhasil diupdate, tetapi gagal mengupload foto: " . $upload_data['message']);
-                }
-            }
             ob_clean();
             echo json_encode([
                 'status' => 'success',

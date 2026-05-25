@@ -2,9 +2,9 @@
 // =========================
 // SESSION & KONEKSI
 // =========================
-session_start();
+// session_start();
 require_once '../include/koneksi.php';
-
+require_once __DIR__ . '/../include/session/penjualC.php';
 // =========================
 // PROTEKSI LOGIN
 // =========================
@@ -675,6 +675,16 @@ $result_menu = mysqli_stmt_get_result($stmt);
             if (newValS >= 0) {
                 inputSTOCK.value = newValS;
                 if (inputSTATUS) { inputSTATUS.value = (newValS <= 0) ? "habis" : "tersedia"; }
+            }
+        }
+
+        window.updateFileName = function (input){
+            const fileNameDisplay = document.getElementById('file-chosen');
+            if(input.files.length > 0){
+                fileNameDisplay.textContent = input.files[0].name;
+            }
+            else{
+                fileNameDisplay.textContent = 'Pilih Foto Menu... '
             }
         }
     </script>
