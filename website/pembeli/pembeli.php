@@ -279,8 +279,8 @@
 
             <ul class="nav-links">
                 <li><a href="pembeli.php" class="active">Beranda</a></li>
-                <li><a href="keranjang.php">keranjang</a></li>
-                <li><a href="pesanan.php">Produk</a></li>
+                <li><a href="keranjang.php">Keranjang</a></li>
+                <li><a href="pesanan.php">Pesanan</a></li>
                 <li><a href="profil.php">Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
@@ -315,17 +315,19 @@
 
     
         <div class="slider">
-            <div class="slides">
+           <div class="slides">
                 <?php 
-                $result_kantin = mysqli_query($conn, "SELECT * FROM list_kantin");
-                $no = 1;
-                while ($row = mysqli_fetch_assoc($result_kantin)) {
-                ?>
-                    <div class="slide">
-                        <img src="./../../source/foto_kantin/<?php echo $row['FOTO_KANTIN']; ?>" alt="Gambar Kantin">
-                        
-                        <button class="kantin-btn">Kantin <?php echo $no++; ?></button>
-                    </div>
+                    $result_kantin = $conn->query("SELECT * FROM list_kantin");
+                    $no = 1;
+                    while ($row = $result_kantin->fetch_assoc()) {
+                    ?>
+                        <div class="slide">
+                            <img src="./../../source/foto_kantin/<?php echo $row['FOTO_KANTIN']; ?>" alt="Gambar Kantin">
+                            
+                            <a href="kantin.php?id_kantin=<?php echo $row['ID']; ?>" class="co-btn kantin-btn">
+                        Kantin <?php echo $row['ID']; ?>
+                    </a>
+                        </div>
                 <?php 
                 } 
                 ?>

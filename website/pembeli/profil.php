@@ -272,42 +272,23 @@ if (!$data) {
 
 <body>
 
-    <!-- ================= NAVBAR ================= -->
-
-    <header class="topbar">
-
-        <div class="logo-mobile">
-            <img src="../../source/icon/logo1.svg" alt="KantinKita">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"> <img src="../../source/icon/logo1.svg" alt="Logo"></div>
+            <ul class="nav-links">
+                <li><a href="pembeli.php">Beranda</a></li>
+                <li><a href="keranjang.php">Keranjang</a></li>
+                <li><a href="pesanan.php" class="active">Pesanan</a></li>
+                <li><a href="profil.php">Profil</a></li>
+                <li><a href="./../logout.php">Log Out</a></li>
+            </ul>
         </div>
+    </nav>
 
-        <div class="logo-desktop">
-            <img src="../../source/icon/logo1.svg" alt="KantinKita">
-        </div>
-        <!-- --------/LOGO------------ -->
-        <div class="top-nav" style="text-align: center; margin-bottom: 0px;">
-            <nav class="menu">
-                <a href="penjual.php" style="margin: 0 5px; text-decoration: none ; color:#F47B20">
-                    <img src="../../source/icon/pesanan2.svg" alt="history">
-                    <span>History</span>
-                </a>
-                <a href="edit1.php" class="active" style="margin: 0 5px; text-decoration: none;">
-                    <img src="../../source/icon/edit1.svg" alt="edit">
-                    <span style="color:#aaa;">Edit</span>
-                </a>
-                <div class="dropdown-container">
-                    <a href="profil.php" style="margin: 0 5px; text-decoration: none; color:#F47B20">
-                        <img src="../../source/icon/user1.svg" alt=""><span class="nav-teks" style="color:#aaa;">Profile</span>
-                    </a>
-                    <div class="dropdown-content">
-                        <a href="profil.php" style="color: #202a39">Profile</a>
-                        <a href="./../logout.php" style="color: #202a39">Keluar</a>
-                    </div>
-                </div>
-
-            </nav>
-        </div>
-
-    </header>
+    <div class="back">
+    <a href="pembeli.php" class="btn-back">
+        <img src="../../source/icon/kembali.svg" alt="Kembali">
+    </a>
 
     <!-- ================= HERO ================= -->
 

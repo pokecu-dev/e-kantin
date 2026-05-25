@@ -31,7 +31,7 @@ while ($row = mysqli_fetch_assoc($q_items)) {
     $row['subtotal'] = $subtotal;
     $row['error']    = '';
 
-    if ($row['STATUS'] === 'habis') {
+    if ($row['STATUS'] === 'habis' && $row['STOK'] <= 0) {
         $row['error'] = 'Menu ini sudah habis'; $ada_error = true;
     } elseif ($row['STOK'] < $row['qty']) {
         $row['error'] = "Stok kurang (sisa: {$row['STOK']})"; $ada_error = true;
@@ -303,26 +303,27 @@ while ($row = mysqli_fetch_assoc($q_items)) {
 </head>
 <body>
 
-<div class="logo-mobile">
-    <img src="../../source/icon/logo1.svg" alt="KantinKita">
-</div>
+<nav class="navbar">
+        <div class="nav-container">
+            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
 
-<div class="top-nav">
-    <nav class="menu">
-        <a href="pembeli.php">
-            <img src="../../source/icon/home1.svg" alt="home">
-            <span class="nav-teks">Beranda</span>
-        </a>
-        <a href="keranjang.php">
-            <img src="../../source/icon/pesanan2.svg" alt="">
-            <span class="nav-teks">Keranjang</span>
-        </a>
-        <a href="profil.php">
-            <img src="../../source/icon/user1.svg" alt="">
-            <span class="nav-teks">Profil</span>
-        </a>
+            <!-- Burger Menu (Mobile Only) -->
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+
+            <ul class="nav-links">
+                <li><a href="pembeli.php" class="active">Beranda</a></li>
+                <li><a href="keranjang.php">Keranjang</a></li>
+                <li><a href="pesanan.php">Pesanan</a></li>
+                <li><a href="profil.php">Profil</a></li>
+                <li><a href="./../logout.php">Log Out</a></li>
+            </ul>
+        </div>
     </nav>
-</div>
 
 <!-- Loading -->
 <div id="co-loading">

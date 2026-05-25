@@ -337,7 +337,7 @@ if (!$data) {
             <ul class="nav-links">
                 <li><a href="pembeli.php" class="active">Beranda</a></li>
                 <li><a href="keranjang.php">Akun</a></li>
-                <li><a href="pesanan.php">Produk</a></li>
+                <li><a href="pesanan.php">Pesanan</a></li>
                 <li><a href="profil.php">Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
