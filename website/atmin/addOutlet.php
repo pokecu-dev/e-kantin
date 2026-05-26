@@ -167,7 +167,7 @@
 
 <div class="modal-header-title">Tambah Outlet Baru</div>
 
-<form action="proses_tambah_outlet.php" method="POST" enctype="multipart/form-data">
+<form action="process/proses_tambah_outlet.php" method="POST" enctype="multipart/form-data">
     
     <div class="form-group">
         <label for="nama_kantin">Nama Outlet / Kantin</label>
@@ -190,7 +190,7 @@
         </select>
     </div>
 
-    <div class="form-group">
+    <!-- <div class="form-group">
         <label>Foto Banner Outlet</label>
         <div class="file-upload-wrapper">
             <i class="fas fa-cloud-upload-alt"></i>
@@ -201,7 +201,7 @@
                 <img id="imagePreview" src="" alt="Preview">
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="form-actions">
         <button type="button" class="btn-batal" onclick="paksaTutupModal()">Batal</button>
@@ -210,7 +210,7 @@
         </button>
     </div>
 </form>
-
+<!-- 
 <script>
     function previewImage(input) {
         const file = input.files[0];
@@ -226,4 +226,4 @@
             reader.readAsDataURL(file);
         }
     }
-</script>
+</script> -->

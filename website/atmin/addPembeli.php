@@ -10,7 +10,7 @@
        
     
 
-        h2 {
+        .text{
             text-align: center;
             margin-bottom: 5px;
             font-size: 2rem;
@@ -30,7 +30,7 @@
             margin-top: 10px;
         }
 
-        input {
+        .input-box {
             width: 100%;
             padding: 10px;
             border: none;
@@ -55,7 +55,7 @@
             font-size: 14px;
         }
 
-        button[type="submit"] {
+        .btn[type="submit"] {
             width: 100%;
             margin-top: 20px;
             padding: 10px;
@@ -67,7 +67,7 @@
             transition: 0.2s;
         }
 
-        button[disabled] {
+        .btn[disabled] {
             opacity: 0.6;
             cursor: not-allowed;
         }
@@ -97,26 +97,26 @@
 
 <body>
     <div class="card1">
-        <h2>Tambah Pembeli</h2>
+        <h2 class="text">Tambah Pembeli</h2>
        <p class="note">note:usn akan di ubah menjadi huruf kecil semua</p>
         <form data-ajax="true" data-action="process/pro_daftar.php" data-notif="notif">
 
-            <label>Username</label><br>
-            <input type="text" name="usn">
+            <label>Username</label>
+            <input type="text" name="usn" class="input-box">
 
-            <label>Password</label><br>
-            <input type="text" name="pass">
+            <label>Password</label>
+            <input type="text" name="pass" class="input-box">
 
-            <label>Nama Lengkap</label><br>
-            <input type="text" name="nama_lengkap">
+            <label>Nama Lengkap</label>
+            <input type="text" name="nama_lengkap" class="input-box">
 
-            <label>Nomor telpeon</label><br>
-            <input type="text" name="no_tlp">
+            <label>Nomor telpeon</label>
+            <input type="text" name="no_tlp" class="input-box">
 
-            <label>Email</label><br>
-            <input type="email" name="email">
+            <label>Email</label>
+            <input type="email" name="email" class="input-box">
 
-            <button type="submit">Tambah Murid</button>
+            <button type="submit" class="btn">Tambah</button>
 
         </form>
 

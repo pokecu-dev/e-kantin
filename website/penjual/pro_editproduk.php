@@ -27,7 +27,7 @@
             if($stmt->execute()){
                 echo json_encode([
                     'status' => 'success',
-                    'message' => 'data berhasil di perbarui'
+                    'message' => 'Data berhasil di perbarui'
                 ]);
             }
             else{

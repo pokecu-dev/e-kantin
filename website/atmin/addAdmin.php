@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
    <style>
-           h2 {
+           .text{
             text-align: center;
             margin-bottom: 5px;
             font-size: 2rem;
@@ -30,7 +30,7 @@
             margin-top: 10px;
         }
 
-        input {
+        .input-box {
             width: 100%;
             padding: 10px;
             border: none;
@@ -39,7 +39,7 @@
             transition: 0.2s;
         }
 
-        input:focus {
+        .input-box:focus {
             border-bottom: 2px solid #F47B20;
         }
 
@@ -55,7 +55,7 @@
             font-size: 14px;
         }
 
-        button[type="submit"] {
+        .btn[type="submit"] {
             width: 100%;
             margin-top: 20px;
             padding: 10px;
@@ -67,7 +67,7 @@
             transition: 0.2s;
         }
 
-        button[disabled] {
+        .btn[disabled] {
             opacity: 0.6;
             cursor: not-allowed;
         }
@@ -88,32 +88,32 @@
 
         /* Mengubah ukuran saat layar di bawah 768px (Tablet & HP) */
         @media (max-width: 768px) {
-            h2 {
+            .text {
                 font-size: 1.6rem;
             }
         }
    </style>
 </head>
 <body>
-    <h2>Tambah Admin</h2>
+    <h2 class="text">Tambah Admin</h2>
     <form data-ajax="true" data-action="./process/pro_addAdmin.php" data-notif="notif">
         
-        <label>Username</label><br>
-        <input type="text" name="usn"><br><br>
+        <label>Username</label>
+        <input type="text" name="usn" class="input-box">
 
-        <label>Password</label><br>
-        <input type="text" name="pass"><br><br>
+        <label>Password</label>
+        <input type="text" name="pass">
 
-        <label>Nama Lengkap</label><br>
-        <input type="text" name="nama_lengkap"><br><br>
+        <label>Nama Lengkap</label>
+        <input type="text" name="nama_lengkap" class="input-box">
 
-        <label>Nomor telpeon</label><br>
-        <input type="text" name="no_tlp"><br><br>
+        <label>Nomor telpeon</label>
+        <input type="text" name="no_tlp" class="input-box">
 
-        <label>Email</label><br>
-        <input type="email" name="email"><br><br>
+        <label>Email</label>
+        <input type="email" name="email" class="input-box">
 
-        <button type="submit">submit</button>
+        <button type="submit" class="btn">Tambah</button>
 
     </form>
 

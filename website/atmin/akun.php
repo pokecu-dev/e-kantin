@@ -121,6 +121,7 @@ if ($search_user !== '') {
             line-height: 1.5;
             margin: 0;
             padding: 0;
+            padding-right: 0px !important; /* Mencegah pergeseran layout saat modal aktif */
         }
 
         /* NAVBAR STYLE */
@@ -347,7 +348,6 @@ if ($search_user !== '') {
         .user-table__row {
             min-width: 1100px;
             display: grid;
-            /* Update susunan kolom agar mengikutsertakan kolom status */
             grid-template-columns: var(--col-id) var(--col-username) var(--col-name) var(--col-phone) var(--col-email) var(--col-role) var(--col-status) var(--col-action);
             gap: 16px;
             align-items: center;
@@ -391,7 +391,7 @@ if ($search_user !== '') {
             color: #ea580c;
         }
 
-        /* Tambahan style warna badge untuk Status */
+        /* Style warna badge untuk Status */
         .badge-active {
             background: #dcfce7;
             color: #15803d;
@@ -431,35 +431,12 @@ if ($search_user !== '') {
             }
         }
 
-        /* MODAL DIALOG */
-        #editUserModal {
-            border: none;
-            margin: auto;
-            width: min(450px, 90vw);
-            max-height: 85vh;
-            border-radius: 20px;
-            padding: 24px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        #editUserModal::-webkit-scrollbar {
-            display: none;
-        }
-
-        #editUserModal::backdrop {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            transition: all 0.3s ease;
-        }
-
+        /* MODAL CUSTOM OVERLAY */
         .modal-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -486,6 +463,13 @@ if ($search_user !== '') {
             height: auto;
             max-height: 85vh;
             overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .modal-content::-webkit-scrollbar {
+            display: none;
         }
 
         .close-modal-right {
@@ -540,7 +524,7 @@ if ($search_user !== '') {
             <div class="top-actions">
                 <form action="" method="GET" class="search-form">
                     <div class="search-input-wrapper">
-                        <button type="submit" class="search-btn">
+                        <button type="submit" class="search-btn" style="background-color: #FEFEFE;">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </button>
                         <input
@@ -641,108 +625,69 @@ if ($search_user !== '') {
 
     <div id="addModal" class="modal-overlay">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeAddModal()">&times;</span>
-            <h3 style="margin-bottom:15px;">Pilih Jenis Akun</h3>
-
-            <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="loadForm('addPembeli.php')">
-                Tambah Pembeli
-            </button>
-            <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="loadForm('addPenjual.php')">
-                Tambah Penjual
-            </button>
-            <button class="btn-action" style="width:100%;" onclick="loadForm('addAdmin.php')">
-                Tambah Admin
-            </button>
-
-            <hr style="margin:15px 0;">
-            <div id="formArea">
-                <p style="text-align:center; color:#888;">Pilih salah satu dulu</p>
             </div>
-        </div>
     </div>
 
-    <dialog id="editUserModal">
-        <div id="modalBody">
+    <div id="editUserModal" class="modal-overlay">
+        <div class="modal-content" id="modalBody">
             </div>
-    </dialog>
+    </div>
 
-<script src="./../shared/js/script.js">
-    if (Response.status == 'success') {
-            window.reload();
-        }
+<script src="./../shared/js/script.js"></script>
 
-</script>
 <script>
-// =========================
-// EDIT USER MODAL (dialog)
-// =========================
+// ==========================================
+// KONTROL MODAL EDIT USER (Custom div Overlay)
+// ==========================================
 const editModal = document.getElementById("editUserModal");
 const modalBody = document.getElementById("modalBody");
 
 async function openEditModal(userId) {
+    editModal.classList.add("active");
     modalBody.innerHTML = `
+        <button type="button" class="close-modal-right" onclick="closeEditModal()">&times;</button>
         <div style="text-align:center;padding:30px;">
             <i class="fa-solid fa-spinner fa-spin" style="font-size:30px;color:#f36f21;"></i>
             <p style="margin-top:10px;">Memuat data...</p>
         </div>
     `;
-    editModal.showModal();
 
     try {
         const response = await fetch(`edituser.php?id=${userId}`);
         if (!response.ok) throw new Error("Fetch gagal");
         const html = await response.text();
-        modalBody.innerHTML = html;
-
-        // const notif = document.getElementById('notif').innerText;
-        // console.log(notif);
-
-        // const btn = document.querySelector('.btn-submit').onclick;
-
-        // console.log(btn)
-
-        
-
-        // btn.addEventListener('click',(e) => {
-        //     setTimeout(() => {
-        //         window.location.reload()
-        //     }, 2000);
-        // }) 
+        modalBody.innerHTML = `
+            <button type="button" class="close-modal-right" onclick="closeEditModal()">&times;</button>
+            <div style="margin-top:10px;">${html}</div>
+        `;
 
     } catch (error) {
         modalBody.innerHTML = `
+            <button type="button" class="close-modal-right" onclick="closeEditModal()">&times;</button>
             <div style="padding:30px;text-align:center;">
                 <i class="fa-solid fa-circle-exclamation" style="font-size:30px;color:red;"></i>
                 <p style="margin-top:10px;">Gagal memuat data user.</p>
-                <button onclick="closeEditModal()" style="margin-top:15px;padding:8px 14px;">Tutup</button>
             </div>
         `;
     }
 }
 
-function closeEditModal() { editModal.close(); }
+function closeEditModal() { 
+    editModal.classList.remove("active"); 
+    setTimeout(() => { modalBody.innerHTML = ''; }, 200);
+}
 
+// FIX: Tutup Modal Edit saat klik di luar area putih (.modal-content)
 editModal.addEventListener("click", (e) => {
-
-    if(e.target.closest('#status'))return;
-
-    const rect = editModal.getBoundingClientRect();
-    const isOutside = e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom;
-    
-    if (isOutside) closeEditModal();
-
-});
-
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
+    if (e.target === editModal) {
         closeEditModal();
-        closeAddModal();
     }
 });
 
-// =========================
-// ADD USER MODAL
-// =========================
+
+// ==========================================
+// KONTROL MODAL TAMBAH USER (Custom Overlay)
+// ==========================================
 const addModal = document.getElementById("addModal");
 const addModalContent = addModal.querySelector(".modal-content");
 
@@ -755,6 +700,13 @@ function closeAddModal() {
     addModal.classList.remove("active");
     setTimeout(() => { resetAddMenu(); }, 200);
 }
+
+// FIX: Tutup Modal Tambah saat klik di luar area putih
+addModal.addEventListener("click", (e) => {
+    if (e.target === addModal) {
+        closeAddModal();
+    }
+});
 
 function resetAddMenu() {
     addModalContent.innerHTML = `
@@ -790,17 +742,27 @@ async function loadForm(file) {
     }
 }
 
-modalBody.addEventListener('click', (e) => {
-    const btn = modalBody.querySelector(".btn-submit");
-    btn.addEventListener('click', (e) => {
+
+// ==========================================
+// GLOBAL EVENT (Tombol Keyboard & Auto Reload)
+// ==========================================
+
+// Tutup semua modal saat menekan tombol Escape (Esc)
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        closeEditModal();
+        closeAddModal();
+    }
+});
+
+// Penanganan reload halaman setelah form disubmit
+document.addEventListener('submit', (e) => {
+    if (e.target.closest('#modalBody') || e.target.closest('.modal-content')) {
         setTimeout(() => {
-            console.log("boom!")
             window.location.reload();
-        }, 1000); // 1 detik
-
-    })
-})
-
+        }, 1000);
+    }
+});
 </script>
 </body>
 </html>

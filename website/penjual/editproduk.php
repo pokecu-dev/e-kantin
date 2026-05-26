@@ -11,7 +11,7 @@ if (!empty($search_user)) {
     // Query mengambil semua kolom kecuali PASS sesuai gambar
     // Kita cari berdasarkan USERNAME, NAMA_LENGKAP, atau ID
     $sql = "SELECT * FROM tb_menu 
-                WHERE ID_MENU = ? ";
+            WHERE ID_MENU = ? ";
 
     $stmt = $conn->prepare($sql);
     $id_search = is_numeric($search_user) ? intval($search_user) : 0;
@@ -29,12 +29,12 @@ if (!empty($search_user)) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Edit Produk</title>
 </head>
 <style>
     /* ===== EDIT FORM MODAL STYLE ===== */
@@ -42,6 +42,8 @@ if (!empty($search_user)) {
     body {
         font-family: 'Poppins', sans-serif;
         background: transparent;
+        margin: 0;
+        padding: 0;
     }
 
     form {
@@ -52,30 +54,30 @@ if (!empty($search_user)) {
 
 
     .custom-file-upload {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            height: 44px;
-            background-color: #fff7ed;
-            /* Warna latar orange pudar biar soft */
-            border: 2px dashed #fed7aa;
-            /* Border putus-putus khas upload file */
-            color: var(--primary-orange);
-            border-radius: 10px;
-            padding: 0 14px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-        }
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        height: 44px;
+        background-color: #fff7ed;
+        /* Warna latar orange pudar biar soft */
+        border: 2px dashed #fed7aa;
+        /* Border putus-putus khas upload file */
+        color: #f36f21;
+        border-radius: 10px;
+        padding: 0 14px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        box-sizing: border-box;
+        transition: all 0.2s ease;
+    }
 
-        .custom-file-upload:hover {
-            background-color: #ffedd5;
-            border-color: var(--primary-orange);
-        }
+    .custom-file-upload:hover {
+        background-color: #ffedd5;
+        border-color: #f36f21;
+    }
 
     /* LABEL */
     label {
@@ -97,6 +99,7 @@ if (!empty($search_user)) {
         font-size: 14px;
         transition: 0.2s;
         background: #fff;
+        box-sizing: border-box;
     }
 
     input:focus,
@@ -112,49 +115,60 @@ if (!empty($search_user)) {
         resize: none;
     }
 
-    /* ===== BUTTON GROUP (stok & harga + / -) ===== */
-    button {
-        cursor: pointer;
+    /* ===== ROW LAYOUT KANAN KIRI ===== */
+    .form-row-split {
+        display: flex;
+        gap: 16px;
+        width: 100%;
     }
 
-    .jumlah {
+    .form-col-item {
+        flex: 1;
         display: flex;
         flex-direction: column;
         gap: 8px;
     }
 
-    /* wrapper tombol +/- */
-    .jumlah button,
-    button[type="button"] {
+    /* ===== COUNTER GROUP STYLE (Tombol +/- Menempel Input) ===== */
+    .counter-group {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .counter-group button {
         background: #F47B20;
         border: none;
         color: white;
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
+        width: 40px;
+        height: 41px; /* Menyesuaikan tinggi input teks default */
         font-size: 16px;
         transition: 0.2s;
+        cursor: pointer;
     }
 
-    .jumlah button:hover,
-    button[type="button"]:hover {
+    .counter-group button.btn-minus {
+        border-radius: 10px 0 0 10px;
+    }
+
+    .counter-group button.btn-plus {
+        border-radius: 0 10px 10px 0;
+    }
+
+    .counter-group button:hover {
         background: #d96516;
     }
 
-    /* input angka dalam row */
-    .jumlah input {
-        text-align: center;
-    }
-
-    /* wrapper +/- harga */
-    #harga,
-    #stok {
+    .counter-group input {
         text-align: center;
         font-weight: 600;
+        border-radius: 0 !important; /* Hilangkan radius tengah agar menyatu dengan tombol */
+        border-left: none;
+        border-right: none;
     }
 
     /* SUBMIT BUTTON */
-    button[type="submit"] {
+   .submit[type="submit"] {
         margin-top: 10px;
         background: #F47B20;
         color: white;
@@ -163,9 +177,10 @@ if (!empty($search_user)) {
         border-radius: 12px;
         font-weight: 700;
         transition: 0.2s;
+        cursor: pointer;
     }
 
-    button[type="submit"]:hover {
+    .submit[type="submit"]:hover {
         background: #d96516;
         transform: translateY(-1px);
     }
@@ -188,6 +203,11 @@ if (!empty($search_user)) {
             gap: 10px;
         }
 
+        .form-row-split {
+            flex-direction: column;
+            gap: 12px;
+        }
+
         input,
         select,
         textarea {
@@ -204,20 +224,27 @@ if (!empty($search_user)) {
         <label>Nama Menu</label>
         <input type="text" name="nama_menu" value="<?= htmlspecialchars($data['NAMA_MENU']) ?>">
 
-        <label>Harga</label>
-        <!-- <input type="number" name="harga" value=""> -->
-        <button type="button" onclick="UpdateHarga(-500)">-</button>
-        <input type="number" name="harga" id="harga" value="<?= $data['HARGA'] ?>" min="1">
-        <button type="button" onclick="UpdateHarga(500)">+</button>
+        <div class="form-row-split">
+            
+            <div class="form-col-item">
+                <label>Harga</label>
+                <div class="counter-group">
+                    <button type="button" class="btn-minus" onclick="UpdateHarga(-500)">-</button>
+                    <input type="number" name="harga" id="harga" value="<?= $data['HARGA'] ?>" min="500">
+                    <button type="button" class="btn-plus" onclick="UpdateHarga(500)">+</button>
+                </div>
+            </div>
 
+            <div class="form-col-item">
+                <label>Stok</label>
+                <div class="counter-group">
+                    <button type="button" class="btn-minus" onclick="UpdateStock(-1)">-</button>
+                    <input type="number" name="stok" id="stok" value="<?= $data['STOK'] ?>" min="0">
+                    <button type="button" class="btn-plus" onclick="UpdateStock(1)">+</button>
+                </div>
+            </div>
 
-        <div class="jumlah">
-            <label>stok:D</label>
-            <button type="button" onclick="UpdateStock(-1)">-</button>
-            <input type="number" name="stok" id="stok" value="<?= $data['STOK'] ?>" min="0">
-            <button type="button" onclick="UpdateStock(1)">+</button>
         </div>
-
 
         <label>Kategori</label>
         <select name="kategori">
@@ -227,14 +254,14 @@ if (!empty($search_user)) {
         </select>
 
 
-        <label>status</label>
+        <label>Status</label>
         <select name="status" id="status">
             <option value="tersedia" <?= $data['STATUS'] == 'tersedia' ? 'selected' : '' ?>>tersedia</option>
             <option value="habis" <?= $data['STATUS'] == 'habis' ? 'selected' : '' ?>>habis</option>
         </select>
 
-        <label>desk</label>
-        <textarea name="desk"><?= $data['DESK'] ?></textarea>
+        <label>Deskripsi</label>
+        <textarea name="desk"><?= htmlspecialchars($data['DESK']) ?></textarea>
 
         <label>Foto Menu (Kosongkan jika tidak diubah)</label>
         <input type="hidden" name="type" value="photo-menu">
@@ -246,10 +273,10 @@ if (!empty($search_user)) {
         <input type="file" name="upfile" id="edit_foto" accept="image/*" style="display: none;" onchange="updateFileName(this)">
 
 
-        <div class="action-group-modal" style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
-            <div class="modal-action-row" style="display: flex; gap: 12px; margin-top: 24px; width: 100%;">
+        <div class="action-group-modal" style="margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+            <div class="modal-action-row" style="display: flex; gap: 12px; margin-top: 15px; width: 100%;">
 
-                <button type="submit" class="btn-orange-main" style="flex: 2; height: 48px; justify-content: center; margin-top: 0;">
+                <button type="submit" class="submit" style="flex: 2; height: 48px; justify-content: center; margin-top: 0;">
                     <i class="fas fa-save"></i> Simpan
                 </button>
 
@@ -260,12 +287,11 @@ if (!empty($search_user)) {
                 </a>
 
             </div>
-            <!-- stok, status, desk, foto preview + upload -->
+        </div>
     </form>
 
-    <div id="notif">
+    <div id="notif"></div>
 
-    </div>
     <script src="./../shared/js/script.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -274,8 +300,7 @@ if (!empty($search_user)) {
             const inputHARGA = document.getElementById("harga");
             const inputSTATUS = document.getElementById("status");
 
-            const hargaAwal = parseInt(inputHARGA.value) || 0;
-            console.log(inputSTATUS);
+            const hargaAwal = parseInt(inputHARGA.value) || 500;
 
             function statusCek(StokSekarang) {
                 if (StokSekarang <= 0) {
@@ -286,19 +311,14 @@ if (!empty($search_user)) {
             }
 
             window.UpdateHarga = function(step) {
-
-                let newValH = parseInt(inputHARGA.value) + step;
-
+                let newValH = (parseInt(inputHARGA.value) || 0) + step;
                 if (newValH >= 500 && newValH % 500 == 0) {
                     inputHARGA.value = newValH;
                 }
-
             }
 
             window.UpdateStock = function(step) {
-                let newValS = parseInt(inputSTOCK.value) + step;
-
-                // inputSTOCK.value = newValS;
+                let newValS = (parseInt(inputSTOCK.value) || 0) + step;
                 if (newValS >= 0) {
                     inputSTOCK.value = newValS;
                     statusCek(newValS);
@@ -308,72 +328,35 @@ if (!empty($search_user)) {
             inputSTOCK.oninput = (e) => {
                 let target = e.target;
                 let Value = parseInt(target.value);
-                // let currentStock = getstock();
 
-                if (target.value === "" || isNaN(Value) || Value < 1) {
+                if (target.value === "" || isNaN(Value) || Value < 0) {
                     target.value = 0;
                     Value = 0;
-
                 }
-
                 statusCek(Value);
-
             }
 
             inputHARGA.oninput = (e) => {
                 let target = e.target;
                 let Value = parseInt(target.value);
 
-                let tmp = Value;
-
-
                 if (target.value === "" || isNaN(Value) || Value < 500) {
                     target.value = 500;
-                    Value = 500;
                 } else if (Value % 500 != 0) {
-                    target.value = hargaAwal;
+                    // Opsional: jika ingin otomatis mengembalikan ke harga awal jika kelipatan tidak pas saat diketik manual
+                    // target.value = hargaAwal;
                 }
             }
-
-
-
         });
 
-
-
-        const inputSTOCK = document.getElementById("stok");
-        const inputHARGA = document.getElementById("harga");
-        const inputSTATUS = document.getElementById("status");
-        // const getstock =() => parseInt(document.getElementById("stok").innerText);
-
-        console.log(inputSTATUS)
-
-
-        inputSTOCK.oninput = (e) => {
-            let Value = parseInt(e.value);
-            // let currentStock = getstock();
-
-            if (e.value === "" || isNaN(Value) || Value < 1) {
-                e.value = 0;
-            } else if (Value == 0) {
-
-            }
-
-        }
-
-        
         function updateFileName(input){
             const fileNameDisplay = document.getElementById('file-chosen');
             if(input.files.length > 0){
                 fileNameDisplay.textContent = input.files[0].name;
-            }
-            else{
-                fileNameDisplay.textContent = 'Pilih Foto Menu... '
+            } else {
+                fileNameDisplay.textContent = 'Pilih Foto Menu...';
             }
         }
-
-       
-        
     </script>
 </body>
 
