@@ -17,8 +17,37 @@ $result_pesanan = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riwayat Pesanan - KantinKita</title>
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
+       
+              * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          
+        }
+
+        body {
+            background: #f5f5f5;
+            color: #333;
+                   font-family: 'Poppins', sans-serif;
+        
+        }
+
+        .nav-links a {
+    text-decoration: none;
+    color: #888;
+      font-family: 'Poppins', sans-serif;
+    font-weight: 500; 
+    transition: 0.3s;
+}
+
+.nav-links a.active {
+    color: var(--primary);
+    border-bottom: 2px solid #F47B20;
+    padding-bottom: 5px;
+}
         .container {
             padding: 20px;
             width: 100%;
@@ -164,14 +193,18 @@ $result_pesanan = $stmt->get_result();
 </head>
 <body>
 
-    <nav class="navbar">
+ <nav class="navbar">
         <div class="nav-container">
             <div class="logo"> <img src="../../source/icon/logo1.svg" alt="Logo"></div>
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <span></span><span></span><span></span>
+            </label>
             <ul class="nav-links">
                 <li><a href="pembeli.php">Beranda</a></li>
                 <li><a href="keranjang.php">Keranjang</a></li>
                 <li><a href="pesanan.php" class="active">Pesanan</a></li>
-                <li><a href="profil.php">Profil</a></li>
+                <li><a href="profil.php" >Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>

@@ -11,7 +11,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              font-family: 'Poppins', sans-serif;
 }
 body{
     background-color: var(--bg-color);
@@ -20,18 +20,16 @@ body{
 .nav-links a {
     text-decoration: none;
     color: #888;
-    /* Warna abu-abu */
     font-weight: 500;
     transition: 0.3s;
 }
 
 .nav-links a.active {
     color: var(--primary);
-
     border-bottom: 2px solid #F47B20;
     padding-bottom: 5px;
 }
-/* Navbar Utama sebagai Card */
+
 /* Navbar Utama sebagai Card */
 .navbar {
     background: var(--white);
@@ -41,8 +39,7 @@ body{
     position: fixed;
     top: 0;
     left: 0;
-    right: 0; /* Mengunci lebar navbar berdasarkan viewport dasar, bukan sisa ruang scrollbar */
-    
+    right: 0; 
     /* border-radius: 0 0 15px 15px; */ /* Membuat sudut membulat */
     display: flex;
     align-items: center;
