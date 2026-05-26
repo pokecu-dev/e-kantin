@@ -1,8 +1,9 @@
-
 <?php
-// session_start();
 require_once '../include/koneksi.php';
 require_once __DIR__ . "/../include/session/pembeliC.php";
+// session_start();
+
+
 
 if (!isset($_GET['id'])) {
     echo "Menu tidak ditemukan!";
@@ -93,6 +94,7 @@ if (!$data) {
             border-radius: 20px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
+        
 
         .info {
             flex: 1;

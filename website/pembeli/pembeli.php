@@ -226,7 +226,7 @@
 
         .child h3 {
             font-size: 16px;
-            margin: 10px 0 5px 0;
+            margin: 1px 0;
         }
 
         .menu-link{
@@ -239,7 +239,7 @@
             text-decoration: none;
             display: flex;
             right: 10px;
-            bottom: 126px;
+            bottom: 87px;
             position: absolute;
             background:  #F47B20;
             color: #ffffff;
@@ -248,12 +248,13 @@
             border-radius: 5px;
             z-index:10;
             border: none;
-            font-size: 25px;
+            font-size: 20px;
             cursor: pointer;
             transition: transform 0.2s ease;
             justify-content: center;
             align-items: center;
             text-align: center;
+            line-height: 39px;
         }
 
         .add-btn:hover {

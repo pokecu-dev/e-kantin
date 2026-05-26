@@ -38,8 +38,7 @@ $info_kantin = $query_info->fetch_assoc();
         }
 
         h1 {
-            margin-top: 10px;
-            margin-bottom: 30px;
+           
             font-size: 1.5rem;
             line-height: 1.2;
             color: #F47B20;
@@ -108,25 +107,59 @@ $info_kantin = $query_info->fetch_assoc();
             text-decoration: none;
             display: flex;
             right: 10px;
-            bottom: 15px;
+            bottom: 98px;
             position: absolute;
-            background: #F47B20;
+            background:  #F47B20;
             color: #ffffff;
             width: 32px;
             height: 32px;
             border-radius: 5px;
-            z-index: 10;
+            z-index:10;
             border: none;
-            font-size: 25px;
+            font-size: 20px;
             cursor: pointer;
             transition: transform 0.2s ease;
             justify-content: center;
             align-items: center;
             text-align: center;
+            line-height: 39px;
         }
 
         .add-btn:hover {
             transform: scale(1.1);
+            background: #F47B20;
+        }
+
+        .banner-kantin {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background: #f0f0f0;
+            margin-bottom: 20px;
+        }
+        .banner-kantin img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .back-header-container {
+            display: flex;
+            align-items: center; 
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .back-header-container h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            line-height: 1.2;
+            color: #F47B20;
+        }
+        .btn-back img {
+            width: 24px; 
+            display: block;
         }
     </style>
 </head>
@@ -144,8 +177,19 @@ $info_kantin = $query_info->fetch_assoc();
         </div>
     </nav>
 
+    <div class="banner-kantin">
+        <img src="/source/foto_kantin/<?= $info_kantin['FOTO_KANTIN'] ?? 'banner_default.jpg'; ?>" alt="Banner Kantin" onerror="this.style.display='none'">
+    </div>
+
+    <div class="back-header-container">
+        <a href="pembeli.php" class="btn-back">
+            <img src="../../source/icon/kembali.svg" alt="Kembali">
+        </a>
+        <h1>Daftar Menu di <b><?= $info_kantin['NAMA_KANTIN'] ?? "Kantin ".$id_kantin; ?></b></h1>
+    </div>
+    
+
     <div class="container">
-        <h1>Daftar Menu di <b><?= $info_kantin['nama_kantin'] ?? "Kantin ".$id_kantin; ?></b></h1>
 
         <div class="parent">
             <?php
