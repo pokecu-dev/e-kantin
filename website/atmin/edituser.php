@@ -302,11 +302,11 @@ if ($result->num_rows > 0) {
                         <div class="form-group">
                             <input type="hidden" name="id" value="<?= $id ?>">
                             <label>Username <span>(BEFORE: <?= $dataUsers['USERNAME'] ?>)</span></label>
-                            <input type="text" name="usn" value="<?= $dataUsers['USERNAME'] ?>">
+                            <input type="text" name="usn" value="<?= htmlspecialchars($dataUsers['USERNAME']) ?>">
                         </div>
                         <div class="form-group">
                             <label>Password <span>(BEFORE: <?= $dataUsers['PASS'] ?>)</span></label>
-                            <input type="text" name="pass" value="<?= $dataUsers['PASS'] ?>">
+                            <input type="text" name="pass" value="">
                         </div>
                     </div>
 
@@ -314,16 +314,16 @@ if ($result->num_rows > 0) {
                     <div class="card">
                         <div class="form-group">
                             <label>Nama Lengkap <span>(BEFORE: <?= $dataUsers['NAMA_LENGKAP'] ?>)</span></label>
-                            <input type="text" name="nama_lengkap" value="<?= $dataUsers['NAMA_LENGKAP'] ?>">
+                            <input type="text" name="nama_lengkap" value="<?= htmlspecialchars($dataUsers['NAMA_LENGKAP']) ?>">
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                             <div class="form-group">
                                 <label>Nomor Telepon <span>(BEFORE: <?= $dataUsers['NO_TLP'] ?>)</span></label>
-                                <input type="text" name="no_tlp" value="<?= $dataUsers['NO_TLP'] ?>">
+                                <input type="text" name="no_tlp" value="<?= htmlspecialchars($dataUsers['NO_TLP']) ?>">
                             </div>
                             <div class="form-group">
                                 <label>Email <span>(BEFORE: <?= $dataUsers['EMAIL'] ?>)</span></label>
-                                <input type="email" name="email" value="<?= $dataUsers['EMAIL'] ?>">
+                                <input type="email" name="email" value="<?= htmlspecialchars($dataUsers['EMAIL']) ?>">
                             </div>
                         </div>
                     </div>
@@ -359,12 +359,12 @@ if ($result->num_rows > 0) {
         window.location.reload();
     </script>
     <script>
-        const btn = document.querySelector('.btn-submit')
-        btn.addEventListener('click', (e) => {
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000); // 2 detik
-        })
+        // const btn = document.querySelector('.btn-submit')
+        // btn.addEventListener('click', (e) => {
+        //     setTimeout(() => {
+        //         window.location.reload();
+        //     }, 2000); // 2 detik
+        // })
     </script>
 </body>
 

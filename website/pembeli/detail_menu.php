@@ -1,9 +1,8 @@
+
 <?php
+// session_start();
 require_once '../include/koneksi.php';
 require_once __DIR__ . "/../include/session/pembeliC.php";
-// session_start();
-
-
 
 if (!isset($_GET['id'])) {
     echo "Menu tidak ditemukan!";
@@ -94,7 +93,6 @@ if (!$data) {
             border-radius: 20px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
-        
 
         .info {
             flex: 1;
@@ -410,6 +408,7 @@ if (!$data) {
             <div id="form-rate">
                 <?php 
                     $rating = false;
+                    $rateedit = false;
                     $sql = "SELECT t.ID_TRANSAKSI 
                         FROM transaksi t
                         INNER JOIN detail_transaksi dt ON t.ID_TRANSAKSI = dt.ID_TRANSAKSI
@@ -417,12 +416,19 @@ if (!$data) {
                         AND t.STATUS = 'selesai'
                         AND dt.ID_MENU = $data[ID_MENU]";
 
+
                     $query = $conn->query($sql);
                     if($query->num_rows > 0){
                         $rating = true;
                     }
 
-                    if($rating):
+                    $sql = "SELECT * FROM rating WHERE ID_RATING = $iduser AND ID_MENU = $data[ID_MENU] ";
+                    $query = $conn->query($sql);
+                    if($query->num_rows > 0){
+                        $rateedit = true;
+                    }
+
+                    if($rating && !$rateedit):
                 ?>
 
                         
@@ -441,6 +447,8 @@ if (!$data) {
                             <button type="submit" name="submit">kirim:D</button>
 
                         </form>
+                    <?php elseif($rateedit): ?>
+                        <p>edit gan:v</p>
                     <?php else: ?>
                         <p>beli dulu gan,baru bisa rating:D</p>
                 <?php endif ?>
@@ -458,7 +466,7 @@ if (!$data) {
 
                 while($row = $query->fetch_assoc()):
             ?>
-                <p>user:<?= $row['NAMA_LENGKAP'] ?></p>
+                <p>user:<?= htmlspecialchars($row['NAMA_LENGKAP']) ?></p>
                 <p>rate: <?= $row['RATING'] ?></p>
                 <p>komentar:<?= $row['DESK'] ?></p>
                 <br>
