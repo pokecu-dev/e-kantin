@@ -121,7 +121,7 @@ $query_item = $conn->query($sql_item);
 
 </head>
 <body>
-<div class="container">
+
     <p href="index.php" class="btn-kembali"> </p>
 
     <div class="nota-card">
@@ -175,7 +175,6 @@ $query_item = $conn->query($sql_item);
             <span class="total-harga">Rp <?php echo number_format($grand_total, 0, ',', '.'); ?></span>
         </div>
     </div>
-</div>
 
     
 </body>

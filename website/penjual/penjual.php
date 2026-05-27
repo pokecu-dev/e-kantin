@@ -178,9 +178,13 @@ $total_produk = $data_produk['total_produk'] ?? 0;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Kantin</title>
+    <title>Profile Kantin - KantinKita</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
     <style>
         * {
             margin: 0;
@@ -189,6 +193,21 @@ $total_produk = $data_produk['total_produk'] ?? 0;
             font-family: 'Poppins', sans-serif;
         }
 
+/* 1. Sembunyikan untuk browser berbasis Webkit (Chrome, Safari, Edge Baru, Opera) */
+::-webkit-scrollbar {
+    width: 0px !important;
+    background: transparent !important;
+}
+
+/* 2. Sembunyikan untuk Firefox */
+html, body, *, div {
+    scrollbar-width: none !important;
+}
+
+/* 3. Sembunyikan untuk Internet Explorer & Edge Lama */
+html, body, *, div {
+    -ms-overflow-style: none !important;
+}
         body {
             background-color: #f5f5f5;
             color: #333;
@@ -542,6 +561,7 @@ $total_produk = $data_produk['total_produk'] ?? 0;
 
             <ul class="nav-links">
                 <li><a href="penjual.php" class="active">Beranda</a></li>
+                     <li><a href="pendapatan.php">Pendapatan</a></li>
                 <li><a href="pesanan.php">Pesanan</a></li>
                 <li><a href="edit1.php">Produk</a></li>
                 <li><a href="profil.php">Profil</a></li>

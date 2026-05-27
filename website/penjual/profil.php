@@ -43,7 +43,21 @@ if (!$data) {
             padding: 0;
             box-sizing: border-box;
         }
+/* 1. Sembunyikan untuk browser berbasis Webkit (Chrome, Safari, Edge Baru, Opera) */
+::-webkit-scrollbar {
+    width: 0px !important;
+    background: transparent !important;
+}
 
+/* 2. Sembunyikan untuk Firefox */
+html, body, *, div {
+    scrollbar-width: none !important;
+}
+
+/* 3. Sembunyikan untuk Internet Explorer & Edge Lama */
+html, body, *, div {
+    -ms-overflow-style: none !important;
+}
         body {
             background: #f8fafc;
             color: #1e293b;
@@ -533,6 +547,7 @@ if (!$data) {
             </label>
             <ul class="nav-links">
                 <li><a href="penjual.php">Beranda</a></li>
+                   <li><a href="pendapatan.php" >Pendapatan</a></li>
                 <li><a href="pesanan.php">Pesanan</a></li>
                 <li><a href="edit1.php">Produk</a></li>
                 <li><a href="profil.php" class="active">Profil</a></li>
