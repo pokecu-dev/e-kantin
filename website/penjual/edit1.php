@@ -99,23 +99,42 @@ html, body, *, div {
             padding: 20px;
             margin-top: 90px;
         }
-
-        /* ACTIONS HEADER (SEARCH & ADD BUTTON) */
+/* ACTIONS HEADER (SEARCH & ADD BUTTON) */
         .action-header-area {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 12px; /* Jarak antara kolom search dan tombol */
             margin-bottom: 25px;
+            width: 100%;
         }
 
+        /* Memaksa box search mengambil semua sisa ruang kosong di desktop */
         .search-box { 
             flex: 1; 
+            position: relative;
         }
-        .search-form { display: flex; gap: 12px; }
+        
+        .search-form { 
+            display: flex; 
+            width: 100%;
+        }
+        
+        /* Ikon Search dikunci posisinya di dalam input */
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 14px;
+            z-index: 2;
+        }
+
         .search-form input {
             flex: 1;
-            padding: 14px 16px;
+            width: 100%;
+            padding: 14px 16px 14px 44px; /* Padding kiri dinaikkan (44px) agar teks tidak menabrak ikon */
             border: 1px solid #e2e8f0;
             border-radius: 16px;
             outline: none;
@@ -124,6 +143,7 @@ html, body, *, div {
             font-size: 14px;
             transition: 0.3s;
         }
+        
         .search-form input:focus {
             border-color: #F47B20;
             box-shadow: 0 0 0 4px rgba(244, 123, 32, 0.1);
@@ -131,6 +151,7 @@ html, body, *, div {
         
         .btn-orange-main {
             padding: 14px 24px;
+            height: 48px; /* Menyamakan tinggi tombol dengan input search */
             border: none;
             border-radius: 16px;
             background: #F47B20;
@@ -141,16 +162,32 @@ html, body, *, div {
             transition: .2s;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             box-shadow: 0 4px 14px rgba(244, 123, 32, 0.25);
             text-decoration: none;
-            white-space: nowrap;
+            white-space: nowrap; /* Mencegah teks tombol terlipat ke bawah pas di HP */
         }
+        
         .btn-orange-main:hover { 
             background: #dd6b1d; 
             transform: translateY(-1px);
         }
 
+        /* RESPONSIVE MOBILE ADJUSTMENT */
+        @media (max-width: 576px) {
+            .search-form input {
+                padding: 12px 16px 12px 40px; /* Sedikit lebih kecil di HP agar proporsional */
+            }
+            .btn-orange-main {
+                padding: 12px 16px; /* Mengurangi padding tombol di HP agar tidak kesempitan */
+                font-size: 13px;
+                height: 44px;
+            }
+            .search-icon {
+                left: 14px;
+            }
+        }
         /* GRID */
         .parent {
             display: grid;
@@ -438,6 +475,60 @@ html, body, *, div {
         grid-column: span 1; 
     }
 }
+/* ========================================================
+   GANTI KODE DI DALAM MEDIA QUERY MOBILE KAMU DENGAN INI
+   ======================================================== */
+@media (max-width: 768px) {
+    
+    /* Mengunci area agar selalu berjejer horizontal kanan-kiri */
+    .action-header-area {
+        display: flex !important;
+        flex-direction: row !important; 
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px; /* Jarak pas antar elemen di HP */
+        width: 100%;
+    }
+
+    /* 1. MEMAKSA SEARCH BOX & FORM MENJADI YANG PALING PANJANG */
+    .search-box {
+        flex: 1 !important; /* Mengambil semua sisa ruang kosong */
+        width: auto !important;
+    }
+
+    .search-form {
+        display: flex !important;
+        width: 100% !important;
+    }
+
+    .search-form input {
+        width: 100% !important; /* Input text melar penuh di dalam search box */
+        padding: 12px 14px 12px 38px;
+        border-radius: 12px;
+        font-size: 13px;
+    }
+
+    /* 2. MENGUNCI TOMBOL TAMBAH PRODUK AGAR TIDAK IKUT MELAR/PANJANG */
+    .btn-orange-main {
+        flex: 0 0 auto !important;
+        width: auto !important; 
+        max-width: 135px;
+        padding: 0 14px; /* Memberikan space kanan-kiri teks di HP agar rapi */
+        height: 44px; /* Menyamakan tinggi tombol dengan input search */
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap; /* Teks "Tambah Produk" dikunci lurus ke samping */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-orange-main i {
+        font-size: 13px !important;
+        margin-right: 4px;
+    }
+}
     </style>
 </head>
 
@@ -464,17 +555,17 @@ html, body, *, div {
     </nav>
 
     <div class="container">
-        <div class="action-header-area">
-            <div class="search-box">
-                <form method="GET" class="search-form">
-                    <input type="text" name="search" placeholder="Cari menu harian..." value="<?= htmlspecialchars($search) ?>">
-                    <button type="submit" class="btn-orange-main" style="box-shadow:none; padding:0 22px; height:48px; border-radius:16px;">Cari</button>
-                </form>
-            </div>
-            <button class="btn-orange-main" id="js-add-product-trigger" style="height:48px;">
-                <i class="fas fa-plus"></i> Tambah Produk
-            </button>
-        </div>
+<div class="action-header-area">
+    <div class="search-box">
+        <form method="GET" class="search-form">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" name="search" placeholder="Cari menu harian..." value="<?= htmlspecialchars($search ?? '') ?>">
+        </form>
+    </div>
+    <button class="btn-orange-main" id="js-add-product-trigger">
+        <i class="fas fa-plus"></i> Tambah Produk
+    </button>
+</div>
 
         <div class="parent">
             <?php if (mysqli_num_rows($result_menu) > 0): ?>

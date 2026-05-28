@@ -1,3 +1,4 @@
+HP
 <?php
 // ========================================================
 // 1. SESSION, KONEKSI, & OTENTIKASI
@@ -153,21 +154,21 @@ while ($row = $res_g3->fetch_assoc()) {
             --border-color: #e2e8f0;
         }
 
-/* 1. Sembunyikan untuk browser berbasis Webkit (Chrome, Safari, Edge Baru, Opera) */
-::-webkit-scrollbar {
-    width: 0px !important;
-    background: transparent !important;
-}
+        /* 1. Sembunyikan untuk browser berbasis Webkit (Chrome, Safari, Edge Baru, Opera) */
+        ::-webkit-scrollbar {
+            width: 0px !important;
+            background: transparent !important;
+        }
 
-/* 2. Sembunyikan untuk Firefox */
-html, body, *, div {
-    scrollbar-width: none !important;
-}
+        /* 2. Sembunyikan untuk Firefox */
+        html, body, *, div {
+            scrollbar-width: none !important;
+        }
 
-/* 3. Sembunyikan untuk Internet Explorer & Edge Lama */
-html, body, *, div {
-    -ms-overflow-style: none !important;
-}
+        /* 3. Sembunyikan untuk Internet Explorer & Edge Lama */
+        html, body, *, div {
+            -ms-overflow-style: none !important;
+        }
         body {
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-body);
@@ -200,12 +201,10 @@ html, body, *, div {
         }
 
         /* ===== STATS CARDS GRID ===== */
-        /* Di desktop: Berjejer 3 kolom normal horizontal */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-areas: "hari bulan total";
-            /* Definisikan area default untuk desktop */
             gap: 20px;
         }
 
@@ -220,17 +219,9 @@ html, body, *, div {
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
         }
 
-        .card-hari {
-            grid-area: hari;
-        }
-
-        .card-bulan {
-            grid-area: bulan;
-        }
-
-        .card-total {
-            grid-area: total;
-        }
+        .card-hari { grid-area: hari; }
+        .card-bulan { grid-area: bulan; }
+        .card-total { grid-area: total; }
 
         .stat-info .stat-label {
             font-size: 12px;
@@ -263,20 +254,9 @@ html, body, *, div {
             font-size: 22px;
         }
 
-        .icon-orange {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-
-        .icon-blue {
-            background: #e0f2fe;
-            color: #0284c7;
-        }
-
-        .icon-green {
-            background: #dcfce7;
-            color: #16a34a;
-        }
+        .icon-orange { background: var(--primary-light); color: var(--primary); }
+        .icon-blue { background: #e0f2fe; color: #0284c7; }
+        .icon-green { background: #dcfce7; color: #16a34a; }
 
         /* ===== MIDDLE ROW ===== */
         .main-content-row {
@@ -309,7 +289,6 @@ html, body, *, div {
             color: #1a202c;
         }
 
-        /* Pembungkus Grafik Kontrol Tinggi Tinggi Desktop */
         .chart-wrapper {
             position: relative;
             width: 100%;
@@ -431,6 +410,11 @@ html, body, *, div {
             background-color: #f8fafc;
         }
 
+        /* Pembungkus Baris Alternatif Mobile (Sembunyikan Default di Desktop) */
+        .mobile-row-card {
+            display: none;
+        }
+
         .btn-modal-trigger {
             display: inline-flex;
             align-items: center;
@@ -503,98 +487,44 @@ html, body, *, div {
         /* ===== POPUP MODAL ===== */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(26, 32, 44, 0.4);
             backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; z-index: 9999;
             transition: all 0.25s ease-in-out;
         }
 
-        .modal-overlay.open {
-            opacity: 1;
-            visibility: visible;
-        }
+        .modal-overlay.open { opacity: 1; visibility: visible; }
 
         .modal-box {
-            background: #ffffff;
-            border-radius: 20px;
-            width: 560px;
-            max-width: 92%;
+            background: #ffffff; border-radius: 20px; width: 560px; max-width: 92%;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            transform: scale(0.95);
-            transition: all 0.25s ease-in-out;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
+            transform: scale(0.95); transition: all 0.25s ease-in-out;
+            overflow: hidden; border: 1px solid var(--border-color);
         }
 
-        .modal-overlay.open .modal-box {
-            transform: scale(1);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 24px;
-            border-bottom: 1px solid #edf2f7;
-            background: #f8fafc;
-        }
-
-        .modal-header h4 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 700;
-            color: #1a202c;
-        }
-
-        .modal-close-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: #a0aec0;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .modal-close-btn:hover {
-            color: #4a5568;
-        }
-
-        .modal-body {
-            padding: 24px;
-            max-height: 65vh;
-            overflow-y: auto;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .modal-body::-webkit-scrollbar {
-            display: none;
-        }
+        .modal-overlay.open .modal-box { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid #edf2f7; background: #f8fafc; }
+        .modal-header h4 { margin: 0; font-size: 16px; font-weight: 700; color: #1a202c; }
+        .modal-close-btn { background: none; border: none; font-size: 20px; color: #a0aec0; cursor: pointer; transition: 0.2s; }
+        .modal-close-btn:hover { color: #4a5568; }
+        .modal-body { padding: 24px; max-height: 65vh; overflow-y: auto; }
 
         /* ========================================================
-/* ===== RESPONSIVE MEDIA QUERIES (PAS DI HP) ===== 
-/* ======================================================== */
+           RESPONSIVE MEDIA QUERIES (PAS DI HP)
+           ======================================================== */
         @media (max-width: 1024px) {
             .main-content-row {
                 grid-template-columns: 1fr;
             }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 850px) {
             body {
                 padding: 14px;
             }
 
-            /* Pas HP susunan grid diubah sesuai request kamu kemarin */
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
                 grid-template-areas:
@@ -603,37 +533,75 @@ html, body, *, div {
                 gap: 12px;
             }
 
-            .card-stat {
+            .card-stat { padding: 16px; }
+            .stat-info .stat-value { font-size: 18px; }
+            .stat-icon { width: 44px; height: 44px; font-size: 18px; }
+            .chart-wrapper { height: 210px; }
+            .dashboard-header h1 { font-size: 22px; }
+
+            /* --- KONFIGURASI KHUSUS TABEL RESPONSIF DI HP --- */
+            /* 1. Sembunyikan elemen table asli desktop agar tidak berantakan */
+            .table-responsive table {
+                display: none;
+            }
+            .table-responsive {
+                border: none;
+                background: transparent;
+            }
+
+            /* 2. Aktifkan & Desain Baris Model Card untuk HP */
+            .mobile-row-card {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
                 padding: 16px;
+                background: #ffffff;
+                border: 1px solid var(--border-color);
+                border-radius: 14px;
+                margin-bottom: 12px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
             }
 
-            .stat-info .stat-value {
-                font-size: 18px;
+            /* Desain Sisi Kiri Mobile */
+            .mb-left-content {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                width: 65%;
             }
-
-            .stat-icon {
-                width: 44px;
-                height: 44px;
-                font-size: 18px;
+            .mb-meta-top {
+                display: flex;
+                gap: 8px;
+                font-size: 11px;
+                font-weight: 500;
             }
-
-            /* Grafik mengecil / menyusut proporsional pas mode HP */
-            .chart-wrapper {
-                height: 210px;
-            }
-
-            .dashboard-header h1 {
-                font-size: 22px;
-            }
-
-            th,
-            td {
-                padding: 14px 12px;
+            .mb-time { color: var(--primary); font-weight: 600; }
+            .mb-id { color: var(--text-muted); }
+            .mb-items-list {
                 font-size: 13px;
+                font-weight: 500;
+                color: var(--text-main);
+                line-height: 1.4;
             }
 
-            .btn-modal-trigger {
-                padding: 6px 12px;
+            /* Desain Sisi Kanan Mobile */
+            .mb-right-content {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 8px;
+                width: 32%;
+            }
+            .mb-total-price {
+                font-size: 13px;
+                font-weight: 700;
+                color: var(--text-main);
+            }
+            .mb-right-content .btn-modal-trigger {
+                width: 100%;
+                max-width: 90px;
+                justify-content: center;
+                padding: 6px 10px;
                 font-size: 11px;
             }
         }
@@ -641,7 +609,6 @@ html, body, *, div {
 </head>
 
 <body>
-
 
     <nav class="navbar">
         <div class="nav-container">
@@ -665,14 +632,9 @@ html, body, *, div {
         </div>
     </nav>
 
-
-
     <div class="dashboard-container">
 
-        <div class="dashboard-header" style="margin-top: 60px;">
-            <!-- <h1>Rekap Pendapatan</h1>
-            <p>Pantau performa keuangan operasional kantin Anda secara real-time.</p> -->
-        </div>
+        <div class="dashboard-header" style="margin-top: 60px;"></div>
 
         <div class="stats-grid">
             <div class="card-stat card-hari">
@@ -726,13 +688,11 @@ html, body, *, div {
                     <?php
                     if ($produk_terlaris->num_rows > 0) {
                         while ($p = $produk_terlaris->fetch_assoc()) {
-                            // Memastikan folder path mengarah ke tempat penyimpanan gambar menu kamu
                             $path_foto = !empty($p['FOTO_MENU']) ? "../../source/gambar_menu/" . $p['FOTO_MENU'] : "../../source/gambar_menu/default.jpg";
                     ?>
                             <div class="product-item">
                                 <div class="product-meta-left">
                                     <img src="<?= htmlspecialchars($path_foto) ?>" alt="<?= htmlspecialchars($p['NAMA_MENU']) ?>" class="product-img">
-
                                     <div class="product-detail-text">
                                         <p class="p-name"><?= htmlspecialchars($p['NAMA_MENU']) ?></p>
                                         <p class="p-sold"><?= number_format($p['total_terjual']) ?> Porsi Terjual</p>
@@ -769,6 +729,8 @@ html, body, *, div {
                     <tbody>
                         <?php
                         if ($riwayat_transaksi->num_rows > 0) {
+                            // Reset pointer data agar bisa dilooping dua kali (untuk desktop & mobile)
+                            $riwayat_transaksi->data_seek(0);
                             while ($t = $riwayat_transaksi->fetch_assoc()) {
                                 $tanggal_jam = date('d M Y', strtotime($t['TGL'])) . ', <span style="font-size:12px; color:#718096;">' . $t['WAKTU'] . ' WIB</span>';
                         ?>
@@ -781,7 +743,7 @@ html, body, *, div {
                                     <td style="font-weight: 700; color: var(--primary);">Rp <?= number_format($t['TOTAL'], 0, ',', '.') ?></td>
                                     <td style="text-align: center;">
                                         <button class="btn-modal-trigger" onclick="bukaDetailPesanan(<?= $t['ID_TRANSAKSI'] ?>, '<?= $t['KODE_PESANAN'] ?>')">
-                                            <i class="fa-solid fa-eye"></i> Detail
+                                            Detail
                                         </button>
                                     </td>
                                 </tr>
@@ -793,6 +755,36 @@ html, body, *, div {
                         ?>
                     </tbody>
                 </table>
+
+                <?php
+                if ($riwayat_transaksi->num_rows > 0) {
+                    $riwayat_transaksi->data_seek(0); // Kembalikan pointer ke awal
+                    while ($t = $riwayat_transaksi->fetch_assoc()) {
+                        $format_tgl_mb = date('d M Y', strtotime($t['TGL']));
+                ?>
+                        <div class="mobile-row-card">
+                            <div class="mb-left-content">
+                                <div class="mb-meta-top">
+                                    <span class="mb-time"><?= $t['WAKTU'] ?> WIB</span>
+                                    <span class="mb-id">#<?= $t['KODE_PESANAN'] ?></span>
+                                </div>
+                                <div class="mb-items-list">
+                                    <?= htmlspecialchars($t['daftar_item']) ?>
+                                </div>
+                            </div>
+                            <div class="mb-right-content">
+                                <div class="mb-total-price">
+                                    Rp <?= number_format($t['TOTAL'], 0, ',', '.') ?>
+                                </div>
+                                <button class="btn-modal-trigger" onclick="bukaDetailPesanan(<?= $t['ID_TRANSAKSI'] ?>, '<?= $t['KODE_PESANAN'] ?>')">
+                                    Detail
+                                </button>
+                            </div>
+                        </div>
+                <?php
+                    }
+                }
+                ?>
             </div>
 
             <?php if ($total_pages > 1) { ?>
@@ -816,11 +808,9 @@ html, body, *, div {
                 <h4 id="modalTitle">Detail Transaksi</h4>
                 <button class="modal-close-btn" onclick="tutupModalDetailForce()"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="modal-body" id="modalContainerBody">
-            </div>
+            <div class="modal-body" id="modalContainerBody"></div>
         </div>
     </div>
-
     <script>
         // ========================================================
         // MODAL DETAIL CONTROL

@@ -38,13 +38,13 @@ if (!empty($search_user)) {
 </head>
 <style>
     /* ===== EDIT FORM MODAL STYLE ===== */
-
+/* 
     body {
         font-family: 'Poppins', sans-serif;
         background: transparent;
         margin: 0;
         padding: 0;
-    }
+    } */
 
     form {
         display: flex;

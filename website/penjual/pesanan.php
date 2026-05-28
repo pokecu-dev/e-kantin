@@ -29,14 +29,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_transaksi']) && is
     $sql_update = "UPDATE transaksi SET status = '$status_baru' WHERE ID_TRANSAKSI = '$id_transaksi_update' AND id_kantin = '$id_kantin_toko'";
     if ($conn->query($sql_update)) {
         // Refresh halaman agar perubahan terlihat
-        header("Location: pesanan.php?msg=success");
+        header("Location: pesanan.php?status_filter=" . ($_GET['status_filter'] ?? 'semua') . "&msg=success");
         exit;
     }
 }
 
-// --- QUERY DAFTAR PESANAN MENGGUNAKAN JOIN ---
-// Mengambil data transaksi dan nama pembeli dari tabel users
-// Serta ringkasan menu yang dipesan menggunakan GROUP_CONCAT
+// --- LOGIK FILTER STATUS ---
+$status_filter = $_GET['status_filter'] ?? 'semua';
+$where_clause = "WHERE t.id_kantin = '$id_kantin_toko'";
+if ($status_filter !== 'semua') {
+    $where_clause .= " AND t.status = '" . $conn->real_escape_string($status_filter) . "'";
+}
+
+// --- QUERY TOTAL NOTIFIKASI COUNTER BAGIAN ATAS ---
+$sql_counter = "
+    SELECT 
+        COUNT(ID_TRANSAKSI) as total_semua,
+        SUM(CASE WHEN status = 'baru' OR status = 'pending' THEN 1 ELSE 0 END) as total_baru,
+        SUM(CASE WHEN status = 'diproses' THEN 1 ELSE 0 END) as total_diproses,
+        SUM(CASE WHEN status = 'dikonfirmasi' THEN 1 ELSE 0 END) as total_konfirmasi,
+        SUM(CASE WHEN status = 'selesai' THEN 1 ELSE 0 END) as total_selesai,
+        SUM(CASE WHEN status = 'dibatalkan' THEN 1 ELSE 0 END) as total_batal
+    FROM transaksi 
+    WHERE id_kantin = '$id_kantin_toko'
+";
+$query_counter = $conn->query($sql_counter);
+$counts = $query_counter->fetch_assoc();
+
+// --- QUERY DAFTAR PESANAN (Urutan Paling Baru di Atas Berdasarkan ID/Waktu) ---
 $sql_transaksi = "
     SELECT 
         t.ID_TRANSAKSI AS id_transaksi, 
@@ -47,6 +67,7 @@ $sql_transaksi = "
         t.status, 
         t.catatan,
         u.NAMA_LENGKAP AS nama_pembeli,
+        u.PASS AS password_pembeli, /* Digunakan untuk mockup pw 12345 jika diperlukan */
         (
             SELECT GROUP_CONCAT(CONCAT(dt.nama_menu, ' (', dt.qty, ')') SEPARATOR '<br>') 
             FROM detail_transaksi dt 
@@ -54,8 +75,8 @@ $sql_transaksi = "
         ) AS detail_menu
     FROM transaksi t
     LEFT JOIN users u ON t.id_user = u.ID
-    WHERE t.id_kantin = '$id_kantin_toko'
-    ORDER BY t.tgl DESC, t.waktu DESC 
+    $where_clause
+    ORDER BY t.ID_TRANSAKSI DESC, t.tgl DESC, t.waktu DESC
 ";
 
 $query_transaksi = $conn->query($sql_transaksi);
@@ -66,187 +87,113 @@ $query_transaksi = $conn->query($sql_transaksi);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Pesanan Masuk</title>
+    <title>Daftar Pesanan Masuk</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* --- RESET & GLOBAL STYLE --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
-/* 1. Sembunyikan untuk browser berbasis Webkit (Chrome, Safari, Edge Baru, Opera) */
-::-webkit-scrollbar {
-    width: 0px !important;
-    background: transparent !important;
-}
-
-/* 2. Sembunyikan untuk Firefox */
-html, body, *, div {
-    scrollbar-width: none !important;
-}
-
-/* 3. Sembunyikan untuk Internet Explorer & Edge Lama */
-html, body, *, div {
-    -ms-overflow-style: none !important;
-}
         body {
             background-color: #f8fafc;
             color: #334155;
-            padding-top: 80px;
+            padding: 20px 0;
         }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 24px;
+            padding: 16px;
         }
 
-        /* --- HEADER SECTION --- */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-
+        /* --- HEADER --- */
         .header-title h1 {
             font-size: 24px;
             font-weight: 700;
             color: #0f172a;
         }
-
         .header-title p {
             font-size: 14px;
             color: #64748b;
             margin-top: 4px;
+            margin-bottom: 24px;
         }
 
-        /* --- MAIN LAYOUT CONTENT --- */
-        .card-section {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 24px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-
-        .section-header {
+        /* --- TABS CHIPS (FILTER STATUS) --- */
+        .tabs-container {
             display: flex;
-            justify-content: space-between;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+        }
+        .tab-chip {
+            display: flex;
             align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .section-header h3 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #0f172a;
-        }
-
-        /* --- CSS GRID TABLE --- */
-        .grid-table {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .grid-row-header,
-        .grid-row-data {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr 2fr 1fr 1.5fr 1fr;
-            align-items: start;
-            padding: 12px 16px;
-            gap: 12px;
-        }
-
-        .grid-row-header {
-            background-color: #f1f5f9;
-            border-radius: 8px;
-            font-weight: 600;
+            gap: 6px;
+            padding: 10px 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 25px;
+            text-decoration: none;
             color: #475569;
             font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .grid-row-data {
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 14px;
-            color: #334155;
-            padding: 16px;
-            transition: background-color 0.2s;
-        }
-        
-        .grid-row-data:hover {
-            background-color: #f8fafc;
-        }
-
-        .kode-pesanan {
-            font-weight: 600;
-            color: #e06313;
-        }
-
-        .detail-menu-list {
-            font-size: 13px;
-            color: #64748b;
-            line-height: 1.5;
-        }
-
-        /* --- STYLING DROPDOWN STATUS --- */
-        .form-status {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .select-status {
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid #cbd5e1;
-            font-size: 13px;
             font-weight: 500;
-            cursor: pointer;
-            outline: none;
-            background-color: #fff;
-            color: #334155;
+            white-space: nowrap;
             transition: all 0.2s;
-            width: 100%;
         }
-
-        .select-status:focus {
-            border-color: #e06313;
-            box-shadow: 0 0 0 2px rgba(224, 99, 19, 0.2);
-        }
-
-        /* Warna border samping berdasarkan status */
-        .status-pending { border-left: 4px solid #f59e0b; }
-        .status-dikonfirmasi { border-left: 4px solid #3b82f6; }
-        .status-diproses { border-left: 4px solid #8b5cf6; }
-        .status-selesai { border-left: 4px solid #10b981; }
-        .status-dibatalkan { border-left: 4px solid #ef4444; }
-
-        .btn-detail {
-            display: inline-block;
-            padding: 8px 16px;
-            background-color: #fff5eb;
-            color: #e06313;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 8px;
-            text-align: center;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .btn-detail:hover {
-            background-color: #e06313;
+        .tab-chip.active {
+            background: #ff6600;
             color: #ffffff;
+            border-color: #ff6600;
         }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #3b82f6;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+        }
+        .tab-chip.active .badge {
+            background: #ffffff;
+            color: #ff6600;
+        }
+        .badge.badge-orange { background: #ff6600; }
+        .badge.badge-purple { background: #8b5cf6; }
 
+        /* --- INDIKATOR WARNA STATUS (MATCH MOCKUP) --- */
+        .border-baru, .border-pending { border-left: 5px solid #ffcc00 !important; }
+        .border-dikonfirmasi { border-left: 5px solid #3b82f6 !important; }
+        .border-diproses { border-left: 5px solid #8b5cf6 !important; }
+        .border-selesai { border-left: 5px solid #10b981 !important; }
+        .border-dibatalkan { border-left: 5px solid #ef4444 !important; }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        .pill-baru, .pill-pending { background: #fffbeb; color: #b45309; }
+        .pill-dikonfirmasi { background: #eff6ff; color: #1d4ed8; }
+        .pill-diproses { background: #f5f3ff; color: #6d28d9; }
+        .pill-selesai { background: #ecfdf5; color: #047857; }
+        .pill-dibatalkan { background: #fef2f2; color: #b91c1c; }
+
+        /* --- NOTIFIKASI ALERTS --- */
         .alert-success {
             background-color: #d1fae5;
             color: #065f46;
@@ -257,158 +204,268 @@ html, body, *, div {
             font-size: 14px;
         }
 
-        /* --- RESPONSIVE MOBILE --- */
-        @media (max-width: 992px) {
-            .grid-row-header {
-                display: none;
-            }
-
-            .grid-row-data {
-                grid-template-columns: 1fr;
-                gap: 12px;
-                background-color: #fff;
-                border: 1px solid #e2e8f0;
-                border-radius: 12px;
-                margin-bottom: 16px;
-                padding: 16px;
-            }
-
-            .grid-row-data > div {
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-                align-items: flex-start;
-            }
-
-            .grid-row-data > div::before {
-                content: attr(data-label);
-                font-weight: 600;
-                color: #64748b;
-                font-size: 12px;
-                text-transform: uppercase;
-                margin-bottom: 4px;
-            }
-            
-            .detail-menu-list {
-                text-align: left;
-            }
-            
-            .form-status {
-                width: 100%;
-                margin-top: 8px;
-            }
-            
-            .btn-detail {
-                margin-top: 8px;
-            }
-        }
-        
-        /* --- MODAL POPUP STYLE --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-            z-index: 9999;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
+        /* ========================================================
+           DESKTOP VIEW IMPLEMENTATION (TABLE LAYOUT)
+           ======================================================== */
+        .desktop-card-panel {
             background: #ffffff;
             border-radius: 16px;
             padding: 24px;
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            transform: translateY(-20px);
-            transition: all 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
-
-        .modal-overlay.active .modal-content {
-            transform: translateY(0);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 16px;
-            right: 20px;
-            font-size: 28px;
-            font-weight: 400;
-            color: #94a3b8;
-            cursor: pointer;
-            line-height: 1;
-        }
-
-        .close-modal:hover {
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
             color: #0f172a;
+            margin-bottom: 20px;
+        }
+        .grid-table {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .grid-row-header {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1.8fr 1fr 1.5fr 0.8fr;
+            padding: 12px 16px;
+            gap: 12px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #475569;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .grid-row-data {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1.8fr 1fr 1.5fr 0.8fr;
+            align-items: center;
+            padding: 16px;
+            gap: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14px;
+            background: #fff;
+            margin-bottom: 4px;
+            border-radius: 4px;
+        }
+        .grid-row-data:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Dropdown custom styling matching Gambar 3 */
+        .select-status {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            background: #fff;
+            color: #334155;
+            width: 100%;
+        }
+        .btn-detail {
+            display: inline-block;
+            padding: 8px 14px;
+            background-color: #fff5eb;
+            color: #e06313;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-detail:hover {
+            background-color: #e06313;
+            color: #ffffff;
+        }
+
+        /* --- MOBILE LAYOUT SYSTEM (HIDDEN BY DEFAULT ON DESKTOP) --- */
+        .mobile-orders-container {
+            display: none;
+        }
+
+        /* ========================================================
+           RESPONSIVE BREAKPOINT: MOBILE CONVERSION
+           ======================================================== */
+        @media (max-width: 768px) {
+            .desktop-card-panel {
+                display: none; /* Sembunyikan panel desktop total */
+            }
+            .mobile-orders-container {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            /* Card design matching Gambar 1 */
+            .mobile-order-card {
+                background: #ffffff;
+                border: 1px solid #e2e8f0;
+                border-radius: 14px;
+                padding: 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            }
+            .card-row-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+            .card-meta-left {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+            }
+            .txt-kode {
+                font-size: 12px;
+                color: #94a3b8;
+                font-weight: 500;
+            }
+            .txt-waktu {
+                font-size: 12px;
+                color: #64748b;
+            }
+            .txt-pembeli {
+                font-size: 16px;
+                font-weight: 700;
+                color: #1e293b;
+                margin-top: 4px;
+            }
+            .txt-menu {
+                font-size: 14px;
+                color: #475569;
+                line-height: 1.5;
+                margin-top: 4px;
+            }
+            .card-row-bottom {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 6px;
+                padding-top: 10px;
+                border-top: 1px dashed #f1f5f9;
+            }
+            .price-wrapper {
+                display: flex;
+                flex-direction: column;
+            }
+            .lbl-total {
+                font-size: 11px;
+                color: #94a3b8;
+                text-transform: uppercase;
+                font-weight: 500;
+            }
+            .txt-total {
+                font-size: 16px;
+                font-weight: 700;
+                color: #ff6600;
+            }
+            .actions-wrapper-mobile {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                width: 60%;
+            }
+            .mobile-order-card .select-status {
+                padding: 6px 8px;
+                font-size: 12px;
+            }
+            .mobile-order-card .btn-detail {
+                padding: 7px 12px;
+                font-size: 12px;
+                width: auto;
+            }
+        }
+
+        /* --- MODAL NOTA POPUP --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: all 0.3s ease; z-index: 9999;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: #ffffff; border-radius: 16px; padding: 24px;
+            width: 90%; max-width: 500px; position: relative;
+            transform: translateY(-20px); transition: all 0.3s ease;
+            max-height: 90vh; overflow-y: auto;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .close-modal {
+            position: absolute; top: 16px; right: 20px;
+            font-size: 28px; color: #94a3b8; cursor: pointer;
         }
     </style>
 </head>
 <body>
-
-    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo"> <img src="../../source/icon/logo1.svg" alt="Logo"></div>
-
             <input type="checkbox" id="check">
             <label for="check" class="checkbtn">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </label>
-
             <ul class="nav-links">
                 <li><a href="penjual.php">Beranda</a></li>
                    <li><a href="pendapatan.php" >Pendapatan</a></li>
-                <li><a href="tespesanan.php" class="active">Pesanan</a></li>
-                
+                <li><a href="pesanan.php">Pesanan</a></li>
                 <li><a href="edit1.php">Produk</a></li>
-                <li><a href="profil.php">Profil</a></li>
+                <li><a href="profil.php" class="active">Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
     </nav>
 
-    <!-- CONTENT -->
-    <div class="container">
-        <header class="header">
-            <div class="header-title">
-                <h1>Daftar Pesanan Masuk</h1>
-                <p>Kelola dan perbarui status pesanan pelanggan.</p>
-            </div>
+    <div class="container" style="margin-top: 70px;">
+        <header class="header-title">
+            <h1>Daftar Pesanan Masuk</h1>
+            <p>Kelola dan perbarui status pesanan pelanggan.</p>
         </header>
 
-        <!-- Pesan Sukses -->
         <?php if (isset($_GET['msg']) && $_GET['msg'] == 'success'): ?>
             <div class="alert-success">
                 Status pesanan berhasil diperbarui!
             </div>
         <?php endif; ?>
 
-        <main class="card-section">
-            <div class="section-header">
-                <h3>Semua Pesanan</h3>
-            </div>
+        <div class="tabs-container">
+            <a href="pesanan.php?status_filter=semua" class="tab-chip <?php echo $status_filter == 'semua' ? 'active' : ''; ?>">
+                Semua Pesanan
+            </a>
+            <a href="pesanan.php?status_filter=pending" class="tab-chip <?php echo $status_filter == 'pending' ? 'active' : ''; ?>">
+                Baru <span class="badge badge-orange"><?php echo $counts['total_baru'] ?? 0; ?></span>
+            </a>
+           
+            <a href="pesanan.php?status_filter=dikonfirmasi" class="tab-chip <?php echo $status_filter == 'dikonfirmasi' ? 'active' : ''; ?>">
+                Dikonfirmasi<span class="badge badge-orange"><?php echo $counts['total_konfirmasi'] ?? 0; ?></span>
+            </a> 
+             <a href="pesanan.php?status_filter=diproses" class="tab-chip <?php echo $status_filter == 'diproses' ? 'active' : ''; ?>">
+                Diproses <span class="badge"><?php echo $counts['total_diproses'] ?? 0; ?></span>
+            </a>
+            <a href="pesanan.php?status_filter=selesai" class="tab-chip <?php echo $status_filter == 'selesai' ? 'active' : ''; ?>">
+                Selesai
+            </a>
+            <a href="pesanan.php?status_filter=dibatalkan" class="tab-chip <?php echo $status_filter == 'dibatalkan' ? 'active' : ''; ?>">
+                Dibatalkan
+            </a>
+        </div>
 
+        <main class="desktop-card-panel">
+            <div class="panel-title">Semua Pesanan</div>
             <div class="grid-table">
-                <!-- Header Tabel Desktop -->
+                
                 <div class="grid-row-header">
                     <div>Waktu & Kode</div>
                     <div>Pembeli</div>
@@ -418,43 +475,46 @@ html, body, *, div {
                     <div>Aksi</div>
                 </div>
 
-                <!-- Loop Data Transaksi -->
                 <?php if ($query_transaksi && $query_transaksi->num_rows > 0): ?>
-                    <?php while ($row = $query_transaksi->fetch_assoc()): 
-                        // Tambahkan kelas CSS berdasarkan status untuk warna border
-                        $status_class = 'status-' . strtolower($row['status']);
+                    <?php 
+                    // Reset pointer data biar bisa di-looping ulang untuk mobile di bawah
+                    $transaksi_data = [];
+                    while ($row = $query_transaksi->fetch_assoc()) {
+                        $transaksi_data[] = $row;
+                        $status_clean = strtolower($row['status']);
+                        // Fallback ke border pending jika status bernilai 'baru'
+                        $border_class = ($status_clean == 'baru') ? 'border-pending' : 'border-' . $status_clean;
                     ?>
-                        <div class="grid-row-data <?php echo $status_class; ?>">
-                            
-                            <div data-label="Waktu & Kode">
+                        <div class="grid-row-data <?php echo $border_class; ?>">
+                            <div>
                                 <span style="font-size: 12px; color: #94a3b8;"><?php echo date('d M Y, H:i', strtotime($row['tgl'] . ' ' . $row['waktu'])); ?></span><br>
-                                <span class="kode-pesanan"><?php echo htmlspecialchars($row['kode_pesanan'] ?: '#TRX-'.$row['id_transaksi']); ?></span>
+                                <span style="font-weight:600; color:#e06313;"><?php echo htmlspecialchars($row['kode_pesanan'] ?: '#TRX-'.$row['id_transaksi']); ?></span>
                             </div>
                             
-                            <div data-label="Pembeli">
-                                <strong><?php echo htmlspecialchars($row['nama_pembeli'] ?? 'Guest / Anonim'); ?></strong>
+                            <div>
+                                <strong><?php echo htmlspecialchars($row['nama_pembeli'] ?? 'Guest'); ?></strong>
                             </div>
                             
-                            <div data-label="Detail Pesanan">
-                                <div class="detail-menu-list">
-                                    <?php echo $row['detail_menu'] ? $row['detail_menu'] : '-'; ?>
+                            <div>
+                                <div style="font-size: 13px; color: #475569; line-height: 1.5;">
+                                    <?php echo $row['detail_menu'] ?: '-'; ?>
                                 </div>
                                 <?php if (!empty($row['catatan'])): ?>
-                                    <div style="font-size:12px; color:#ef4444; margin-top:6px; font-style:italic;">
+                                    <div style="font-size:12px; color:#ef4444; margin-top:4px; font-style:italic;">
                                         Catatan: <?php echo htmlspecialchars($row['catatan']); ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
                             
-                            <div data-label="Total Harga">
+                            <div>
                                 <strong style="color: #0f172a; font-size: 15px;">Rp <?php echo number_format($row['total'], 0, ',', '.'); ?></strong>
                             </div>
                             
-                            <div data-label="Ubah Status">
-                                <form action="" method="POST" class="form-status">
+                            <div>
+                                <form action="" method="POST">
                                     <input type="hidden" name="id_transaksi" value="<?php echo $row['id_transaksi']; ?>">
                                     <select name="status_baru" onchange="this.form.submit()" class="select-status">
-                                        <option value="pending" <?php echo $row['status'] == 'pending' ? 'selected' : ''; ?>>🟡 Pending</option>
+                                        <option value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending</option>
                                         <option value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi</option>
                                         <option value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses</option>
                                         <option value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
@@ -463,24 +523,73 @@ html, body, *, div {
                                 </form>
                             </div>
 
-                            <div data-label="Aksi">
-                                <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">
-                                    Detail
-                                </button>
+                            <div>
+                                <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">Detail</button>
                             </div>
-
                         </div>
-                    <?php endwhile; ?>
+                    <?php } ?>
                 <?php else: ?>
-                    <div style="text-align: center; padding: 40px; color: #94a3b8; width: 100%; grid-column: span 6;">
-                        Belum ada pesanan yang masuk ke kantin Anda.
-                    </div>
+                    <div style="text-align: center; padding: 40px; color: #94a3b8;">Belum ada pesanan masuk.</div>
                 <?php endif; ?>
             </div>
         </main>
+
+        <main class="mobile-orders-container">
+            <?php if (!empty($transaksi_data)): ?>
+                <?php foreach ($transaksi_data as $row): 
+                    $status_clean = strtolower($row['status']);
+                    $border_class = ($status_clean == 'baru') ? 'border-pending' : 'border-' . $status_clean;
+                    $pill_class = ($status_clean == 'baru') ? 'pill-pending' : 'pill-' . $status_clean;
+                ?>
+                    <div class="mobile-order-card <?php echo $border_class; ?>">
+                        <div class="card-row-top">
+                            <div class="card-meta-left">
+                                <span class="txt-kode"><?php echo htmlspecialchars($row['kode_pesanan'] ?: '#TRX-'.$row['id_transaksi']); ?></span>
+                                <span class="txt-waktu"><?php echo date('d M Y, H:i', strtotime($row['tgl'] . ' ' . $row['waktu'])); ?></span>
+                                <div class="txt-pembeli"><?php echo htmlspecialchars($row['nama_pembeli'] ?? 'Guest'); ?></div>
+                            </div>
+                            <span class="status-pill <?php echo $pill_class; ?>">
+                                <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'BARU' : $row['status']; ?>
+                            </span>
+                        </div>
+
+                        <div class="txt-menu">
+                            <?php echo $row['detail_menu'] ?: '-'; ?>
+                            <?php if (!empty($row['catatan'])): ?>
+                                <div style="font-size:12px; color:#ef4444; margin-top:4px; font-style:italic;">
+                                    Cat: <?php echo htmlspecialchars($row['catatan']); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="card-row-bottom">
+                            <div class="price-wrapper">
+                                <span class="lbl-total">Total Harga</span>
+                                <span class="txt-total">Rp <?php echo number_format($row['total'], 0, ',', '.'); ?></span>
+                            </div>
+                            
+                            <div class="actions-wrapper-mobile">
+                                <form action="" method="POST" style="flex: 1;">
+                                    <input type="hidden" name="id_transaksi" value="<?php echo $row['id_transaksi']; ?>">
+                                    <select name="status_baru" onchange="this.form.submit()" class="select-status">
+                                        <option value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>Pending</option>
+                                        <option value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>Dikonfirmasi</option>
+                                        <option value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>Diproses</option>
+                                        <option value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>Selesai</option>
+                                        <option value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>Dibatalkan</option>
+                                    </select>
+                                </form>
+                                <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">Detail</button>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <div style="text-align: center; padding: 40px; color: #94a3b8;">Belum ada pesanan masuk.</div>
+            <?php endif; ?>
+        </main>
     </div>
 
-    <!-- MODAL POPUP NOTA -->
     <div class="modal-overlay" id="modalDetailPesanan">
         <div class="modal-content">
             <span class="close-modal" id="btnTutupModal">&times;</span>
@@ -505,27 +614,17 @@ html, body, *, div {
                     modal.classList.add("active");
                     kontenModal.innerHTML = '<div style="text-align:center; padding: 20px;"><p style="color:#64748b;">Memuat rincian nota...</p></div>';
 
-                    // Fetch ke file detail_pesanan.php menggunakan ID
                     fetch(`detail_pesanan.php?id=${idTransaksi}`)
                         .then(response => response.text())
-                        .then(html => {
-                            kontenModal.innerHTML = html;
-                        })
+                        .then(html => { kontenModal.innerHTML = html; })
                         .catch(error => {
                             kontenModal.innerHTML = '<div style="text-align:center; padding: 20px;"><p style="color:#ef4444;">Gagal memuat rincian nota!</p></div>';
                         });
                 });
             });
 
-            tutupModal.addEventListener("click", function() {
-                modal.classList.remove("active");
-            });
-
-            window.addEventListener("click", function(e) {
-                if (e.target === modal) {
-                    modal.classList.remove("active");
-                }
-            });
+            tutupModal.addEventListener("click", function() { modal.classList.remove("active"); });
+            window.addEventListener("click", function(e) { if (e.target === modal) { modal.classList.remove("active"); } });
         });
     </script>
 </body>
