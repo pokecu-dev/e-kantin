@@ -30,7 +30,7 @@ RUN sed -i 's/AllowOverride None/AllowOverride All/g' \
     /etc/apache2/apache2.conf
 
 # 4. Install Composer (Untuk install Laravel nantinya)
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 

@@ -374,6 +374,25 @@ while ($row = mysqli_fetch_assoc($q_items)) {
         <?php endforeach; ?>
     </div>
 
+    <!-- metode -->
+
+    <div class="co-card">
+        <p class="co-card-title">Metode Pembayaran</p>
+        <select name="metode" id="metode">
+            <option value="CASH">cash</option>
+            <?php if($kantin['QRIS']): ?>
+                <option value="QRIS">qris</option>
+            
+            <?php else: ?>
+                <option value="QRIS" disabled>qris:tidak tersedia</option>
+            
+            <?php endif; ?>
+        </select>
+
+    </div>
+
+
+
     <!-- Catatan -->
     <div class="co-card">
         <p class="co-card-title">Catatan (Opsional)</p>
@@ -414,6 +433,9 @@ function prosesCheckout() {
     var alert   = document.getElementById('co-alert');
     var loading = document.getElementById('co-loading');
     var catatan = document.getElementById('catatan').value;
+    var metode = document.getElementById('metode').value;
+
+    console.log(metode);
 
     alert.classList.remove('show');
     alert.innerHTML = '';
@@ -463,7 +485,7 @@ function prosesCheckout() {
         btn.disabled = false;
     };
 
-    xhr.send('id_kantin=' + ID_KANTIN + '&catatan=' + encodeURIComponent(catatan));
+    xhr.send('id_kantin=' + ID_KANTIN + '&catatan=' + encodeURIComponent(catatan) + '&metode=' + encodeURIComponent(metode));
 }
 </script>
 

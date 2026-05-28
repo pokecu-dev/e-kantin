@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\type;
+
     require_once __DIR__ . "/../classes/upfile/upfile.php";
     require_once __DIR__ . "/../koneksi.php";
 
@@ -23,6 +25,10 @@
             }
             elseif (isset($_POST['type']) && $_POST['type'] == 'photo-menu') {
                 $output = $objUp->upload($file,UploadTarget::MENU,$id);
+                echo $output;
+            }
+            elseif (isset($_POST['type']) && $_POST['type'] == 'photo-qris'){
+                $output = $objUp->upload($file,UploadTarget::QRIS,$id);
                 echo $output;
             }
             

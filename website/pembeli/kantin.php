@@ -203,24 +203,36 @@ $info_kantin = $query_info->fetch_assoc();
 
             if ($result_menu && $result_menu->num_rows > 0) {
                 while($row = $result_menu->fetch_assoc()):
+                    if ($row['STATUS'] != 'nonaktif'):
             ?>
-                <div class="child">
-                    <a href="detail_menu.php?id=<?php echo $row['ID_MENU'] ?? $row['id_menu']; ?>" class="menu-link">
-                        <img src="/source/gambar_menu/<?php echo $row['FOTO_MENU'] ?? $row['foto_menu']; ?>">
-                        <h3><?php echo $row['NAMA_MENU'] ?? $row['nama_menu']; ?></h3>
-                        <div class="rating">★ <?php echo number_format($row['avg_rating'] ?? 0, 1); ?></div>
-                        <p class="harga">
-                            Rp <?php echo number_format($row['HARGA'] ?? $row['harga'], 0, ',', '.'); ?>
-                        </p>
-                    </a>
+                        <div class="child">
+                            <a href="detail_menu.php?id=<?php echo $row['ID_MENU'] ?? $row['id_menu']; ?>" class="menu-link">
+                                <img src="/source/gambar_menu/<?php echo $row['FOTO_MENU'] ?? $row['foto_menu']; ?>">
+                                <h3><?php echo $row['NAMA_MENU'] ?? $row['nama_menu']; ?></h3>
+                                <div class="rating">★ <?php echo number_format($row['avg_rating'] ?? 0, 1); ?></div>
+                                <p class="harga">
+                                    Rp <?php echo number_format($row['HARGA'] ?? $row['harga'], 0, ',', '.'); ?>
+                                </p>
+                            </a>
+                                
+                            <form id="form-data" class="form-data">
 
-                    <form action="keranjang.php" method="POST">
-                        <input type="hidden" name="id_menu" value="<?php echo $row['ID_MENU'] ?? $row['id_menu']; ?>">
-                        <input type="hidden" name="qty" value="1">
-                        <button type="submit" name="add_to_cart" class="add-btn">+</button>
-                    </form>
-                </div>
+                                <input type="hidden"
+                                    name="id_menu"
+                                    value="<?php echo $row['ID_MENU']; ?>">
+
+                                <input type="hidden"
+                                    name="qty"
+                                    value="1">
+
+                                <button type="submit"
+                                    name="add_to_cart"
+                                    class="add-btn">+</button>
+
+                            </form>
+                        </div>
             <?php 
+                    endif;
                 endwhile; 
             } else {
                 echo "<p style='grid-column: 1/-1; text-align: center; color: #888; margin-top: 50px;'>Belum ada menu yang tersedia di kantin ini.</p>";
@@ -228,6 +240,32 @@ $info_kantin = $query_info->fetch_assoc();
             ?>
         </div>
     </div>
-        
+       
+    <script>
+        document.querySelectorAll('.form-data').forEach(form => {
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                const dataform = new FormData(e.target);
+
+                try {
+                    const response = await fetch('keranjangDB.php', {
+                        method: 'POST',
+                        body: dataform
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        alert('Berhasil menambahkan ke keranjang!');
+                        // window.location.href = './keranjang.php'; 
+                    } else {
+                        alert('Gagal: ' + data.message);
+                    }
+                } catch (error) {
+                    alert("Error: " + error.message);
+                }
+            }
+        });
+    </script>
 </body>
 </html>

@@ -669,7 +669,7 @@ html, body, *, div {
                 <h3>Edit Profil Kantin</h3>
                 <button class="close-modal-btn" type="button" onclick="toggleModal('modalKantin')">&times;</button>
             </div>
-            <form action="process/update_kantin.php" method="POST" enctype="multipart/form-data">
+            <form action="process/pro_update_kantin.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="id_kantin" value="<?php echo $data['ID_KANTIN']; ?>">
                 <div class="modal-form-group">
                     <label>Canteen Name</label>
@@ -682,6 +682,15 @@ html, body, *, div {
                         <div class="upload-icon"><i class="fa-solid fa-images"></i></div>
                         <div class="upload-text">Pilih Banner baru atau <span>Klik di sini</span></div>
                         <input type="file" name="foto_kantin" union="banner" onchange="previewFileName(this, 'kantinFilePreview')">
+                        <div class="file-name-preview" id="kantinFilePreview"></div>
+                    </div>
+                </div>
+                <div class="modal-form-group">
+                    <label>Ganti Foto qris</label>
+                    <div class="file-upload-area">
+                        <div class="upload-icon"><i class="fa-solid fa-images"></i></div>
+                        <div class="upload-text">Pilih Banner baru atau <span>Klik di sini</span></div>
+                        <input type="file" name="foto_qris" onchange="previewFileName(this, 'kantinFilePreview')">
                         <div class="file-name-preview" id="kantinFilePreview"></div>
                     </div>
                 </div>

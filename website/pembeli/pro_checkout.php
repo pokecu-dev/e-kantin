@@ -1,23 +1,4 @@
 <?php
-/**
- * pro_checkout.php
- * ─────────────────────────────────────────────────────────────
- * Backend proses checkout e-kantin
- * Dipanggil via AJAX POST dari halaman checkout.php
- *
- * Flow:
- *  1. Validasi session & input
- *  2. Ambil semua item di keranjang user untuk kantin tsb
- *  3. Validasi stok per item (dengan row-level lock)
- *  4. Buat record di tabel `transaksi`
- *  5. Buat record di tabel `detail_transaksi` (snapshot item)
- *  6. Kurangi stok di `tb_menu`
- *  7. Hapus keranjang user untuk kantin tsb
- *  8. Return JSON sukses / error
- *
- * Author: CEO Fullstack Dev
- * ─────────────────────────────────────────────────────────────
- */
 
 session_start();
 require_once __DIR__ . '/../include/koneksi.php';
@@ -32,8 +13,9 @@ if (!isset($_SESSION['id_user'])) {
 
 // ── 2. Validasi input ────────────────────────────────────────
 $id_kantin = isset($_POST['id_kantin']) ? (int)$_POST['id_kantin'] : 0;
-$catatan   = isset($_POST['catatan'])   ? trim(mysqli_real_escape_string($conn, $_POST['catatan'])) : '';
+$catatan   = isset($_POST['catatan'])   ? trim($conn->real_escape_string($_POST['catatan'])) : '';
 $id_user   = (int)$_SESSION['id_user'];
+$metode = isset($_POST['metode']) ? trim($conn->real_escape_string($_POST['metode'])) : '';
 
 if ($id_kantin <= 0) {
     echo json_encode(['status' => 'error', 'message' => 'Kantin tidak valid.']);
@@ -107,8 +89,8 @@ try {
     $esc_kode_pesanan = mysqli_real_escape_string($conn, $kode_pesanan);
 
     $sql_insert_trx = "
-        INSERT INTO transaksi (kode_pesanan, id_kantin, id_user, tgl, waktu, total, status, catatan)
-        VALUES ('$esc_kode_pesanan', $id_kantin, $id_user, CURDATE(), CURTIME(), $total, 'pending', '$esc_catatan')
+        INSERT INTO transaksi (kode_pesanan, id_kantin, id_user, tgl, waktu, total, status, catatan,metode)
+        VALUES ('$esc_kode_pesanan', $id_kantin, $id_user, CURDATE(), CURTIME(), $total, 'pending', '$esc_catatan','$metode')
     ";
 
     if (!mysqli_query($conn, $sql_insert_trx)) {
@@ -168,13 +150,22 @@ try {
     // ── 6. Commit ────────────────────────────────────────────
     mysqli_commit($conn);
 
+    if($metode === "QRIS"){
+        $redirect_url = "qris.php?trx=$id_transaksi&id_kantin=$id_kantin";
+    }
+    else{
+        $redirect_url = "struckdigital.php?trx=$id_transaksi";
+    }
+
+
+
     echo json_encode([
         'status'        => 'success',
         'message'       => 'Pesanan berhasil dibuat!',
         'id_transaksi'  => $id_transaksi,
         'kode_pesanan'  => $kode_pesanan,
         'total'         => $total,
-        'redirect'      => "struckdigital.php?trx=$id_transaksi",
+        'redirect'      => $redirect_url,
     ]);
 
 } catch (Exception $e) {

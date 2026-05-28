@@ -6,6 +6,7 @@
         case PROFILE = 'photoprofil';
         case KANTIN = 'fotokantin';
         case MENU = 'gambarmenu';
+        case QRIS = 'qris';
     }
 
     class upfile extends Databases{
@@ -15,7 +16,7 @@
         private $updirPP = __DIR__ . "/../../../source/fotopengguna/"; // folder photo profil pengguna
         private $updirFK = __DIR__ . "/../../../source/foto_kantin/"; // folder foto kantin
         private $updirFM = __DIR__ . "/../../../source/gambar_menu/"; // folder gambar menu
-        
+        private $updirQR = __DIR__ . "/../../../source/qris/"; // folder qris masing masing kantin        
     
         public function upload ($file,UploadTarget $target,$id) {
             
@@ -27,6 +28,7 @@
                     UploadTarget::PROFILE => $this->updirPP,
                     UploadTarget::KANTIN => $this->updirFK,
                     UploadTarget::MENU => $this->updirFM,
+                    UploadTarget::QRIS => $this->updirQR,
 
                 };
 
@@ -104,6 +106,8 @@
                 UploadTarget::PROFILE => "UPDATE users SET FOTO_USERS = ? WHERE ID=?",
                 UploadTarget::KANTIN => "UPDATE list_kantin SET FOTO_KANTIN = ? WHERE ID=?",
                 UploadTarget::MENU => "UPDATE tb_menu SET FOTO_MENU = ? WHERE ID_MENU=?",
+                UploadTarget::QRIS => "UPDATE list_kantin SET QRIS = ? WHERE ID=?",
+                
             };
 
 
