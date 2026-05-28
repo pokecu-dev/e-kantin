@@ -128,7 +128,7 @@ if ($search !== '') {
             max-width: 1400px;
             margin-inline: auto;
             padding: 24px;
-            margin-top: 60px;
+            margin-top: 100px;
         }
 
         /* =========================
@@ -659,7 +659,13 @@ if ($search !== '') {
 
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
+            <div class="logo"><img src="../../source/icon/logo1.svg" alt=""></div>
+            <input type="checkbox" id="check">
+            <label for="check" class="checkbtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
             <ul class="nav-links">
                 <li><a href="admin.php">Beranda</a></li>
                 <li><a href="akun.php">Akun</a></li>

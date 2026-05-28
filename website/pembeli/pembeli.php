@@ -344,15 +344,17 @@ require_once '../include/koneksi.php';
                 $result_kantin = $conn->query("SELECT * FROM list_kantin");
                 $no = 1;
                 while ($row = $result_kantin->fetch_assoc()) {
+                    if ($row['STATUS'] == 1) {
                 ?>
-                    <div class="slide">
-                        <img src="./../../source/foto_kantin/<?php echo $row['FOTO_KANTIN']; ?>" alt="Gambar Kantin">
+                        <div class="slide">
+                            <img src="./../../source/foto_kantin/<?php echo $row['FOTO_KANTIN']; ?>" alt="Gambar Kantin">
 
-                        <a href="kantin.php?id_kantin=<?php echo $row['ID']; ?>" class="co-btn kantin-btn">
-                            Kantin <?php echo $row['ID']; ?>
-                        </a>
-                    </div>
+                            <a href="kantin.php?id_kantin=<?php echo $row['ID']; ?>" class="co-btn kantin-btn">
+                                Kantin <?php echo $row['ID']; ?>
+                            </a>
+                        </div>
                 <?php
+                    }
                 }
                 ?>
             </div>
@@ -367,20 +369,25 @@ require_once '../include/koneksi.php';
 
                 $result_menu = mysqli_query(
                     $conn,
-                    "SELECT * FROM tb_menu
-                        WHERE REPLACE(NAMA_MENU,' ','')
-                        LIKE '%" . str_replace(' ', '', $search) . "%'"
+                    "SELECT m.* FROM tb_menu m
+                        JOIN list_kantin k ON m.ID_KANTIN = k.ID
+                        WHERE k.STATUS = 1
+                        AND m.STATUS != 'nonaktif'
+                        AND REPLACE(m.NAMA_MENU,' ','') LIKE '%" . str_replace(' ', '', $search) . "%'"
                 );
             } else {
 
                 $result_menu = mysqli_query(
                     $conn,
-                    "SELECT * FROM tb_menu"
+                    "SELECT m.* FROM tb_menu m
+                        JOIN list_kantin k ON m.ID_KANTIN = k.ID
+                        WHERE k.STATUS = 1
+                        AND m.STATUS != 'nonaktif'"
                 );
             }
 
             while ($row = mysqli_fetch_assoc($result_menu)):
-                if ($row['STATUS'] != 'nonaktif'):
+                if ($row['STATUS'] !== "nonaktif"):
             ?>
                     <div class="child">
                         <a href="detail_menu.php?id=<?php echo $row['ID_MENU']; ?>" class="menu-link">

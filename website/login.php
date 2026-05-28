@@ -175,13 +175,6 @@
 
 <body>
     <div class="page">
-        <!-- LOGO -->
-        <div class="logo">
-            <img src="/source/icon/logo1.svg" alt="logokita">
-        </div>
-
-        <!-- --------/LOGO------------ -->
-
 
         <div class="card">
 
@@ -198,10 +191,10 @@
             </section> -->
 
             <form id="form_login">
-                <label for="username">Username</label>
+                <label for="username">Username atau Email</label>
                 <br>
                 <div class="input-box">
-                    <input type="text" id="username" name="user_input" placeholder="username account" required>
+                    <input type="text" id="username" name="user_input" placeholder="username or email" required>
 
                 </div>
                 <br>

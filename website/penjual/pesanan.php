@@ -420,9 +420,9 @@ $query_transaksi = $conn->query($sql_transaksi);
             <ul class="nav-links">
                 <li><a href="penjual.php">Beranda</a></li>
                    <li><a href="pendapatan.php" >Pendapatan</a></li>
-                <li><a href="pesanan.php">Pesanan</a></li>
+                <li><a href="pesanan.php" class="active">Pesanan</a></li>
                 <li><a href="edit1.php">Produk</a></li>
-                <li><a href="profil.php" class="active">Profil</a></li>
+                <li><a href="profil.php" >Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
@@ -430,7 +430,6 @@ $query_transaksi = $conn->query($sql_transaksi);
 
     <div class="container" style="margin-top: 70px;">
         <header class="header-title">
-            <h1>Daftar Pesanan Masuk</h1>
             <p>Kelola dan perbarui status pesanan pelanggan.</p>
         </header>
 

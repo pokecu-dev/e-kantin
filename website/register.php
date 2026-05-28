@@ -175,10 +175,6 @@
 
     <div class="page">
 
-        <div class="logo">
-            <img src="/source/icon/logo1.svg" alt="logo">
-        </div>
-
         <div class="toast" id="toast"></div>
 
         <div class="card">
