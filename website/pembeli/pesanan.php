@@ -13,41 +13,42 @@ $result_pesanan = $stmt->get_result();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riwayat Pesanan - KantinKita</title>
-     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
-       
-              * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-          
+
         }
 
         body {
             background: #f5f5f5;
             color: #333;
-                   font-family: 'Poppins', sans-serif;
-        
+            font-family: 'Poppins', sans-serif;
+
         }
 
         .nav-links a {
-    text-decoration: none;
-    color: #888;
-      font-family: 'Poppins', sans-serif;
-    font-weight: 500; 
-    transition: 0.3s;
-}
+            text-decoration: none;
+            color: #888;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            transition: 0.3s;
+        }
 
-.nav-links a.active {
-    color: var(--primary);
-    border-bottom: 2px solid #F47B20;
-    padding-bottom: 5px;
-}
+        .nav-links a.active {
+            color: var(--primary);
+            border-bottom: 2px solid #F47B20;
+            padding-bottom: 5px;
+        }
+
         .container {
             padding: 20px;
             width: 100%;
@@ -63,9 +64,9 @@ $result_pesanan = $stmt->get_result();
 
         .back-header {
             display: flex;
-            align-items: center; 
-            gap: 16px;          
-            margin: 120px auto 0; 
+            align-items: center;
+            gap: 16px;
+            margin: 120px auto 0;
             width: 95%;
         }
 
@@ -101,7 +102,7 @@ $result_pesanan = $stmt->get_result();
             background: #ffffff;
             border-radius: 20px;
             padding: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
             border: 1px solid #eee;
             transition: transform 0.2s ease;
         }
@@ -191,9 +192,10 @@ $result_pesanan = $stmt->get_result();
         }
     </style>
 </head>
+
 <body>
 
- <nav class="navbar">
+    <nav class="navbar">
         <div class="nav-container">
             <div class="logo"> <img src="../../source/icon/logo1.svg" alt="Logo"></div>
             <input type="checkbox" id="check">
@@ -204,7 +206,7 @@ $result_pesanan = $stmt->get_result();
                 <li><a href="pembeli.php">Beranda</a></li>
                 <li><a href="keranjang.php">Keranjang</a></li>
                 <li><a href="pesanan.php" class="active">Pesanan</a></li>
-                <li><a href="profil.php" >Profil</a></li>
+                <li><a href="profil.php">Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
@@ -215,39 +217,39 @@ $result_pesanan = $stmt->get_result();
             <img src="../../source/icon/kembali.svg" alt="Kembali">
         </a>
     </div>
-     <div class="container">
+    <div class="container">
         <h1>Riwayat Pesanan Kamu</h1>
 
         <div class="pesanan-list"></div>
 
         <div class="pesanan-list">
-            <?php 
+            <?php
             if ($result_pesanan && $result_pesanan->num_rows > 0) {
-                while($row = $result_pesanan->fetch_assoc()):
-                    
-                 
+                while ($row = $result_pesanan->fetch_assoc()):
+
+
                     $status_raw = strtolower($row['STATUS'] ?? 'proses');
                     $status_class = 'proses';
                     if ($status_raw == 'selesai') $status_class = 'selesai';
                     if ($status_raw == 'batal' || $status_raw == 'dibatalkan') $status_class = 'batal';
             ?>
-                <div class="card-pesanan">
-                    <div class="card-header">
-                        <span class="nota">ID Transaksi: #<?= $row['ID_TRANSAKSI'] ?? $row['id_transaksi']; ?></span>
-                        <span class="status <?= $status_class; ?>"><?= $row['STATUS'] ?? 'Diproses'; ?></span>
-                    </div>
-                    
-                    <div class="card-body">
-                        <p>Tanggal Pesan: <strong><?= date('d M Y, H:i', strtotime($row['TGL'] ?? $row['tanggal_transaksi'])); ?> WIB</strong></p>
-                        <p>Total Pembayaran: <strong class="total-harga">Rp <?= number_format($row['TOTAL'] ?? $row['total'], 0, ',', '.'); ?></strong></p>
-                    </div>
+                    <div class="card-pesanan">
+                        <div class="card-header">
+                            <span class="nota">ID Transaksi: #<?= $row['ID_TRANSAKSI'] ?? $row['id_transaksi']; ?></span>
+                            <span class="status <?= $status_class; ?>"><?= $row['STATUS'] ?? 'Diproses'; ?></span>
+                        </div>
 
-                    <div class="card-footer">
-                        <a href="struckdigital.php?trx=<?= $row['ID_TRANSAKSI'] ?? $row['id_transaksi']; ?>" class="btn-detail">Lihat Detail Struk</a>
+                        <div class="card-body">
+                            <p>Tanggal Pesan: <strong><?= date('d M Y, H:i', strtotime(($row['TGL'] ?? '') . ' ' . ($row['WAKTU'] ?? ''))); ?> WIB</strong></p>
+                            <p>Total Pembayaran: <strong class="total-harga">Rp <?= number_format($row['TOTAL'] ?? $row['total'], 0, ',', '.'); ?></strong></p>
+                        </div>
+
+                        <div class="card-footer">
+                            <a href="struckdigital.php?trx=<?= $row['ID_TRANSAKSI'] ?? $row['id_transaksi']; ?>" class="btn-detail">Lihat Detail Struk</a>
+                        </div>
                     </div>
-                </div>
-            <?php 
-                endwhile; 
+            <?php
+                endwhile;
             } else {
                 echo "
                 <div style='text-align: center; margin-top: 50px; color: #888;'>
@@ -261,4 +263,5 @@ $result_pesanan = $stmt->get_result();
     </div>
 
 </body>
+
 </html>
