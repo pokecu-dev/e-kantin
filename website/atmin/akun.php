@@ -508,7 +508,7 @@ if ($search_user !== '') {
                 <li><a href="admin.php">Beranda</a></li>
                 <li><a href="akun.php" class="active">Akun</a></li>
                 <li><a href="menu.php">Produk</a></li>
-                <li><a href="oulet.php">Outlet</a></li>
+                <li><a href="oulet.php">Kantin</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>

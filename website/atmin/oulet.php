@@ -127,7 +127,7 @@ if (isset($_GET['ajax_search'])) {
                 <li><a href="admin.php">Beranda</a></li>
                 <li><a href="akun.php">Akun</a></li>
                 <li><a href="menu.php">Produk</a></li>
-                <li><a href="outlet.php" class="active">Outlet</a></li>
+                <li><a href="outlet.php" class="active">Kantin</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
