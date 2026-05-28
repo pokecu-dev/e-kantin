@@ -190,6 +190,105 @@ $result_pesanan = $stmt->get_result();
             background: #F47B20;
             color: #ffffff;
         }
+
+        .form-rate-box {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 12px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .form-rate-box h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .rating-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .rating-control button {
+            background: #fff;
+            border: 1px solid #ddd;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .rating-control input {
+            width: 45px;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 4px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .form-rate-box textarea {
+            width: 100%;
+            height: 55px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            resize: none;
+            margin-bottom: 8px;
+            outline: none;
+        }
+
+        .form-rate-box textarea:focus {
+            border-color: #F47B20;
+        }
+
+        .btn-submit-rate {
+            background: #F47B20;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .rating-box {
+            margin-bottom: 12px;
+        }
+
+        .rating-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .stars {
+            display: flex;
+            gap: 5px;
+        }
+
+        .star {
+            font-size: 32px;
+            cursor: pointer;
+            color: #ccc;
+            transition: 0.2s;
+        }
+
+        .star.active {
+            color: #F47B20;
+        }
+
+        .star:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 
@@ -244,9 +343,78 @@ $result_pesanan = $stmt->get_result();
                             <p>Total Pembayaran: <strong class="total-harga">Rp <?= number_format($row['TOTAL'] ?? $row['total'], 0, ',', '.'); ?></strong></p>
                         </div>
 
+                        <?php if ($status_raw == 'selesai'): ?>
+                            <div class="form-rate-box">
+                                <?php
+                                $rateedit = false;
+                                $id_transaksi = $row['ID_TRANSAKSI'] ?? $row['id_transaksi'];
+                                
+                                // Cek apakah transaksi ini sudah pernah diberi ulasan
+                                $sql_detail = "
+                                SELECT 
+                                    detail_transaksi.ID_MENU,
+                                    tb_menu.ID_KANTIN
+                                FROM detail_transaksi
+                                JOIN tb_menu 
+                                    ON detail_transaksi.ID_MENU = tb_menu.ID_MENU
+                                WHERE detail_transaksi.ID_TRANSAKSI = '$id_transaksi'
+                                LIMIT 1
+                                ";
+                                $query_detail = $conn->query($sql_detail);
+
+                                if (!$query_detail) {
+                                    die($conn->error);
+                                }
+
+                                $data_menu = $query_detail->fetch_assoc();
+
+                                if ($data_menu):
+                                    $id_menu = $data_menu['ID_MENU'];
+                                    $id_kantin = $data_menu['ID_KANTIN'];
+                                    $rateedit = false;
+
+                                $sql_rate = "SELECT * FROM rating WHERE ID_USER = '$id_user' AND ID_MENU = '$id_menu'";
+                                    $query_rate = $conn->query($sql_rate);
+                                    if ($query_rate && $query_rate->num_rows > 0) {
+                                        $rateedit = true;
+                                    }
+
+                                    if (!$rateedit):
+                                ?>
+                                        <h3>Tulis rating mu gan :D</h3>
+                                        <form action="pro_tesrate.php" method="post">
+                                            <input type="hidden" name="id_menu" value="<?= $id_menu ?>">
+                                            <input type="hidden" name="id_user" value="<?= $id_user ?>">
+                                            <input type="hidden" name="id_kantin" value="<?= $id_kantin ?>">
+                                            
+                                            <div class="rating-box">
+                                                <label class="rating-label">Rating coy :D</label>
+
+                                                <div class="stars">
+                                                    <span class="star" data-value="1">★</span>
+                                                    <span class="star" data-value="2">★</span>
+                                                    <span class="star" data-value="3">★</span>
+                                                    <span class="star" data-value="4">★</span>
+                                                    <span class="star" data-value="5">★</span>
+                                                </div>
+
+                                                <input type="hidden" name="rating" class="rating-value" value="0">
+                                            </div>
+    
+                                        <textarea name="desk" placeholder="Komentar gan :D" required></textarea>
+                                            <button type="submit" name="submit" class="btn-submit-rate">Kirim :D</button>
+                                        </form>
+                                    <?php else: ?>
+                                        <p style="font-size: 13px; color: #2ecc71; font-weight: 600;">✓ Kamu sudah memberikan ulasan untuk menu ini gan :v</p>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                                        
                         <div class="card-footer">
                             <a href="struckdigital.php?trx=<?= $row['ID_TRANSAKSI'] ?? $row['id_transaksi']; ?>" class="btn-detail">Lihat Detail Struk</a>
                         </div>
+
                     </div>
             <?php
                 endwhile;
@@ -260,8 +428,39 @@ $result_pesanan = $stmt->get_result();
             $stmt->close();
             ?>
         </div>
+
     </div>
 
+    <script>
+    document.querySelectorAll('.rating-box').forEach(box => {
+
+        const stars = box.querySelectorAll('.star');
+        const input = box.querySelector('.rating-value');
+
+        stars.forEach((star, index) => {
+
+            star.addEventListener('click', () => {
+
+                let rating = index + 1;
+                input.value = rating;
+
+                stars.forEach((s, i) => {
+
+                    if (i < rating) {
+                        s.classList.add('active');
+                    } else {
+                        s.classList.remove('active');
+                    }
+
+                });
+
+            });
+
+        });
+
+    });
+    </script>
+    
 </body>
 
 </html>

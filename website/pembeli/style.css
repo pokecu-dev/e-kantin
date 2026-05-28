@@ -49,6 +49,11 @@ body{
     
     z-index: 1000;
 }
+
+.hide-navbar .navbar {
+    display: none !important;
+}
+
 .nav-container {
     display: flex;
     justify-content: space-between;
@@ -124,7 +129,7 @@ body{
         flex-direction: column;
         text-align: center;
         border-radius: 15px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow);
         padding: 20px 0;
         opacity: 0;
         pointer-events: none;

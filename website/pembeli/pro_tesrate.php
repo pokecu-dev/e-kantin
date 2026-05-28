@@ -6,15 +6,18 @@
         $idmenu = $_POST['id_menu'];
         $iduser = $_POST['id_user'];
         $idkantin = $_POST['id_kantin'];
-        $desk = $_POST['desk'];
+        $desk = $conn->real_escape_string($_POST['desk']);
         $rating = $_POST['rating'];
 
-        $sql = "INSERT INTO rating (ID_MENU,ID_USER,ID_KANTIN,DESK,RATING) VALUES ($idmenu,$iduser,$idkantin,'$desk',$rating)";
+        $sql = "INSERT INTO rating (ID_MENU,ID_USER,ID_KANTIN,DESK,RATING) VALUES (
+        '$idmenu','$iduser','$idkantin','$desk','$rating')";
         if($conn->query($sql)){
-            echo "rating berhasil ditambahkan:D";
+            
+            header("Location: pesanan.php");
+            exit();
         }         
         else{
-            echo "rating menambahkan rating:p";
+            echo "gagal menambahkan rating: " . $conn->error;
         }
 
     }
