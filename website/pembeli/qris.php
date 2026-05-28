@@ -11,7 +11,7 @@
     $query = $conn->query($sql);
     $result = $query->fetch_assoc();
 
-    $qris = $result['QRIS'] ?? 'kantin ini tidak mempunyai qris!';
+    $qris = $result['QRIS'] ?? '';
 
 ?>
 
@@ -24,15 +24,16 @@
 </head>
 <body>
     
-    <?php if($qris != "kantin ini tidak mempunyai qris!"): ?>
+    <?php if($qris): ?>
 
-        <img src="/source/qris/<?= $qris ?>" alt="">
-
-        <a href="./struckdigital.php?trx=<?= $ ?>"></a>
+            <img src="/source/qris/<?= $qris ?>" alt="">
+            <br>
+            <a href="./pembeli.php"><- kembali ke beranda</a>
+            <a href="./struckdigital.php?trx=<?= $trx ?>">struk -> </a>
 
         <?php else:?>
-            <p><?= $qris ?></p>
-            <p>yow</p>
+            <p>kantin ini tidak menyediakan metode qris!</p>
+            <a href="./pembeli.php"><- kembali ke beranda</a>
     
     <?php endif ?>
 

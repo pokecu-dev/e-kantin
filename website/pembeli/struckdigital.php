@@ -1,12 +1,7 @@
 <?php
-/**
- * struckdigital.php — VERSI BARU (replace file lama)
- * Pure CSS, tanpa Tailwind. Membaca dari tabel detail_transaksi.
- * Author: CEO Fullstack Dev
- */
 
-session_start();
-require_once '../include/koneksi.php';
+require_once __DIR__ . '/../include/koneksi.php';
+require_once __DIR__ . "./../include/session/pembeliC.php";
 
 if (!isset($_SESSION['id_user'])) { header("Location: ../login.php"); exit(); }
 
@@ -35,6 +30,8 @@ if ($trxId > 0) {
         $tglTrx     = $transaction['TGL'];
         $waktuTrx   = $transaction['WAKTU'];
         $trxIdStr   = $transaction['KODE_PESANAN'] ?? 'TRX-' . $trxId;
+        $metode = $transaction['METODE'];
+        $id_kantin = $transaction['ID_KANTIN'];
 
         $qItems = mysqli_query($conn, "
             SELECT nama_menu, harga, qty, subtotal
@@ -521,6 +518,14 @@ $f = fn($n) => 'Rp ' . number_format((int)$n, 0, ',', '.');
         <!-- Tombol Aksi -->
         <div class="st-actions no-print">
             <a href="pembeli.php" class="st-btn-outline">← Beranda</a>
+            <?php 
+                if($metode === "qris") {
+                    echo "<a href='qris.php?trx=$trxId&id_kantin=$id_kantin'>QRIS</a>";         
+                }
+            ?>
+            <!-- qris.php?trx=$id_transaksi&id_kantin=$id_kantin -->
+            
+
             <button class="st-btn-solid" onclick="window.print()">🖨 Cetak / PDF</button>
         </div>
 

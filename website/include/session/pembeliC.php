@@ -3,7 +3,7 @@
     // session_start();
 
     if ($_SESSION['role'] != 'PEMBELI') {
-        // header('location: ./../../index.php');
-        // exit();
+        header('location: ./../../index.php');
+        exit();
         
     }
