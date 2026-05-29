@@ -663,95 +663,97 @@ html, body, *, div {
         </div>
     </div>
 
-    <div class="modal-overlay" id="modalKantin">
-        <div class="modal-box">
-            <div class="modal-header">
-                <h3>Edit Profil Kantin</h3>
-                <button class="close-modal-btn" type="button" onclick="toggleModal('modalKantin')">&times;</button>
-            </div>
-            <form action="process/pro_update_kantin.php" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="id_kantin" value="<?php echo $data['ID_KANTIN']; ?>">
-                <div class="modal-form-group">
-                    <label>Canteen Name</label>
-                    <input type="text" name="nama_kantin" class="modal-input" value="<?php echo htmlspecialchars($data['NAMA_KANTIN'] ?? ''); ?>" required>
-                </div>
-
-                <div class="modal-form-group">
-                    <label>Ganti Foto Kantin (Banner)</label>
-                    <div class="file-upload-area">
-                        <div class="upload-icon"><i class="fa-solid fa-images"></i></div>
-                        <div class="upload-text">Pilih Banner baru atau <span>Klik di sini</span></div>
-                        <input type="file" name="foto_kantin" union="banner" onchange="previewFileName(this, 'kantinFilePreview')">
-                        <div class="file-name-preview" id="kantinFilePreview"></div>
-                    </div>
-                </div>
-                <div class="modal-form-group">
-                    <label>Ganti Foto qris</label>
-                    <div class="file-upload-area">
-                        <div class="upload-icon"><i class="fa-solid fa-images"></i></div>
-                        <div class="upload-text">Pilih Qris baru atau <span>Klik di sini</span></div>
-                        <input type="file" name="foto_qris" onchange="previewFileName(this, 'kantinFilePreview')">
-                        <div class="file-name-preview" id="kantinFilePreview"></div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn-cancel" onclick="toggleModal('modalKantin')">Batal</button>
-                    <button type="submit" class="btn-save">Simpan Kantin</button>
-                </div>
-            </form>
+  <div class="modal-overlay" id="modalKantin">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Edit Profil Kantin</h3>
+            <button class="close-modal-btn" type="button" onclick="toggleModal('modalKantin')">&times;</button>
         </div>
+        <form action="process/pro_update_kantin.php" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="id_kantin" value="<?php echo $data['ID_KANTIN']; ?>">
+            
+            <div class="modal-form-group">
+                <label>Canteen Name</label>
+                <input type="text" name="nama_kantin" class="modal-input" value="<?php echo htmlspecialchars($data['NAMA_KANTIN'] ?? ''); ?>" required>
+            </div>
+
+            <div class="modal-form-group">
+                <label>Ganti Foto Kantin (Banner)</label>
+                <div class="file-upload-area">
+                    <div class="upload-icon"><i class="fa-solid fa-images"></i></div>
+                    <div class="upload-text">Tambah banner baru <span>Klik di sini</span></div>
+                    <input type="file" name="foto_kantin" onchange="previewFileName(this, 'bannerFilePreview')">
+                    <div class="file-name-preview" id="bannerFilePreview"></div>
+                </div>
+            </div>
+
+            <div class="modal-form-group">
+                <label>Ganti Foto QRIS</label>
+                <div class="file-upload-area">
+                    <div class="upload-icon"><i class="fa-solid fa-images"></i></div>
+                    <div class="upload-text">Tambah QRIS baru <span>Klik di sini</span></div>
+                    <input type="file" name="foto_qris" onchange="previewFileName(this, 'qrisFilePreview')">
+                    <div class="file-name-preview" id="qrisFilePreview"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="toggleModal('modalKantin')">Batal</button>
+                <button type="submit" class="btn-save">Simpan Kantin</button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <script>
-        function toggleModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.toggle('active');
-            }
+<script>
+    function toggleModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.toggle('active');
         }
+    }
 
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal-overlay')) {
-                event.target.classList.remove('active');
-            }
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal-overlay')) {
+            event.target.classList.remove('active');
         }
+    }
 
-        // Fungsi menampilkan nama file secara realtime saat di-upload
-        function previewFileName(input, previewId) {
-            const previewDiv = document.getElementById(previewId);
-            if (input.files && input.files.length > 0) {
-                previewDiv.innerText = "📄 Terpilih: " + input.files[0].name;
-                previewDiv.style.display = "block";
-            } else {
-                previewDiv.style.display = "none";
-            }
+    // Fungsi menampilkan nama file secara realtime sesuai target ID masing-masing
+    function previewFileName(input, previewId) {
+        const previewDiv = document.getElementById(previewId);
+        if (previewDiv && input.files && input.files.length > 0) {
+            previewDiv.innerText = "📄 Terpilih: " + input.files[0].name;
+            previewDiv.style.display = "block";
+        } else if (previewDiv) {
+            previewDiv.style.display = "none";
         }
+    }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = urlParams.get('status');
-        const msg = urlParams.get('msg');
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+    const msg = urlParams.get('msg');
 
-        if (status === 'success') {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: msg || 'Data berhasil diperbarui.',
-                confirmButtonColor: '#F47B20'
-            }).then(() => {
-                window.history.replaceState({}, document.title, window.location.pathname);
-            });
-        } else if (status === 'error') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: msg || 'Terjadi kesalahan sistem.',
-                confirmButtonColor: '#EF4444'
-            }).then(() => {
-                window.history.replaceState({}, document.title, window.location.pathname);
-            });
-        }
-    </script>
+    if (status === 'success') {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: msg || 'Data berhasil diperbarui.',
+            confirmButtonColor: '#F47B20'
+        }).then(() => {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        });
+    } else if (status === 'error') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: msg || 'Terjadi kesalahan sistem.',
+            confirmButtonColor: '#EF4444'
+        }).then(() => {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        });
+    }
+</script>
 </body>
 
 </html>
