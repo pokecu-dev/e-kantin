@@ -28,153 +28,198 @@ $info_kantin = $query_info->fetch_assoc();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu Kantin - <?= $info_kantin['nama_kantin'] ?? "Kantin ".$id_kantin; ?></title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> 
+    <link rel="stylesheet" href="style.css">
     <style>
-        .container {
-            padding: 20px;
-            width: 100%;
-            max-width: 1200px;
-            margin: auto;
-            padding-top: 20px;
-        }
+      .container {
+    padding: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 0;
+}
 
-        h1 {
-           
-            font-size: 1.5rem;
-            line-height: 1.2;
-            color: #F47B20;
-        }
+h1 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: #F47B20;
+}
 
-        .parent {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(199px, 1fr)); 
-            gap: 15px;
-            width: 98%;
-            padding: 0 10px;
-            max-width: 1400px;
-            justify-content: center; 
-        }
+.parent {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(199px, 1fr)); 
+    gap: 15px;
+    width: 98%;
+    padding: 0 10px;
+    max-width: 1400px;
+    justify-content: center; 
+    margin-top: -80px;
+    position: relative;
+    z-index: 5;
+}
 
-        @media (max-width: 768px) {
-            .parent {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+@media (max-width: 768px) {
+    .parent {
+        grid-template-columns: repeat(2, 1fr);
+        margin-top: -70px;
+    }
+}
 
-        .child {
-            background: #ffffff;
-            padding: 10px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-            transition: transform 0.3s ease;
-            overflow: hidden;
-            position: relative;
-        }
+.child {
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
 
-        .child:hover {
-            transform: translateY(-5px); 
-        }
+.child:hover {
+    transform: translateY(-5px); 
+}
 
-        .child img {
-            width: 100%; 
-            height: 160px;          
-            aspect-ratio: 1 / 1;   
-            object-fit: cover;     
-            border-radius: 15px;   
-            margin-bottom: 10px;
-        }
+.child img {
+    width: 100%; 
+    height: 160px;          
+    aspect-ratio: 1 / 1;   
+    object-fit: cover;     
+    border-radius: 15px;   
+    margin-bottom: 10px;
+}
 
-        .child h3 {
-            font-size: 14px;
-            font-weight: 600;
-            margin: 10px 0 5px 0;
-            color: #1A1A1A;
-        }
+.child h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 10px 0 5px 0;
+    color: #1A1A1A;
+}
 
-        .menu-link {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
+.menu-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
 
-        .rating {
-            font-size: 14px;
-            color: #F47B20;
-            font-weight: 600;
-        }
+.rating {
+    font-size: 14px;
+    color: #F47B20;
+    font-weight: 600;
+}
 
-        .add-btn {
-            text-decoration: none;
-            display: flex;
-            right: 10px;
-            bottom: 98px;
-            position: absolute;
-            background:  #F47B20;
-            color: #ffffff;
-            width: 32px;
-            height: 32px;
-            border-radius: 5px;
-            z-index:10;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            line-height: 39px;
-        }
+.add-btn {
+    text-decoration: none;
+    display: flex;
+    right: 10px;
+    bottom: 98px;
+    position: absolute;
+    background: #F47B20;
+    color: #ffffff;
+    width: 32px;
+    height: 32px;
+    border-radius: 5px;
+    z-index:10;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    line-height: 39px;
+}
 
-        .add-btn:hover {
-            transform: scale(1.1);
-            background: #F47B20;
-        }
+.add-btn:hover {
+    transform: scale(1.1);
+    background: #F47B20;
+}
 
-        .banner-kantin {
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
-            background: #f0f0f0;
-            margin-bottom: 20px;
-        }
-        .banner-kantin img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+.banner-kantin {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: #f0f0f0;
+    margin-bottom: 40px;
+    position: relative;
+}
 
-        .back-header-container {
-            display: flex;
-            align-items: center; 
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
+.banner-kantin img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-kantin::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6));
+    z-index: 1;
+}
+
+.back-header-container {
+    display: flex;
+    align-items: center; 
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: absolute;
+    bottom: 100px; 
+    left: 0;
+    right: 0;
+    z-index: 2;
+    gap: 15px;
+}
         
-        .back-header-container h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            line-height: 1.2;
-            color: #F47B20;
-        }
-        .btn-back img {
-            width: 24px; 
-            display: block;
-        }
-    </style>
+.back-header-container h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.back-header-container h1 b {
+    color: #ffffff;
+}
+
+.btn-back img {
+    width: 24px; 
+    display: block;
+    filter: brightness(0) invert(1);
+}
+
+@media (max-width: 768px) {
+    .banner-kantin {
+        height: 150px;
+        margin-bottom: 25px;
+    }
+    .back-header-container {
+        bottom: 80px; 
+    }
+    .back-header-container h1 {
+        font-size: 1.2rem;
+    }
+}
+  </style>
 </head>
 <body>
 
-    <div class="banner-kantin">
-        <img src="/source/foto_kantin/<?= $info_kantin['FOTO_KANTIN'] ?? 'banner_default.jpg'; ?>" alt="Banner Kantin" onerror="this.style.display='none'">
-    </div>
-
+  <div class="banner-kantin">
+    <img src="/source/foto_kantin/<?= $info_kantin['FOTO_KANTIN'] ?? 'banner_default.jpg'; ?>" alt="Banner Kantin" onerror="this.style.display='none'">
+    
     <div class="back-header-container">
         <a href="pembeli.php" class="btn-back">
             <img src="../../source/icon/kembali.svg" alt="Kembali">
         </a>
         <h1>Daftar Menu di <b><?= $info_kantin['NAMA_KANTIN'] ?? "Kantin ".$id_kantin; ?></b></h1>
     </div>
+</div>
     
 
     <div class="container">

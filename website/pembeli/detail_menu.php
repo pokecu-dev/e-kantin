@@ -80,7 +80,7 @@ if (!$data) {
             gap: 12px;
             padding: 15px 0;
             max-width: 1100px;
-            margin: 100px auto -100px;
+            margin: 20px auto -100px;
             width: 95%;
         }
 

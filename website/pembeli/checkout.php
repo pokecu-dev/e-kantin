@@ -53,7 +53,7 @@ while ($row = mysqli_fetch_assoc($q_items)) {
     <style>
         .co-container {
             max-width: 680px;
-            margin: 80px auto 120px;
+            margin: 20px auto 120px;
             padding: 0 16px;
         }
 
@@ -305,27 +305,6 @@ while ($row = mysqli_fetch_assoc($q_items)) {
 </head>
 <body>
 
-<nav class="navbar">
-        <div class="nav-container">
-            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
-
-            <!-- Burger Menu (Mobile Only) -->
-            <input type="checkbox" id="check">
-            <label for="check" class="checkbtn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </label>
-
-            <ul class="nav-links">
-                <li><a href="pembeli.php" class="active">Beranda</a></li>
-                <li><a href="keranjang.php">Keranjang</a></li>
-                <li><a href="pesanan.php">Pesanan</a></li>
-                <li><a href="profil.php">Profil</a></li>
-                <li><a href="./../logout.php">Log Out</a></li>
-            </ul>
-        </div>
-    </nav>
 
 <!-- Loading -->
 <div id="co-loading">

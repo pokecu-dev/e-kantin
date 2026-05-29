@@ -20,16 +20,17 @@ body{
 .nav-links a {
     text-decoration: none;
     color: #888;
+    /* Warna abu-abu */
     font-weight: 500;
     transition: 0.3s;
 }
 
 .nav-links a.active {
     color: var(--primary);
+
     border-bottom: 2px solid #F47B20;
     padding-bottom: 5px;
 }
-
 /* Navbar Utama sebagai Card */
 .navbar {
     background: var(--white);
