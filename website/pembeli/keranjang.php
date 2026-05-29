@@ -78,11 +78,12 @@ $total_all = array_sum(array_column($grouped, 'total'));
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keranjang - E-Kantin</title>
-
+<link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-                * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -95,18 +96,7 @@ $total_all = array_sum(array_column($grouped, 'total'));
                    font-family: 'Poppins', sans-serif;
         
         }
-        .nav-links a {
-    text-decoration: none;
-    color: #888;
-    font-weight: normal;
-    transition: 0.3s;
-}
-
-.nav-links a.active {
-    color: var(--primary);
-    border-bottom: 2px solid #F47B20;
-    padding-bottom: 5px;
-}
+      
         .kr-wrap {
             max-width: 900px;
             margin: 100px auto 120px;
@@ -114,15 +104,31 @@ $total_all = array_sum(array_column($grouped, 'total'));
         }
 
         .kr-header {
-            display: flex;
+            /* display: flex; */
             align-items: center;
             gap: 12px;
             padding: 14px 0 10px;
             margin-bottom: 16px;
         }
 
-        .kr-header .btn-back img { width: 24px; height: 24px; }
+      
+.kr-header .btn-back{
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    text-decoration: none !important;
+}
 
+.kr-header .btn-back img { 
+    width: 24px !important; 
+    height: 24px !important; 
+}
+
+.kr-header .btn-back h2{
+    margin: 0 !important;
+    font-size: 22px !important;
+    color: #1A1A1A !important;
+}
         .kr-header h2 {
             margin: 0;
             font-size: 18px;
@@ -334,11 +340,14 @@ $total_all = array_sum(array_column($grouped, 'total'));
             text-decoration: none;
         }
 
-        @media (max-width: 480px) {
+        /* @media (max-width: 480px) {
             .kr-wrap { margin-top: 20px; margin-bottom: 100px; }
             .kr-item img { width: 60px; height: 60px; }
             .kr-qty-wrap { flex-direction: column; gap: 6px; }
-        }
+            .kr-header .btn-back img { margin: -5px; margin-top:40px; width: 20px; height: 24px ;   display: flex; }
+        } */
+  
+
     </style>
 </head>
 <body>
@@ -362,12 +371,12 @@ $total_all = array_sum(array_column($grouped, 'total'));
 
 <div class="kr-wrap">
 
-    <div class="kr-header">
-        <a href="pembeli.php" class="btn-back">
-            <img src="../../source/icon/kembali.svg" alt="Kembali">
+    <!-- <div class="kr-header">
+        <a href="pembeli.php" class="btn-back" >
+            <img src="../../source/icon/kembali.svg" alt="Kembali"> 
+            <h2>Keranjang Belanja</h2>
         </a>
-        <h2>Keranjang Belanja</h2>
-    </div>
+    </div> -->
 
     <?php if (!empty($grouped)): ?>
 

@@ -60,6 +60,7 @@ if (!$data) {
             gap:50px;
             align-items:flex-start;
             width: 100%;
+            margin: 20px;
         }
 
         .ulasan-section{
@@ -79,7 +80,7 @@ if (!$data) {
             gap: 12px;
             padding: 15px 0;
             max-width: 1100px;
-            margin: 100px auto -100px;
+            margin: 20px auto -100px;
             width: 95%;
         }
 
@@ -410,7 +411,7 @@ if (!$data) {
         @media(max-width: 768px) {
             .back {
                 /* Berikan margin top yang cukup agar lolos dari jeratan navbar yang melayang */
-                margin: 100px auto 10px !important; 
+                margin: 20px auto 10px !important; 
                 width: 90%; /* Menyesuaikan lebar di layar HP agar tidak terlalu mepet ke pinggir */
                 padding: 10px 0;
             }
@@ -428,6 +429,7 @@ if (!$data) {
 
             .gambar img {
                 height: 280px;
+                object-fit: cover;
             }
 
             .info h2 {
@@ -464,27 +466,6 @@ if (!$data) {
 </head>  
 <body>  
 
-<nav class="navbar">
-        <div class="nav-container">
-            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
-
-            <!-- Burger Menu (Mobile Only) -->
-            <input type="checkbox" id="check">
-            <label for="check" class="checkbtn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </label>
-
-            <ul class="nav-links">
-                <li><a href="pembeli.php" class="active">Beranda</a></li>
-                <li><a href="keranjang.php">Akun</a></li>
-                <li><a href="pesanan.php">Pesanan</a></li>
-                <li><a href="profil.php">Profil</a></li>
-                <li><a href="./../logout.php">Log Out</a></li>
-            </ul>
-        </div>
-    </nav>
 
 <div class="back">
     <a href="pembeli.php" class="btn-back">
@@ -536,7 +517,7 @@ if (!$data) {
             <div id="notif"></div>
 
             <div class="footer-keranjang"> 
-                <button type="submit"  class="icon-badge"> <!--name="add_to_cart" --> 
+                <button type="submit" class="icon-badge">
                     Tambah Ke Keranjang
                 </button>
                 <button type="submit" name="buy_now" id="btnCheckout">
@@ -567,7 +548,7 @@ if (!$data) {
                 <?php if(!empty($row['FOTO_USERS'])): ?>
                     <img src="../../source/fotopengguna/<?php echo $row['FOTO_USERS']; ?>">
                 <?php else: ?>
-                    <img src="../../source/fotopengguna/default.png">
+                    <img src="../../source/fotopengguna/default.jpg">
                 <?php endif; ?>
             </div>
                 <div class="detail-user">
@@ -605,7 +586,8 @@ if (!$data) {
     </div>
 <?php endif; ?>
 
-<script src="./../shared/js/script.js">
+<script src="./../shared/js/script.js"></script>
+<script>
 
     const inputQTY = document.getElementById("qty");
     
@@ -633,6 +615,8 @@ if (!$data) {
         }
     }
 
+    let tombolDiklik = "";
+
 
     // ajax
     document.getElementById('form-data').onsubmit = async (e) => {
@@ -650,7 +634,11 @@ if (!$data) {
             const data = await response.json();
             // console.log(2);
             if(data.status === 'success'){
-                window.location.href = './keranjang.php'; 
+                if (data.redirect == 'buy_now') {
+                    window.location.href = './checkout.php';
+                }else{
+                        window.location.href = './keranjang.php'; 
+                }   
             }
             console.log(data.message);
 

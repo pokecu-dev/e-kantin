@@ -14,49 +14,49 @@ require_once '../include/koneksi.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
-     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-               * {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-          
+
         }
 
         body {
             background: #f5f5f5;
             color: #333;
-                   font-family: 'Poppins', sans-serif ;
-        
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: #888;
-            font-weight: 500;
-            transition: 0.3s;
+            font-family: 'Poppins', sans-serif;
+
         }
 
-        .nav-links a.active {
-            color: var(--primary);
-            border-bottom: 2px solid #F47B20;
-            padding-bottom: 5px;
-        }
+     
 
         h1 {
-            margin-top: 10px;
-            margin-bottom: 10px;
+            margin: 0;
             font-size: 1.2rem;
             line-height: 1.2;
             color: #F47B20;
         }
 
-        .mencari {
+        .search-container {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            gap: 20px;
+            margin: 10px 0;
+        }
+
+        .mencari {
+            width: 100%;
+            max-width: 400px;
         }
 
         .search-box {
             width: 100%;
-            margin: 20px auto;
+            margin: 0;
             position: relative;
             padding: 0;
         }
@@ -71,14 +71,12 @@ require_once '../include/koneksi.php';
             background-color: #ffffff;
             background-repeat: no-repeat;
             background-position: 15px center;
-            /* Posisi ikon di kiri */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .iconsch {
-            width: 24px;
-            height: 24px;
-
+            width: 50px;
+            height: 50px;
         }
 
         .btn-search {
@@ -93,6 +91,18 @@ require_once '../include/koneksi.php';
             align-items: center;
             padding: 0;
             margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .mencari {
+                max-width: 100%;
+            }
         }
 
         .container {
@@ -208,25 +218,29 @@ require_once '../include/koneksi.php';
 
         .parent {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(199px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 15px;
             width: 98%;
             padding: 0 10px;
-            max-width: 1400px;
+            max-width: 1500px;
             justify-content: center;
         }
 
+        /* 
         @media (max-width: 1024px) {
             .parent {
                 grid-template-columns: repeat(6, 1fr);
             }
-        }
+        } */
 
         @media (max-width: 768px) {
             .parent {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+
         }
+
 
         .child {
             background: #ffffff;
@@ -303,7 +317,6 @@ require_once '../include/koneksi.php';
             justify-content: center;
             align-items: center;
             text-align: center;
-            
         }
 
         .add-btn:hover {
@@ -315,7 +328,7 @@ require_once '../include/koneksi.php';
 
 <body>
 
- <nav class="navbar">
+    <nav class="navbar">
         <div class="nav-container">
             <div class="logo"> <img src="../../source/icon/logo1.svg" alt="Logo"></div>
             <input type="checkbox" id="check">
@@ -326,37 +339,31 @@ require_once '../include/koneksi.php';
                 <li><a href="pembeli.php" class="active">Beranda</a></li>
                 <li><a href="keranjang.php">Keranjang</a></li>
                 <li><a href="pesanan.php">Pesanan</a></li>
-                <li><a href="profil.php" >Profil</a></li>
+                <li><a href="profil.php">Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
     </nav>
     <div class="container">
-
-        <h1 class="teks">Cari Menu <b>Yang Kamu Inginkan!</b></h1>
-
-        <div class="mencari">
-
-            <form action="pembeli.php" method="GET">
-                <div class="search-box">
-
-                    <input
-                        type="text"
-                        name="search"
-                        placeholder="Cari menu..."
-                        class="search"
-                        value="<?php echo $_GET['search'] ?? ''; ?>">
-
-                    <button type="submit" class="btn-search">
-                        <img src="../../source/icon/search.svg" class="iconsch">
-                    </button>
-
-                </div>
-            </form>
-
+        <div class="search-container">
+            <h1 class="teks">Cari Menu <b>Yang Kamu Inginkan!</b></h1>
+            <div class="mencari">
+                <form action="pembeli.php" method="GET">
+                    <div class="search-box">
+                        <input
+                            type="text"
+                            name="search"
+                            placeholder="Cari menu..."
+                            class="search"
+                            value="<?php echo $_GET['search'] ?? ''; ?>">
+                        <button type="submit" class="btn-search">
+                            <img src="../../source/icon/search.svg" class="iconsch">
+                        </button>
+                    </div>
+=======
+                </form>
+            </div>
         </div>
-
-
 
 
         <div class="slider">

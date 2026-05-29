@@ -689,7 +689,7 @@ html, body, *, div {
                     <label>Ganti Foto qris</label>
                     <div class="file-upload-area">
                         <div class="upload-icon"><i class="fa-solid fa-images"></i></div>
-                        <div class="upload-text">Pilih Banner baru atau <span>Klik di sini</span></div>
+                        <div class="upload-text">Pilih Qris baru atau <span>Klik di sini</span></div>
                         <input type="file" name="foto_qris" onchange="previewFileName(this, 'kantinFilePreview')">
                         <div class="file-name-preview" id="kantinFilePreview"></div>
                     </div>

@@ -18,8 +18,9 @@ $result_pesanan = $stmt->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riwayat Pesanan - KantinKita</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -57,9 +58,9 @@ $result_pesanan = $stmt->get_result();
         }
 
         h1 {
-            font-size: 1.6rem;
+            font-size: 1.1rem;
             color: #1A1A1A;
-            margin: 0;
+          margin-bottom: 20px;
         }
 
         .back-header {
@@ -310,14 +311,14 @@ $result_pesanan = $stmt->get_result();
             </ul>
         </div>
     </nav>
-
+<!-- 
     <div class="back-header">
         <a href="pembeli.php" class="btn-back">
             <img src="../../source/icon/kembali.svg" alt="Kembali">
         </a>
-    </div>
-    <div class="container">
-        <h1>Riwayat Pesanan Kamu</h1>
+    </div> -->
+    <div class="container" >
+        <h1 style="margin-top: 70px;">Riwayat Pesanan Kamu</h1>
 
         <div class="pesanan-list"></div>
 
@@ -373,7 +374,7 @@ $result_pesanan = $stmt->get_result();
                                     $id_kantin = $data_menu['ID_KANTIN'];
                                     $rateedit = false;
 
-                                $sql_rate = "SELECT * FROM rating WHERE ID_USER = '$id_user' AND ID_MENU = '$id_menu'";
+                                $sql_rate = "SELECT * FROM rating WHERE ID_USER = '$id_user' AND ID_MENU = '$id_menu' AND ID_KANTIN = '$id_kantin'";
                                     $query_rate = $conn->query($sql_rate);
                                     if ($query_rate && $query_rate->num_rows > 0) {
                                         $rateedit = true;
@@ -405,7 +406,7 @@ $result_pesanan = $stmt->get_result();
                                             <button type="submit" name="submit" class="btn-submit-rate">Kirim :D</button>
                                         </form>
                                     <?php else: ?>
-                                        <p style="font-size: 13px; color: #2ecc71; font-weight: 600;">✓ Kamu sudah memberikan ulasan untuk menu ini gan :v</p>
+                                        <p style="font-size: 13px; color: #2ecc71; font-weight: 600;">✓ Kamu sudah memberikan ulasan untuk menu ini</p>
                                     <?php endif; ?>
                                 <?php endif; ?>
                             </div>
