@@ -70,9 +70,32 @@ $query_produk = $conn->query($sql_produk);
 $data_produk = $query_produk->fetch_assoc();
 $total_produk = $data_produk['total_produk'] ?? 0;
 
-// ===============================
-// QUERY: RIWAYAT TRANSAKSI (Menyambungkan Menu Asli)
-// ===============================
+// ==========================================
+// KONFIGURASI PAGINATION (TRANSAKSI HARI INI)
+// ==========================================
+$limit = 10; // Jumlah baris data transaksi per halaman
+$page = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
+if ($page < 1) { $page = 1; }
+$offset = ($page - 1) * $limit;
+
+// 1. Kueri untuk hitung TOTAL DATA transaksi khusus HARI INI
+$sql_total_trx = "
+    SELECT COUNT(DISTINCT t.ID_TRANSAKSI) AS total_data 
+    FROM transaksi t
+    WHERE t.id_kantin = '$id_kantin_toko' 
+    AND DATE(t.TGL) = CURDATE()
+    AND t.STATUS = 'selesai'
+";
+$query_total_trx = $conn->query($sql_total_trx);
+$data_total_trx = $query_total_trx->fetch_assoc();
+$total_data = $data_total_trx['total_data'] ?? 0;
+
+// Menghitung total halaman pembulatan ke atas
+$total_halaman = ceil($total_data / $limit);
+
+// =========================================================
+// QUERY: RIWAYAT TRANSAKSI (Khusus Hari Ini + Pagination)
+// =========================================================
 $sql_transaksi = "
 SELECT 
     t.ID_TRANSAKSI AS id_transaksi,
@@ -84,9 +107,11 @@ SELECT
 FROM transaksi t
 LEFT JOIN detail_transaksi dt ON t.ID_TRANSAKSI = dt.ID_TRANSAKSI
 WHERE t.id_kantin = '$id_kantin_toko'
+AND DATE(t.TGL) = CURDATE()
 AND t.STATUS = 'selesai'
 GROUP BY t.ID_TRANSAKSI
-ORDER BY t.TGL DESC, t.WAKTU DESC
+ORDER BY t.WAKTU DESC
+LIMIT $limit OFFSET $offset
 ";
 $query_transaksi = $conn->query($sql_transaksi);
 
@@ -485,7 +510,7 @@ if (!$query_transaksi) {
                     </div>
                 </div>
                 <p>Total Produk</p>
-                <h2><?= $total_produk; ?> Menu</h2>
+                <h2><?= $total_produk; ?> Produk</h2>
             </div>
 
             <div class="card-summary">
@@ -502,74 +527,97 @@ if (!$query_transaksi) {
         <main class="main-layout">
             <div class="card-section">
                 <div class="section-header">
-                    <h3>Riwayat Transaksi Mingguan</h3>
+                    <h3>Riwayat Transaksi Harian</h3>
                 </div>
 
-                <div class="grid-table">
-                    <div class="grid-row-header">
-                        <div>ID Transaksi</div>
-                        <div>Menu</div>
-                        <div>Jumlah</div>
-                        <div>Total Harga</div>
-                        <div>Waktu</div>
-                        <div>Aksi</div>
+               <div class="grid-table">
+    <div class="grid-row-header">
+        <div>ID Transaksi</div>
+        <div>Menu</div>
+        <div>Jumlah</div>
+        <div>Total Harga</div>
+        <div>Waktu</div>
+        <div>Aksi</div>
+    </div>
+
+    <?php if ($query_transaksi && $query_transaksi->num_rows > 0): ?>
+        <?php while ($row = $query_transaksi->fetch_assoc()): ?>
+
+            <div class="grid-row-data">
+                <div class="desktop-cell">#-<?php echo $row['id_transaksi']; ?></div>
+                <div class="desktop-cell" style="font-weight:500; color:#111;">
+                    <?php
+                    // Memecah teks berdasarkan tanda kurung buka '('
+                    $nama_menu_saja = explode('(', $row['daftar_menu'])[0];
+                    echo htmlspecialchars(trim($nama_menu_saja));
+                    ?>
+                </div>
+                <div class="desktop-cell"><?php echo $row['total_qty']; ?> Porsi</div>
+                <div class="desktop-cell">
+                    Rp <?php echo number_format($row['total_harga'] ?? 0, 0, ',', '.'); ?>
+                </div>
+                <div class="desktop-cell">
+                    <?php echo date('H:i', strtotime($row['WAKTU'])); ?> WIB
+                </div>
+                <div class="desktop-cell">
+                    <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">
+                        Detail
+                    </button>
+                </div>
+
+                <div class="mobile-left-wrapper">
+                    <div class="mb-meta-top">
+                        <span class="mb-time"><?= date('H:i', strtotime($row['WAKTU'])); ?> WIB</span>
+                        <span class="mb-id">#-<?= $row['id_transaksi']; ?></span>
                     </div>
+                    <div class="mb-menu-list">
+                        <?= htmlspecialchars($row['daftar_menu'] ?? 'Menu'); ?>
+                    </div>
+                </div>
 
-                    <?php if ($query_transaksi && $query_transaksi->num_rows > 0): ?>
-                        <?php while ($row = $query_transaksi->fetch_assoc()): ?>
-
-                            <div class="grid-row-data">
-
-                                <div class="desktop-cell">#-<?php echo $row['id_transaksi']; ?></div>
-                                <div class="desktop-cell" style="font-weight:500; color:#111;">
-                                    <?php
-                                    // Memecah teks berdasarkan tanda kurung buka '('
-                                    $nama_menu_saja = explode('(', $row['daftar_menu'])[0];
-                                    echo htmlspecialchars(trim($nama_menu_saja));
-                                    ?>
-                                </div>
-                                <div class="desktop-cell"><?php echo $row['total_qty']; ?> Porsi</div>
-                                <div class="desktop-cell">
-                                    Rp <?php echo number_format($row['total_harga'] ?? 0, 0, ',', '.'); ?>
-                                </div>
-                                <div class="desktop-cell">
-                                    <?php echo date('H:i', strtotime($row['WAKTU'])); ?> WIB
-                                </div>
-                                <div class="desktop-cell">
-                                    <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">
-                                        Detail
-                                    </button>
-                                </div>
-
-                                <div class="mobile-left-wrapper">
-                                    <div class="mb-meta-top">
-                                        <span class="mb-time"><?= date('H:i', strtotime($row['WAKTU'])); ?> WIB</span>
-                                        <span class="mb-id">#-<?= $row['id_transaksi']; ?></span>
-                                    </div>
-                                    <div class="mb-menu-list">
-                                        <?= htmlspecialchars($row['daftar_menu'] ?? 'Menu'); ?>
-                                    </div>
-                                </div>
-
-                                <div class="mobile-right-wrapper">
-                                    <div class="mb-price">
-                                        Rp <?= number_format($row['total_harga'] ?? 0, 0, ',', '.'); ?>
-                                    </div>
-                                    <button type="button" class="btn-detail btn-buka-modal" data-id="<?= $row['id_transaksi']; ?>" style="width: 100%;">
-                                        Detail
-                                    </button>
-                                </div>
-
-                            </div>
-
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <div style="text-align:center; color:#888; padding: 40px 0;">
-                            Belum ada transaksi.
-                        </div>
-                    <?php endif; ?>
+                <div class="mobile-right-wrapper">
+                    <div class="mb-price">
+                        Rp <?= number_format($row['total_harga'] ?? 0, 0, ',', '.'); ?>
+                    </div>
+                    <button type="button" class="btn-detail btn-buka-modal" data-id="<?= $row['id_transaksi']; ?>" style="width: 100%;">
+                        Detail
+                    </button>
                 </div>
             </div>
+
+        <?php endwhile; ?>
+    <?php else: ?>
+        <div style="text-align:center; color:#888; padding: 40px 0;">
+            Belum ada transaksi masuk untuk hari ini.
+        </div>
+    <?php endif; ?>
+</div>
+
+<?php if ($total_halaman > 1): ?>
+    <div class="pagination-wrapper" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px;">
+        
+        <?php if ($page > 1): ?>
+            <a href="?halaman=<?= $page - 1; ?>" class="btn-page" style="padding: 8px 12px; background: #fff; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333;">&laquo; Prev</a>
+        <?php else: ?>
+            <span class="btn-page disabled" style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 6px; color: #ccc; cursor: not-allowed;">&laquo; Prev</span>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_halaman; $i++): ?>
+            <?php if ($i == $page): ?>
+                <span class="btn-page active" style="padding: 8px 14px; background: #F47B20; border: 1px solid #F47B20; border-radius: 6px; color: #fff; font-weight: bold;"><?= $i; ?></span>
+            <?php else: ?>
+                <a href="?halaman=<?= $i; ?>" class="btn-page" style="padding: 8px 14px; background: #fff; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333;"><?= $i; ?></a>
+            <?php endif; ?>
+        <?php endfor; ?>
+
+        <?php if ($page < $total_halaman): ?>
+            <a href="?halaman=<?= $page + 1; ?>" class="btn-page" style="padding: 8px 12px; background: #fff; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333;">Next &raquo;</a>
+        <?php else: ?>
+            <span class="btn-page disabled" style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 6px; color: #ccc; cursor: not-allowed;">Next &raquo;</span>
+        <?php endif; ?>
+
+    </div>
+<?php endif; ?>  </div>
         </main>
     </div>
 

@@ -509,7 +509,7 @@ while ($row = $res_g3->fetch_assoc()) {
         .modal-header h4 { margin: 0; font-size: 16px; font-weight: 700; color: #1a202c; }
         .modal-close-btn { background: none; border: none; font-size: 20px; color: #a0aec0; cursor: pointer; transition: 0.2s; }
         .modal-close-btn:hover { color: #4a5568; }
-        .modal-body { padding: 24px; max-height: 65vh; overflow-y: auto; }
+        .modal-body { padding: 10px; max-height: 70vh; overflow-y: auto; }
 
         /* ========================================================
            RESPONSIVE MEDIA QUERIES (PAS DI HP)
