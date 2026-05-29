@@ -317,7 +317,6 @@ require_once '../include/koneksi.php';
             justify-content: center;
             align-items: center;
             text-align: center;
-
         }
 
         .add-btn:hover {
@@ -361,6 +360,7 @@ require_once '../include/koneksi.php';
                             <img src="../../source/icon/search.svg" class="iconsch">
                         </button>
                     </div>
+=======
                 </form>
             </div>
         </div>
