@@ -34,7 +34,7 @@ $qris = $result['QRIS'] ?? '';
 
         .qris-page {
             min-height: 100vh;
-            padding: 110px 16px 32px;
+            padding: 20px 16px 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -162,24 +162,7 @@ $qris = $result['QRIS'] ?? '';
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo"><img src="../../source/icon/logo1.svg" alt="Logo"></div>
-            <input type="checkbox" id="check">
-            <label for="check" class="checkbtn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </label>
-            <ul class="nav-links">
-                <li><a href="pembeli.php">Beranda</a></li>
-                <li><a href="keranjang.php">Keranjang</a></li>
-                <li><a href="pesanan.php">Pesanan</a></li>
-                <li><a href="profil.php">Profil</a></li>
-                <li><a href="./../logout.php">Log Out</a></li>
-            </ul>
-        </div>
-    </nav>
+   
     <main class="qris-page">
         <section class="qris-card">
             <div class="qris-header">
