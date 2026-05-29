@@ -349,7 +349,7 @@ require_once '../include/koneksi.php';
             <h1 class="teks">Cari Menu <b>Yang Kamu Inginkan!</b></h1>
             <div class="mencari">
                 <form action="pembeli.php" method="GET">
-                    <div class="search-box">
+                    <d class="search-box">
                         <input
                             type="text"
                             name="search"
@@ -360,7 +360,6 @@ require_once '../include/koneksi.php';
                             <img src="../../source/icon/search.svg" class="iconsch">
                         </button>
                     </div>
-=======
                 </form>
             </div>
         </div>
