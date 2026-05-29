@@ -51,7 +51,9 @@ require_once '../include/koneksi.php';
         }
 
         .mencari {
-            display: flex;
+            /* display: flex; */
+             width: 100%;
+             max-width:700px;
         }
 
         .search-box {
@@ -226,7 +228,10 @@ require_once '../include/koneksi.php';
             .parent {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            
         }
+        
 
         .child {
             background: #ffffff;

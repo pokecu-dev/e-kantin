@@ -71,19 +71,20 @@ $f = fn($n) => 'Rp ' . number_format((int)$n, 0, ',', '.');
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 0;
             padding: 14px 0 10px;
             margin-bottom: 16px;
         }
+       
 
-        .st-page-header .btn-back img { width: 24px; height: 24px; display: block; }
+        .st-page-header .btn-back img { margin-left: -70px; width: 24px; height: 24px; display: block; }
 
         .st-page-header h2 {
             margin: 0;
             font-size: 18px;
             font-weight: 700;
             color: #1A1A1A;
-            flex: 1;
-            text-align: center;
+           
         }
 
         .st-btn-print {
@@ -120,6 +121,14 @@ $f = fn($n) => 'Rp ' . number_format((int)$n, 0, ',', '.');
             font-size: 20px;
             font-weight: 700;
             color: #1A1A1A;
+        }
+
+        .st-page-header h4 {
+            margin-left: 90px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1A1A1A;
+
         }
 
         .st-sukses p {
@@ -393,7 +402,8 @@ $f = fn($n) => 'Rp ' . number_format((int)$n, 0, ',', '.');
         }
 
         @media (max-width: 480px) {
-            .st-wrap { margin-top: 20px; margin-bottom: 100px; }
+            .st-wrap { margin-top: 110px; margin-bottom: 100px; }
+            .st-page-header .btn-back img { margin-left: 25px; width: 24px; height: 24px; display: block; }
         }
     </style>
 </head>
@@ -428,8 +438,7 @@ $f = fn($n) => 'Rp ' . number_format((int)$n, 0, ',', '.');
         <a href="pembeli.php" class="btn-back">
             <img src="../../source/icon/kembali.svg" alt="Kembali">
         </a>
-        <h2>Struk Pesanan</h2>
-        <button class="st-btn-print" onclick="window.print()">🖨 Cetak</button>
+        <h4>Struk Pesanan</h4>
     </div>
 
     <?php if ($transaction): ?>
@@ -517,7 +526,6 @@ $f = fn($n) => 'Rp ' . number_format((int)$n, 0, ',', '.');
 
         <!-- Tombol Aksi -->
         <div class="st-actions no-print">
-            <a href="pembeli.php" class="st-btn-outline">← Beranda</a>
             
             <button class="st-btn-solid" onclick="window.print()">🖨 Cetak / PDF</button>
             

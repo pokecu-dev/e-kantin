@@ -164,18 +164,6 @@ $info_kantin = $query_info->fetch_assoc();
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
-            <ul class="nav-links">
-                <li><a href="pembeli.php">Beranda</a></li>
-                <li><a href="keranjang.php">Keranjang</a></li>
-                <li><a href="pesanan.php">Pesanan</a></li>
-                <li><a href="profil.php">Profil</a></li>
-                <li><a href="./../logout.php">Log Out</a></li>
-            </ul>
-        </div>
-    </nav>
 
     <div class="banner-kantin">
         <img src="/source/foto_kantin/<?= $info_kantin['FOTO_KANTIN'] ?? 'banner_default.jpg'; ?>" alt="Banner Kantin" onerror="this.style.display='none'">
