@@ -681,7 +681,7 @@ html, body, *, div {
                 <label>Ganti Foto Kantin (Banner)</label>
                 <div class="file-upload-area">
                     <div class="upload-icon"><i class="fa-solid fa-images"></i></div>
-                    <div class="upload-text">Tambah Banner baru <span>Klik di sini</span></div>
+                    <div class="upload-text">Tambah banner baru <span>Klik di sini</span></div>
                     <input type="file" name="foto_kantin" onchange="previewFileName(this, 'bannerFilePreview')">
                     <div class="file-name-preview" id="bannerFilePreview"></div>
                 </div>
@@ -691,7 +691,7 @@ html, body, *, div {
                 <label>Ganti Foto QRIS</label>
                 <div class="file-upload-area">
                     <div class="upload-icon"><i class="fa-solid fa-images"></i></div>
-                    <div class="upload-text">Tambah QRIS baru<span>Klik di sini</span></div>
+                    <div class="upload-text">Tambah QRIS baru <span>Klik di sini</span></div>
                     <input type="file" name="foto_qris" onchange="previewFileName(this, 'qrisFilePreview')">
                     <div class="file-name-preview" id="qrisFilePreview"></div>
                 </div>
