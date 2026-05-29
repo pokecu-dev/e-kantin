@@ -400,7 +400,7 @@ $result_menu = $conn->query($query_menu);
                     <form action="process/update_status.php" method="POST">
                         <input type="hidden" name="id_kantin" value="<?php echo $id_kantin; ?>">
                         <input type="hidden" name="status" value="1">
-                        <button type="submit" class="btn-toggle-status btn-activate">Buka Kantin</button>
+                        <button type="submit" class="btn-toggle-status btn-activate">Aktifkan Kantin</button>
                     </form>
                 <?php endif; ?>
             </div>

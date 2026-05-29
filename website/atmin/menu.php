@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aksi']) && $_POST['ak
 $sql_total = "SELECT COUNT(*) AS total FROM tb_menu WHERE STATUS != 'nonaktif'";
 $total_produk = $conn->query($sql_total)->fetch_assoc()['total'] ?? 0;
 
-$sql_low = "SELECT COUNT(*) AS low_stock FROM tb_menu WHERE STOK <= 5 AND STATUS != 'nonaktif'";
+$sql_low = "SELECT COUNT(*) AS low_stock FROM tb_menu WHERE STOK < 5 AND STOK >= 1 AND STATUS != 'nonaktif'";
 $low_stock = $conn->query($sql_low)->fetch_assoc()['low_stock'] ?? 0;
 
 $sql_ready = "SELECT COUNT(*) AS ready FROM tb_menu WHERE STATUS = 'tersedia'";
@@ -701,7 +701,7 @@ if ($search !== '') {
                 <form action="" method="GET" class="input-group">
                     <div class="search-wrapper">
                         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                        <input type="text" name="query" placeholder="Cari user..." value="<?= htmlspecialchars($search ?? '') ?>">
+                        <input type="text" name="query" placeholder="Cari Produk..." value="<?= htmlspecialchars($search ?? '') ?>">
                     </div>
                 </form>
             </div>
@@ -745,7 +745,7 @@ if ($search !== '') {
         </div>
         <div class="data-card">
             <div class="toolbar">
-                <p>Daftar Menu</p>
+                <p>Daftar Produk</p>
             </div>
 
             <div class="grid-wrapper">
@@ -939,6 +939,7 @@ if ($search !== '') {
 
                 if (result.status == 'success') {
                     Swal.fire({
+                        target: document.getElementById('editModal'), // <--- MEMAKSA SWAL MUNCUL DI ATAS MODAL
                         title: 'Berhasil!',
                         text: 'Menu berhasil diubah!',
                         icon: 'success',
@@ -951,6 +952,7 @@ if ($search !== '') {
                     });
                 } else {
                     Swal.fire({
+                        target: document.getElementById('editModal'), // <--- MEMAKSA SWAL MUNCUL DI ATAS MODAL
                         title: 'Gagal!',
                         text: result.message,
                         icon: 'error',
@@ -959,6 +961,7 @@ if ($search !== '') {
                 }
             } catch (error) {
                 Swal.fire({
+                    target: document.getElementById('editModal'), // <--- MEMAKSA SWAL MUNCUL DI ATAS MODAL
                     title: 'Error!',
                     text: 'Terjadi kesalahan sistem saat menyimpan data.',
                     icon: 'error',
