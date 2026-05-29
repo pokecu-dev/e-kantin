@@ -1,4 +1,3 @@
-
 <?php
 // session_start();
 require_once '../include/koneksi.php';
@@ -44,7 +43,7 @@ if (!$data) {
         }
 
         .container {
-            padding: 30px;
+            padding: 35px;
             width: 95%;
             max-width: 1100px; 
             background: #ffffff;  
@@ -52,11 +51,29 @@ if (!$data) {
             margin: 120px auto 40px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             display: flex;
-            gap: 50px;
-            align-items: flex-start;
+            gap: 40px;
+            flex-direction: column;
         }
 
-        .back {
+        .top-content{
+            display:flex;
+            gap:50px;
+            align-items:flex-start;
+            width: 100%;
+        }
+
+        .ulasan-section{
+            margin-top:50px;
+            border-top:1px solid #eee;
+            padding-top:30px;
+        }
+
+        .ulasan-section h2{
+            font-size:30px;
+            margin-bottom:25px;
+        }
+
+        .back {  
             display: flex;
             align-items: center;
             gap: 12px;
@@ -87,11 +104,13 @@ if (!$data) {
         .gambar img {
             width: 100%;
             max-width: 450px;
-            height: 400px;
+            height: 280px;
             display: block;
             object-fit: cover;
             border-radius: 20px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            padding: 0;
+            background-color: #fff;
         }
 
         .info {
@@ -240,8 +259,8 @@ if (!$data) {
 
         .icon-badge {
             background: white;
-            border: 2px solid #F47B20;
-            color: #F47B20;
+            border: 2px solid #E66A12;
+            color: #E66A12;
         }
 
         .icon-badge:hover {
@@ -252,12 +271,14 @@ if (!$data) {
         #btnCheckout {
             background: #F47B20;
             color: white; 
+            border: 2px solid #F47B20;
         }
 
         #btnCheckout:hover {
-            background: #F47B20;
-            transform: scale(0.97);
+            background: #cc5d0e;
+            border-color: #cc5d0e;
         }
+        
 
         #btnCheckout:active {
             background: #F47B20 !important;
@@ -318,6 +339,127 @@ if (!$data) {
                 border-radius: 16px;
             }
         }
+        .ulasan-section {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
+
+        .ulasan-section h2 {
+            font-size: 22px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-ulasan {
+            padding: 20px 0;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .atas-ulasan {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .foto-user {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .foto-user img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            }
+
+        .nama-user {
+            font-size: 15px;
+            font-weight: 600;
+            color: #222;
+        }
+
+        .rating-bintang {
+            margin-top: 2px;
+            color: #E66A12;
+            font-size: 13px;
+        }
+
+        .komen {
+            margin-left: 62px;
+            margin-top: 8px;
+            color: #555;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        .kosong-ulasan {
+            text-align: center;
+            padding: 50px 20px;
+            color: #888;
+        }
+
+        .icon-kosong {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        @media(max-width: 768px) {
+            .back {
+                /* Berikan margin top yang cukup agar lolos dari jeratan navbar yang melayang */
+                margin: 100px auto 10px !important; 
+                width: 90%; /* Menyesuaikan lebar di layar HP agar tidak terlalu mepet ke pinggir */
+                padding: 10px 0;
+            }
+
+            .container {
+                /* Sesuaikan margin top container agar jaraknya pas dengan tombol back di atasnya */
+                margin: 20px auto 100px;
+                padding: 20px;
+            }
+
+            .top-content {
+                flex-direction: column;
+                gap: 25px;
+            }
+
+            .gambar img {
+                height: 280px;
+            }
+
+            .info h2 {
+                font-size: 28px;
+            }
+            .harga {
+                font-size: 24px;
+            }
+
+            .footer-keranjang {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .icon-badge, #btnCheckout {
+                width: 100%;
+                height: 50px;
+            }
+
+            .komen {
+                margin-left: 0;
+                margin-top: 12px;
+                color: #555;
+                line-height: 1.6;
+                font-size: 14px;
+
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                word-break: break-word;
+                white-space: normal;
+            }
+        }
     </style>
 </head>  
 <body>  
@@ -353,6 +495,8 @@ if (!$data) {
 
 <div class="container">
 
+     <div class="top-content">
+
     <div class="gambar">
         <img src="../../source/gambar_menu/<?php echo $data['FOTO_MENU']; ?>" alt="<?php echo $data['NAMA_MENU']; ?>">
     </div>
@@ -365,7 +509,7 @@ if (!$data) {
                 Stok: <span id="stok"><?= $data['STOK']; ?></span>
             </div>
             <div class="rating">
-               ★ <span id="rating"><?= $data['RATING'] ?? "belum ada rating:(" ?></span>
+               ★ <span id="rating"><?= $data['RATING'] ?? "0.0" ?></span>
             </div>
         </div>
 
@@ -374,7 +518,7 @@ if (!$data) {
             <p><?php echo nl2br($data['DESK']); ?></p>
         </div>
 
-        <form id="form-data">
+        <form id="form-data" action="detail_menu.php?id=<?= $id; ?>" method="POST">
             <input type="hidden" name="id_menu" value="<?php echo $data['ID_MENU']; ?>">
 
             <div class="row-harga-qty">
@@ -400,88 +544,71 @@ if (!$data) {
                 </button>
             </div>
         </form>
+        </div>
+    </div>
+    <div class="ulasan-section">
+        <h2>Ulasan Pembeli</h2>
 
-        <div id="rating">
+        <?php 
+            $sql = "SELECT rating.*, users.NAMA_LENGKAP, users.FOTO_USERS 
+                        FROM rating 
+                        INNER JOIN users ON rating.ID_USER = users.ID 
+                        WHERE rating.ID_MENU = '$id'";
+            $query = $conn->query($sql);
 
-            <br>
-            <!-- ini bagian rating wak,kalau udah buat tb transaksi nanti revisi dikit alur logika nya:D -->
-            <div id="form-rate">
-                <?php 
-                    $rating = false;
-                    $rateedit = false;
-                    $sql = "SELECT t.ID_TRANSAKSI 
-                        FROM transaksi t
-                        INNER JOIN detail_transaksi dt ON t.ID_TRANSAKSI = dt.ID_TRANSAKSI
-                        WHERE t.ID_USER = $iduser 
-                        AND t.STATUS = 'selesai'
-                        AND dt.ID_MENU = $data[ID_MENU]";
+            if($query->num_rows > 0):
 
+            while($row = $query->fetch_assoc()):
+        ?>
 
-                    $query = $conn->query($sql);
-                    if($query->num_rows > 0){
-                        $rating = true;
-                    }
-
-                    $sql = "SELECT * FROM rating WHERE ID_RATING = $iduser AND ID_MENU = $data[ID_MENU] ";
-                    $query = $conn->query($sql);
-                    if($query->num_rows > 0){
-                        $rateedit = true;
-                    }
-
-                    if($rating && !$rateedit):
-                ?>
-
-                        
-                        <h2>tulis rating mu gan:D</h2>
-                        <form action="pro_tesrate.php" method="post">
-                            <input type="hidden" name="id_menu" value="<?= $data['ID_MENU'] ?>">
-                            <input type="hidden" name="id_user" value="<?= $iduser ?>">
-                            <input type="hidden" name="id_kantin" value="<?= $data['ID_KANTIN'] ?>">    
-                            <label>rating coy:D</label>
-                            <button type="button" onclick="ratinginput(-1)">-</button>
-                            <input type="number" name="rating" id="ratingin" max="5" min="0" value="0" readonly>
-                            <button type="button" onclick="ratinginput(1)">+</button>
-                            <br>
-                            <label>komentar gan:D</label>
-                            <textarea name="desk" id="desk"></textarea>
-                            <button type="submit" name="submit">kirim:D</button>
-
-                        </form>
-                    <?php elseif($rateedit): ?>
-                        <p>edit gan:v</p>
-                    <?php else: ?>
-                        <p>beli dulu gan,baru bisa rating:D</p>
-                <?php endif ?>
+        <div class="card-ulasan">
+            <div class="atas-ulasan">
+            <div class="foto-user">
+                <?php if(!empty($row['FOTO_USERS'])): ?>
+                    <img src="../../source/fotopengguna/<?php echo $row['FOTO_USERS']; ?>">
+                <?php else: ?>
+                    <img src="../../source/fotopengguna/default.png">
+                <?php endif; ?>
             </div>
-            <br>
+                <div class="detail-user">
+                    <div class="nama-user">
+                        <?= htmlspecialchars($row['NAMA_LENGKAP']); ?>
+                    </div>
+                <div class="rating-bintang">
+                    <?php
+                    for($i=1;$i<=5;$i++){
+                        echo ($i <= $row['RATING']) ? "★" : "☆";
+                    }
+                    ?>
+                </div>
+            </div>
             
-            <h2>rating</h2>
-
-            <?php 
-                $sql = "SELECT rating.*, users.NAMA_LENGKAP 
-                            FROM rating 
-                            INNER JOIN users ON rating.ID_USER = users.ID 
-                            WHERE rating.ID_MENU = '$id'";
-                $query = $conn->query($sql);
-
-                while($row = $query->fetch_assoc()):
-            ?>
-                <p>user:<?= htmlspecialchars($row['NAMA_LENGKAP']) ?></p>
-                <p>rate: <?= $row['RATING'] ?></p>
-                <p>komentar:<?= $row['DESK'] ?></p>
-                <br>
-            <?php endwhile ?>
+        </div>
+            
+        <div class="komen">
+            <?= htmlspecialchars($row['DESK']); ?>
         </div>
 
+        </div>
+        <?php endwhile;
+
+        else:
+        ?>
+
+        <div class="kosong-ulasan">
+            <div class="icon-kosong">
+                💬
+            </div>
+            <h3>Belum ada ulasan</h3>
+            <p>Jadilah pembeli pertama yang memberi rating ✨</p>
+        </div>
     </div>
-</div>
+<?php endif; ?>
 
-<script src="./../shared/js/script.js"></script>
-<script>
-
+<script src="./../shared/js/script.js">
 
     const inputQTY = document.getElementById("qty");
-    const inrating = document.getElementById("ratingin");
+    
     const getstock = () => parseInt(document.getElementById("stok").innerText);
 
     function UpdateQTY(step) {
@@ -506,15 +633,6 @@ if (!$data) {
         }
     }
 
-    // rating
-    function ratinginput(step){
-        var newVal = parseInt(inrating.value) + step;
-        
-        if(newVal >=0 && newVal <= 5){
-            inrating.value = newVal;
-        }
-
-    }
 
     // ajax
     document.getElementById('form-data').onsubmit = async (e) => {

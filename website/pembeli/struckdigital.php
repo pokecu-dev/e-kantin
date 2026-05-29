@@ -518,15 +518,17 @@ $f = fn($n) => 'Rp ' . number_format((int)$n, 0, ',', '.');
         <!-- Tombol Aksi -->
         <div class="st-actions no-print">
             <a href="pembeli.php" class="st-btn-outline">← Beranda</a>
+            
+            <button class="st-btn-solid" onclick="window.print()">🖨 Cetak / PDF</button>
+            
             <?php 
                 if($metode === "qris") {
-                    echo "<a href='qris.php?trx=$trxId&id_kantin=$id_kantin'>QRIS</a>";         
+                    echo "<a class='st-btn-outline' href='qris.php?trx=$trxId&id_kantin=$id_kantin'>QRIS</a>";         
                 }
             ?>
             <!-- qris.php?trx=$id_transaksi&id_kantin=$id_kantin -->
             
 
-            <button class="st-btn-solid" onclick="window.print()">🖨 Cetak / PDF</button>
         </div>
 
     <?php else: ?>

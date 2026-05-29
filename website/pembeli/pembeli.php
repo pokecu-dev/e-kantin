@@ -56,14 +56,14 @@ require_once '../include/koneksi.php';
 
         .search-box {
             width: 100%;
-            margin: 40px;
+            margin: 20px auto;
             position: relative;
             padding: 0;
         }
 
         .search {
             width: 100%;
-            padding: 12px 45px 12px 15px;
+            padding: 12px 50px 12px 20px;
             border-radius: 30px;
             border: none;
             outline: none;
@@ -76,14 +76,14 @@ require_once '../include/koneksi.php';
         }
 
         .iconsch {
-            width: 80px;
-            height: 50px;
+            width: 24px;
+            height: 24px;
 
         }
 
         .btn-search {
             position: absolute;
-            right: 5px;
+            right: 15px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
@@ -100,7 +100,7 @@ require_once '../include/koneksi.php';
             width: 100%;
             max-width: 1200px;
             margin: auto;
-            padding-top: 20px;
+            padding-top: 100px;
         }
 
         .menu-container {
@@ -254,7 +254,28 @@ require_once '../include/koneksi.php';
 
         .child h3 {
             font-size: 16px;
-            margin: 1px 0;
+            font-weight: 600;
+            margin: 4px 0;
+            text-align: left;
+            padding: 0 5px;
+            color: #1A1A1A;
+        }
+
+        .child .rating {
+            font-size: 13px;
+            color: #F47B20;
+            font-weight: 600;
+            text-align: left;
+            padding: 0 5px;
+        }
+
+        .child .harga {
+            font-size: 14px;
+            color: #1A1A1A;
+            margin-top: 2px;
+            margin-bottom: 5px;
+            text-align: left;
+            padding: 0 5px;
         }
 
         .menu-link {
@@ -267,7 +288,7 @@ require_once '../include/koneksi.php';
             text-decoration: none;
             display: flex;
             right: 10px;
-            bottom: 87px;
+            top: 138px;
             position: absolute;
             background: #F47B20;
             color: #ffffff;
@@ -282,7 +303,7 @@ require_once '../include/koneksi.php';
             justify-content: center;
             align-items: center;
             text-align: center;
-            line-height: 39px;
+            
         }
 
         .add-btn:hover {
@@ -396,7 +417,7 @@ require_once '../include/koneksi.php';
 
                             <h3><?php echo $row['NAMA_MENU']; ?></h3>
 
-                            <div class="rating">★ <?= $row['RATING'] ?? 'belum ada rating' ?></div>
+                            <div class="rating">★ <?= $row['RATING'] ?? '0.0' ?></div>
 
                             <p class="harga">
                                 Rp <?php echo number_format($row['HARGA'], 0, ',', '.'); ?>
