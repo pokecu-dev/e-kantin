@@ -2,54 +2,46 @@
 
 require_once __DIR__ . "/../include/koneksi.php";
 
-
 $totalProduk = mysqli_query($conn, "
     SELECT COUNT(*) as total 
     FROM tb_menu
 ");
-
 $dataProduk = mysqli_fetch_assoc($totalProduk);
-
 
 $totalUser = mysqli_query($conn, "
     SELECT COUNT(*) as total 
     FROM users
 ");
-
 $dataUser = mysqli_fetch_assoc($totalUser);
-
 
 $totalOutlet = mysqli_query($conn, "
     SELECT COUNT(*) as total 
     FROM list_kantin
 ");
-
 $dataOutlet = mysqli_fetch_assoc($totalOutlet);
-
 
 $produkHabis = mysqli_query($conn, "
     SELECT COUNT(*) as total 
     FROM tb_menu
     WHERE STOK = 0
 ");
-
 $dataHabis = mysqli_fetch_assoc($produkHabis);
 
-
+// PERBAIKAN QUERY: Menggunakan GROUP BY sebagai ganti DISTINCT agar relasi LEFT JOIN tidak merusak baris transaksi terbaru
 $transaksi = mysqli_query($conn, "
-    SELECT DISTINCT
+    SELECT 
         t.ID_TRANSAKSI,
         t.TOTAL,
         t.STATUS,
-        k.NAMA_KANTIN
+        MAX(k.NAMA_KANTIN) as NAMA_KANTIN
     FROM transaksi t
     LEFT JOIN detail_transaksi dt ON t.ID_TRANSAKSI = dt.ID_TRANSAKSI
     LEFT JOIN tb_menu m ON dt.ID_MENU = m.ID_MENU
     LEFT JOIN list_kantin k ON m.ID_KANTIN = k.ID
+    GROUP BY t.ID_TRANSAKSI
     ORDER BY t.ID_TRANSAKSI DESC
     LIMIT 5
 ");
-
 
 $terlaris = mysqli_query($conn, "
     SELECT 
@@ -64,14 +56,14 @@ $terlaris = mysqli_query($conn, "
     LIMIT 5
 ");
 ?>
-
+<!DOCTYPE html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola User</title>
 
     <link rel="stylesheet" href="style.css">
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -94,7 +86,6 @@ $terlaris = mysqli_query($conn, "
             margin: 0;
             padding: 0;
             padding-right: 0px !important;
-     
         }
 
         .nav-links a {
@@ -110,7 +101,6 @@ $terlaris = mysqli_query($conn, "
             padding-bottom: 5px;
         }
 
-
         .container {
             width: 100%;
             max-width: 1400px;
@@ -118,7 +108,6 @@ $terlaris = mysqli_query($conn, "
             padding: 24px;
             margin-top: 70px;
         }
-
 
         .dashboard-header {
             margin-bottom: 30px;
@@ -150,7 +139,6 @@ $terlaris = mysqli_query($conn, "
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            /* Pas di HP membagi 2 kolom sama rata */
             gap: 12px;
             width: 100%;
         }
@@ -227,68 +215,22 @@ $terlaris = mysqli_query($conn, "
             line-height: 1.1;
         }
 
-        @media (min-width: 1024px) {
-            .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 24px;
-            }
-
-            .stat-card {
-                padding: 24px;
-                gap: 18px;
-            }
-
-            .icon-box {
-                width: 58px;
-                height: 58px;
-                font-size: 22px;
-            }
-
-            .stat-content h2 {
-                font-size: 32px;
-            }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 24px;
+            align-items: start;
+            width: 100%;
         }
 
-        @media (min-width: 1024px) {
-            .stats-scroll {
-                overflow-x: visible;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 20px;
-            }
-
-            .stat-card {
-                padding: 24px;
-                border-radius: 20px;
-            }
-
-            .icon-box {
-                width: 56px;
-                height: 56px;
-                font-size: 24px;
-                margin-bottom: 16px;
-                display: flex;
-
-            }
-
-            .stat-card h2 {
-                font-size: 34px;
-                margin-top: 10px;
-            }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
         }
 
-        @media (max-width: 767px) {
-
-            .icon-box {
-                display: none !important;
-            }
-        }
-
-        /* =======================
-GRID
-======================= */
         .card h3 {
             font-size: 18px;
             font-weight: 700;
@@ -358,39 +300,6 @@ GRID
             color: #dc2626;
         }
 
-        @media (max-width: 576px) {
-
-            .table-row {
-
-                grid-template-columns: 0.5fr 1.1fr 1.2fr 1.2fr;
-                padding: 12px 6px;
-                font-size: 12px;
-            }
-
-
-            .status-badge {
-                padding: 4px 8px;
-                font-size: 11px;
-            }
-        }
-
-        /* =======================
-PRODUK HABIS
-======================= */
-
-        .habis-item {
-            background: #fef2f2;
-            color: #dc2626;
-            padding: 14px;
-            border-radius: 14px;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
-
-        /* =========================================================================
-   🏅 WRAPPER UTAMA CARD RATING
-   ========================================================================= */
         .rating-container {
             background: white;
             border-radius: 20px;
@@ -407,21 +316,15 @@ PRODUK HABIS
             font-family: 'Poppins', sans-serif;
         }
 
-        /* CONTAINER LIST DATA */
         .rating-list {
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
 
-        /* =========================================================================
-   🃏 NEW CARD DESIGN (Dengan Foto, Nama Kantin & Rating Tanpa Emoji)
-   ========================================================================= */
         .rating-item {
             background: #fff7ed;
-            /* Orange soft */
             border-left: 5px solid #ff7e14;
-            /* Aksen tebal kiri */
             padding: 14px;
             border-radius: 14px;
             display: flex;
@@ -436,7 +339,6 @@ PRODUK HABIS
             box-shadow: 0 4px 12px rgba(234, 88, 12, 0.08);
         }
 
-        /* Foto Produk Box */
         .rating-img {
             width: 60px;
             height: 60px;
@@ -446,7 +348,17 @@ PRODUK HABIS
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
-        /* Detail Info Konten Teks */
+        .rating-img-fallback {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+        }
+
         .rating-info {
             flex: 1;
             display: flex;
@@ -466,7 +378,6 @@ PRODUK HABIS
             font-weight: 500;
         }
 
-        /* Badge Rating Sisi Kanan */
         .rating-score-box {
             display: flex;
             align-items: center;
@@ -483,45 +394,56 @@ PRODUK HABIS
             color: #face15;
         }
 
-        /* =========================================================================
-   📱 BREAKPOINT MOBILE (Saat dibuka di HP dia jadi Card Mandiri-Mandiri)
-   ========================================================================= */
-        @media (max-width: 576px) {
-            .rating-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-                padding: 16px;
+        @media (min-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
             }
 
-            .rating-img {
-                width: 100%;
-                height: 140px;
+            .stat-card {
+                padding: 24px;
+                gap: 18px;
             }
 
-            .rating-score-box {
-                align-self: flex-end;
-                margin-top: 4px;
+            .icon-box {
+                width: 58px;
+                height: 58px;
+                font-size: 22px;
+            }
+
+            .stat-content h2 {
+                font-size: 32px;
             }
         }
 
-        /* =======================
-RESPONSIVE
-======================= */
-
-        @media(max-width:900px) {
-
+        @media (max-width: 900px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
+        }
 
+        @media (max-width: 767px) {
+            .icon-box {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .table-row {
+                grid-template-columns: 0.5fr 1.1fr 1.2fr 1.2fr;
+                padding: 12px 6px;
+                font-size: 12px;
+            }
+
+            .status-badge {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
         }
     </style>
 </head>
-
 <body>
 
-    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo"> <img src="../../source/icon/logo1.svg" alt=""></div>
@@ -541,28 +463,21 @@ RESPONSIVE
         </div>
     </nav>
 
-
     <div class="container">
-
-        <!-- HEADER -->
-
         <div class="dashboard-header">
             <h1>Dashboard Admin</h1>
             <p>Pantau semua aktivitas kantin secara real-time.</p>
         </div>
 
-        <!-- STATS -->
-
         <div class="stats-scroll">
             <div class="stats-grid">
-
                 <div class="stat-card prod-orange">
                     <div class="icon-box">
                         <i class="fas fa-box"></i>
                     </div>
                     <div class="stat-content">
                         <span>Total Produk</span>
-                        <h2><?= $dataProduk['total'] ?></h2>
+                        <h2><?= $dataProduk['total'] ?? 0 ?></h2>
                     </div>
                 </div>
 
@@ -572,7 +487,7 @@ RESPONSIVE
                     </div>
                     <div class="stat-content">
                         <span>Total User</span>
-                        <h2><?= $dataUser['total'] ?></h2>
+                        <h2><?= $dataUser['total'] ?? 0 ?></h2>
                     </div>
                 </div>
 
@@ -582,7 +497,7 @@ RESPONSIVE
                     </div>
                     <div class="stat-content">
                         <span>Total Outlet</span>
-                        <h2><?= $dataOutlet['total'] ?></h2>
+                        <h2><?= $dataOutlet['total'] ?? 0 ?></h2>
                     </div>
                 </div>
 
@@ -592,24 +507,15 @@ RESPONSIVE
                     </div>
                     <div class="stat-content">
                         <span>Produk Habis</span>
-                        <h2><?= $dataHabis['total'] ?></h2>
+                        <h2><?= $dataHabis['total'] ?? 0 ?></h2>
                     </div>
                 </div>
-
             </div>
         </div>
 
-        <!-- GRID -->
-
         <div class="dashboard-grid">
-
-            <!-- TRANSAKSI -->
-
-
-
-            <div class="card" style="margin-bottom:24px;">
+            <div class="card">
                 <h3>Transaksi Terbaru</h3>
-
                 <div class="table">
                     <div class="table-row table-header">
                         <div>ID</div>
@@ -618,56 +524,47 @@ RESPONSIVE
                         <div>Status</div>
                     </div>
 
-                    <?php while ($trx = mysqli_fetch_assoc($transaksi)): ?>
-                        <?php
-                        $statusClass = '';
-                        $status_check = strtolower($trx['STATUS']);
+                    <?php if (mysqli_num_rows($transaksi) > 0): ?>
+                        <?php while ($trx = mysqli_fetch_assoc($transaksi)): ?>
+                            <?php
+                            $statusClass = '';
+                            $status_check = strtolower($trx['STATUS']);
 
-                        if ($status_check == 'pending') {
-                            $statusClass = 'badge-warning';
-                        } elseif ($status_check == 'success' || $status_check == 'selesai') {
-                            $statusClass = 'badge-success';
-                        } else {
-                            $statusClass = 'badge-danger';
-                        }
-                        ?>
-
-                        <div class="table-row">
-                            <div style="color: #ff7e14;">#<?= htmlspecialchars($trx['ID_TRANSAKSI']) ?></div>
-
-                            <div style="font-weight: 500; color: #64748b;">
-                                <?= htmlspecialchars($trx['NAMA_KANTIN'] ?? 'KantinKita') ?>
+                            if ($status_check == 'pending') {
+                                $statusClass = 'badge-warning';
+                            } elseif ($status_check == 'success' || $status_check == 'selesai') {
+                                $statusClass = 'badge-success';
+                            } else {
+                                $statusClass = 'badge-danger';
+                            }
+                            ?>
+                            <div class="table-row">
+                                <div style="color: #ff7e14;">#<?= htmlspecialchars($trx['ID_TRANSAKSI']) ?></div>
+                                <div style="font-weight: 500; color: #64748b;">
+                                    <?= htmlspecialchars($trx['NAMA_KANTIN'] ?? 'KantinKita') ?>
+                                </div>
+                                <div style="font-weight: 600; color: #1e293b;">
+                                    Rp <?= number_format($trx['TOTAL'], 0, ',', '.') ?>
+                                </div>
+                                <div>
+                                    <span class="status-badge <?= $statusClass ?>">
+                                        <span style="font-size: 8px; margin-right: 4px;">●</span>
+                                        <?= htmlspecialchars($trx['STATUS']) ?>
+                                    </span>
+                                </div>
                             </div>
-
-                            <div style="font-weight: 600; color: #1e293b;">
-                                Rp <?= number_format($trx['TOTAL'], 0, ',', '.') ?>
-                            </div>
-
-                            <div>
-                                <span class="status-badge <?= $statusClass ?>">
-                                    <span style="font-size: 8px; margin-right: 4px;">●</span>
-                                    <?= htmlspecialchars($trx['STATUS']) ?>
-                                </span>
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
-
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <div style="padding: 20px; text-align: center; color: #64748b;">Belum ada transaksi.</div>
+                    <?php endif; ?>
                 </div>
-            </div>c
+            </div>
 
-            <!-- SIDEBAR -->
-
-            <div>
-
-                <!-- PRODUK TERLARIS -->
-
-                <div class="rating-container" style="margin-bottom:24px;">
-
-                    <h3>Produk Rating Tertinggi</h3>
-
-                    <div class="rating-list">
+            <div class="rating-container">
+                <h3>Produk Rating Tertinggi</h3>
+                <div class="rating-list">
+                    <?php if (mysqli_num_rows($terlaris) > 0): ?>
                         <?php while ($top = mysqli_fetch_assoc($terlaris)): ?>
-
                             <div class="rating-item">
                                 <?php if (!empty($top['FOTO_MENU'])): ?>
                                     <img src="../../source/gambar_menu/<?= htmlspecialchars($top['FOTO_MENU']) ?>" alt="<?= htmlspecialchars($top['NAMA_MENU']) ?>" class="rating-img">
@@ -688,58 +585,11 @@ RESPONSIVE
                                 </div>
                             </div>
                         <?php endwhile; ?>
-                    </div>
-
+                    <?php else: ?>
+                        <div style="padding: 20px; text-align: center; color: #64748b;">Belum ada rating produk.</div>
+                    <?php endif; ?>
                 </div>
-
-                <!-- QUICK ACTION
-
-            <div class="card">
-
-                <h3>Quick Action</h3>
-
-                <div style="
-                    display:flex;
-                    flex-direction:column;
-                    gap:14px;
-                ">
-
-                    <a href="menu.php"
-                    style="
-                    text-decoration:none;
-                    background:#f47b20;
-                    color:white;
-                    padding:14px;
-                    border-radius:14px;
-                    text-align:center;
-                    font-weight:600;
-                    ">
-                        + Tambah Produk
-                    </a>
-
-                    <a href="akun.php"
-                    style="
-                    text-decoration:none;
-                    background:#1e293b;
-                    color:white;
-                    padding:14px;
-                    border-radius:14px;
-                    text-align:center;
-                    font-weight:600;
-                    ">
-                        + Tambah User
-                    </a>
-
-                </div>
-
-            </div> -->
-
             </div>
-
-        </div>
-
-    </div>
-
-</body>
-
+        </div> 
+    </div> </body>
 </html>

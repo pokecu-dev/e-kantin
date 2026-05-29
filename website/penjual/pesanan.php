@@ -430,7 +430,7 @@ $query_transaksi = $conn->query($sql_transaksi);
 
     <div class="container" style="margin-top: 70px;">
         <header class="header-title">
-            <p>Kelola dan perbarui status pesanan pelanggan.</p>
+            
         </header>
 
         <?php if (isset($_GET['msg']) && $_GET['msg'] == 'success'): ?>

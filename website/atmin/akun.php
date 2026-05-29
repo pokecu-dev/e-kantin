@@ -217,6 +217,7 @@ if ($search_user !== '') {
             border-radius: 999px;
             display: flex;
             align-items: center;
+             max-width: 158px;
             gap: 10px;
             font-weight: 600;
             cursor: pointer;
@@ -251,6 +252,7 @@ if ($search_user !== '') {
             }
             .btn-add {
                 width: 100%;
+           
                 justify-content: center;
             }
         }
