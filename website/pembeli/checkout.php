@@ -1,33 +1,49 @@
 <?php
-
 // session_start();
-require_once __DIR__ . '/../include/koneksi.php';
+require_once __DIR__ . '/../include/koneksi.php'; 
 require_once __DIR__ . "/../include/session/pembeliC.php";
 
 $id_user   = (int)$_SESSION['id_user'];
 $id_kantin = isset($_GET['id_kantin']) ? (int)$_GET['id_kantin'] : 0;
 
-if ($id_kantin <= 0) { header("Location: keranjang.php"); exit(); }
-// if ($id_kantin <= 0) { echo $id_kantin; }
+// Beli Sekarang
+$id_menu_direct = isset($_GET['id_menu']) ? (int)$_GET['id_menu'] : 0;
+$qty_direct = isset($_GET['qty']) ? (int)$_GET['qty'] : 1;
 
-$q_kantin = mysqli_query($conn, "SELECT * FROM list_kantin WHERE ID = $id_kantin LIMIT 1");
-$kantin   = mysqli_fetch_assoc($q_kantin);
-// if (!$kantin) {echo $kantin; }
-if (!$kantin) { header("Location: keranjang.php"); exit(); }
+// if ($id_kantin <= 0) { header("Location: keranjang.php"); exit(); }
+if($id_kantin <= 0) echo $id_kantin;
 
-$q_items = mysqli_query($conn, "
-    SELECT k.id_keranjang, k.id_menu, k.qty,
-           m.NAMA_MENU, m.HARGA, m.STOK, m.STATUS, m.FOTO_MENU
-    FROM keranjang k
-    JOIN tb_menu m ON k.id_menu = m.ID_MENU
-    WHERE k.id_user = $id_user AND m.ID_KANTIN = $id_kantin
-");
+$q_kantin = $conn->query("SELECT * FROM list_kantin WHERE ID = $id_kantin LIMIT 1");
+$kantin   = $q_kantin->fetch_assoc(); // Pakai panah (->) untuk fetch
 
-if (!$q_items || mysqli_num_rows($q_items) === 0) { header("Location: keranjang.php"); exit(); }
-
+// if (!$kantin) { header("Location: keranjang.php"); exit(); }
+if(!$kantin) echo "var kantin gagal";
 $items = []; $total = 0; $ada_error = false;
 
-while ($row = mysqli_fetch_assoc($q_items)) {
+if ($id_menu_direct > 0) {
+    // Beli Sekarang
+    $q_items = $conn->query("
+        SELECT 0 as id_keranjang, ID_MENU as id_menu, $qty_direct as qty,
+               NAMA_MENU, HARGA, STOK, STATUS, FOTO_MENU
+        FROM tb_menu 
+        WHERE ID_MENU = $id_menu_direct AND ID_KANTIN = $id_kantin
+    ");
+} else {
+    //  Keranjang
+    $q_items = $conn->query("
+        SELECT k.id_keranjang, k.id_menu, k.qty,
+               m.NAMA_MENU, m.HARGA, m.STOK, m.STATUS, m.FOTO_MENU
+        FROM keranjang k
+        JOIN tb_menu m ON k.id_menu = m.ID_MENU
+        WHERE k.id_user = $id_user AND m.ID_KANTIN = $id_kantin
+    ");
+}
+
+// if (!$q_items || $q_items->num_rows === 0) { header("Location: keranjang.php"); exit(); }
+if (!$q_items || $q_items->num_rows === 0) echo $q_items;
+
+
+while ($row = $q_items->fetch_assoc()) {
     $subtotal        = (int)$row['HARGA'] * (int)$row['qty'];
     $total          += $subtotal;
     $row['subtotal'] = $subtotal;
@@ -413,6 +429,8 @@ function prosesCheckout() {
     var loading = document.getElementById('co-loading');
     var catatan = document.getElementById('catatan').value;
     var metode = document.getElementById('metode').value;
+    var ID_MENU_DIRECT = <?= $id_menu_direct ?>;
+    var QTY_DIRECT = <?= $qty_direct ?>;
 
     console.log(metode);
 
@@ -464,8 +482,12 @@ function prosesCheckout() {
         btn.disabled = false;
     };
 
-    xhr.send('id_kantin=' + ID_KANTIN + '&catatan=' + encodeURIComponent(catatan) + '&metode=' + encodeURIComponent(metode));
-}
+    xhr.send('id_kantin=' + ID_KANTIN + 
+         '&id_menu_direct=' + ID_MENU_DIRECT + 
+         '&qty_direct=' + QTY_DIRECT + 
+         '&catatan=' + encodeURIComponent(catatan) + 
+         '&metode=' + encodeURIComponent(metode));}
+
 </script>
 
 </body>

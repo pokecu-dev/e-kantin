@@ -499,8 +499,9 @@ if (!$data) {
             <p><?php echo nl2br($data['DESK']); ?></p>
         </div>
 
-        <form id="form-data" action="detail_menu.php?id=<?= $id; ?>" method="POST">
-            <input type="hidden" name="id_menu" value="<?php echo $data['ID_MENU']; ?>">
+        <form id="form-data">
+            <input type="hidden" name="id_kantin" value="<?= $data['ID_KANTIN'] ?>">
+            <input type="hidden" name="id_menu" value="<?= $data['ID_MENU']; ?>">
 
             <div class="row-harga-qty">
                 <div class="harga">
@@ -517,10 +518,10 @@ if (!$data) {
             <div id="notif"></div>
 
             <div class="footer-keranjang"> 
-                <button type="submit" class="icon-badge">
+                <button type="submit" name="add_to_cart" class="icon-badge" onclick="tombolDiklik = 'add_to_cart'">
                     Tambah Ke Keranjang
                 </button>
-                <button type="submit" name="buy_now" id="btnCheckout">
+                <button type="submit" name="buy_now" id="btnCheckout" onclick="tombolDiklik = 'buy_now'">
                     Beli Sekarang
                 </button>
             </div>
@@ -625,6 +626,17 @@ if (!$data) {
         const dataform = new FormData(e.target);
 
         try{
+
+            if(tombolDiklik === 'add_to_cart'){
+                dataform.append('action', 'add_to_cart');
+            }else if(tombolDiklik === 'buy_now'){
+                console.log("BELI WOIII")
+                dataform.append('action', 'buy_now');
+            }else{
+                notif.innerText = "Error: Aksi tidak dikenali.";
+                return;
+            }
+
             const response = await fetch('keranjangDB.php',{
                 method:'POST',
                 body: dataform
@@ -634,10 +646,17 @@ if (!$data) {
             const data = await response.json();
             // console.log(2);
             if(data.status === 'success'){
+                console.log(data.redirect)
                 if (data.redirect == 'buy_now') {
-                    window.location.href = './checkout.php';
-                }else{
-                        window.location.href = './keranjang.php'; 
+
+                    const idKantin = e.target.querySelector('[name="id_kantin"]').value;
+                    const idMenu = e.target.querySelector('[name="id_menu"]').value;
+                    const qty = document.getElementById("qty").value;
+                    window.location.href = `./checkout.php?id_kantin=${idKantin}&id_menu=${idMenu}&qty=${qty}`;
+                }
+                else{
+                    
+                    window.location.href = './keranjang.php'; 
                 }   
             }
             console.log(data.message);

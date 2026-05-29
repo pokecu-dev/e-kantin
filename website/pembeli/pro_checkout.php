@@ -5,53 +5,69 @@ require_once __DIR__ . '/../include/koneksi.php';
 
 header('Content-Type: application/json');
 
-// ── 1. Validasi session ──────────────────────────────────────
+// Validasi session 
 if (!isset($_SESSION['id_user'])) {
     echo json_encode(['status' => 'error', 'message' => 'Sesi habis, silakan login kembali.']);
     exit();
 }
 
-// ── 2. Validasi input ────────────────────────────────────────
+// Validasi input 
+$id_user   = (int)$_SESSION['id_user'];
 $id_kantin = isset($_POST['id_kantin']) ? (int)$_POST['id_kantin'] : 0;
 $catatan   = isset($_POST['catatan'])   ? trim($conn->real_escape_string($_POST['catatan'])) : '';
-$id_user   = (int)$_SESSION['id_user'];
-$metode = isset($_POST['metode']) ? trim($conn->real_escape_string($_POST['metode'])) : '';
+$metode    = isset($_POST['metode'])    ? trim($conn->real_escape_string($_POST['metode'])) : '';
+
+// Deteksi parameter beli sekarang
+$id_menu_direct = isset($_POST['id_menu_direct']) ? (int)$_POST['id_menu_direct'] : 0;
+$qty_direct     = isset($_POST['qty_direct'])     ? (int)$_POST['qty_direct'] : 1;
 
 if ($id_kantin <= 0) {
     echo json_encode(['status' => 'error', 'message' => 'Kantin tidak valid.']);
     exit();
 }
 
-// ── 3. Ambil item keranjang user untuk kantin ini ────────────
-$sql_keranjang = "
-    SELECT
-        k.id_keranjang,
-        k.id_menu,
-        k.qty,
-        m.NAMA_MENU,
-        m.HARGA,
-        m.STOK,
-        m.STATUS,
-        m.ID_KANTIN
-    FROM keranjang k
-    JOIN tb_menu m ON k.id_menu = m.ID_MENU
-    WHERE k.id_user = $id_user
-      AND m.ID_KANTIN = $id_kantin
-";
-
-$result_keranjang = mysqli_query($conn, $sql_keranjang);
-
-if (!$result_keranjang || mysqli_num_rows($result_keranjang) === 0) {
-    echo json_encode(['status' => 'error', 'message' => 'Keranjang kosong atau tidak ada item untuk kantin ini.']);
-    exit();
-}
-
 $items = [];
-while ($row = mysqli_fetch_assoc($result_keranjang)) {
+
+// Beli Sekarang VS Dari Keranjang 
+if ($id_menu_direct > 0) {
+    // beli sekarang
+    $sql_direct = "SELECT ID_MENU as id_menu, NAMA_MENU, HARGA, STOK, STATUS, ID_KANTIN 
+                   FROM tb_menu 
+                   WHERE ID_MENU = $id_menu_direct AND ID_KANTIN = $id_kantin";
+    
+    $result_direct = $conn->query($sql_direct);
+    
+    if (!$result_direct || $result_direct->num_rows === 0) {
+        echo json_encode(['status' => 'error', 'message' => 'Menu tidak ditemukan atau tidak sesuai kantin.']);
+        exit();
+    }
+    
+    $row = $result_direct->fetch_assoc();
+    $row['qty'] = $qty_direct; // Pasang qty dari lemparan js
     $items[] = $row;
+
+} else {
+    // keranjang
+    $sql_keranjang = "
+        SELECT k.id_keranjang, k.id_menu, k.qty, m.NAMA_MENU, m.HARGA, m.STOK, m.STATUS, m.ID_KANTIN
+        FROM keranjang k
+        JOIN tb_menu m ON k.id_menu = m.ID_MENU
+        WHERE k.id_user = $id_user AND m.ID_KANTIN = $id_kantin
+    ";
+
+    $result_keranjang = $conn->query($sql_keranjang);
+
+    if (!$result_keranjang || $result_keranjang->num_rows === 0) {
+        echo json_encode(['status' => 'error', 'message' => 'Keranjang kosong untuk kantin ini.']);
+        exit();
+    }
+
+    while ($row = $result_keranjang->fetch_assoc()) {
+        $items[] = $row;
+    }
 }
 
-// ── 4. Validasi stok sebelum transaksi dimulai ───────────────
+// Validasi stok sebelum transaksi dimulai 
 $stok_errors = [];
 foreach ($items as $item) {
     if ($item['STATUS'] === 'habis') {
@@ -70,39 +86,35 @@ if (!empty($stok_errors)) {
     exit();
 }
 
-// ── 5. Mulai Transaksi Database ──────────────────────────────
-mysqli_begin_transaction($conn);
+// Mulai Transaksi Database 
+$conn->begin_transaction();
 
 try {
-
-    // Hitung total
+    // Hitung total belanjaan
     $total = 0;
     foreach ($items as $item) {
         $total += (int)$item['HARGA'] * (int)$item['qty'];
     }
 
-    // Generate kode pesanan: ORD-YYYYMMDD-RAND4
+    // Generate kode pesanan
     $kode_pesanan = 'ORD-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -5));
 
-    // ── 5a. Insert ke tabel transaksi ────────────────────────
-    $esc_catatan      = mysqli_real_escape_string($conn, $catatan);
-    $esc_kode_pesanan = mysqli_real_escape_string($conn, $kode_pesanan);
-
+    // Insert ke tabel transaksi
     $sql_insert_trx = "
-        INSERT INTO transaksi (kode_pesanan, id_kantin, id_user, tgl, waktu, total, status, catatan,metode)
-        VALUES ('$esc_kode_pesanan', $id_kantin, $id_user, CURDATE(), CURTIME(), $total, 'pending', '$esc_catatan','$metode')
+        INSERT INTO transaksi (kode_pesanan, id_kantin, id_user, tgl, waktu, total, status, catatan, metode)
+        VALUES ('$kode_pesanan', $id_kantin, $id_user, CURDATE(), CURTIME(), $total, 'pending', '$catatan', '$metode')
     ";
 
-    if (!mysqli_query($conn, $sql_insert_trx)) {
-        throw new Exception("Gagal menyimpan transaksi: " . mysqli_error($conn));
+    if (!$conn->query($sql_insert_trx)) {
+        throw new Exception("Gagal menyimpan transaksi.");
     }
 
-    $id_transaksi = mysqli_insert_id($conn);
+    $id_transaksi = $conn->insert_id; // Menggunakan properti OOP $conn->insert_id
 
-    // ── 5b. Insert detail_transaksi per item ─────────────────
+    // Insert detail_transaksi per item
     foreach ($items as $item) {
         $id_menu_esc  = (int)$item['id_menu'];
-        $nama_esc     = mysqli_real_escape_string($conn, $item['NAMA_MENU']);
+        $nama_esc     = $conn->real_escape_string($item['NAMA_MENU']);
         $harga_esc    = (int)$item['HARGA'];
         $qty_esc      = (int)$item['qty'];
         $subtotal_esc = $harga_esc * $qty_esc;
@@ -112,17 +124,16 @@ try {
             VALUES ($id_transaksi, $id_menu_esc, '$nama_esc', $harga_esc, $qty_esc, $subtotal_esc)
         ";
 
-        if (!mysqli_query($conn, $sql_detail)) {
-            throw new Exception("Gagal menyimpan detail item: " . mysqli_error($conn));
+        if (!$conn->query($sql_detail)) {
+            throw new Exception("Gagal menyimpan detail item.");
         }
     }
 
-    // ── 5c. Kurangi stok masing-masing menu ──────────────────
+    // Kurangi stok masing-masing menu
     foreach ($items as $item) {
         $id_menu_esc = (int)$item['id_menu'];
         $qty_esc     = (int)$item['qty'];
 
-        // Jika stok menjadi 0, update STATUS juga jadi 'habis'
         $sql_kurang_stok = "
             UPDATE tb_menu
             SET STOK   = STOK - $qty_esc,
@@ -130,34 +141,32 @@ try {
             WHERE ID_MENU = $id_menu_esc
         ";
 
-        if (!mysqli_query($conn, $sql_kurang_stok)) {
-            throw new Exception("Gagal update stok: " . mysqli_error($conn));
+        if (!$conn->query($sql_kurang_stok)) {
+            throw new Exception("Gagal update stok.");
         }
     }
 
-    // ── 5d. Hapus keranjang user untuk kantin ini ─────────────
-    $sql_hapus_keranjang = "
-        DELETE k FROM keranjang k
-        JOIN tb_menu m ON k.id_menu = m.ID_MENU
-        WHERE k.id_user = $id_user
-          AND m.ID_KANTIN = $id_kantin
-    ";
+    // Hapus keranjang HANYA JIKA belanja lewat keranjang
+    if ($id_menu_direct === 0) {
+        $sql_hapus_keranjang = "
+            DELETE k FROM keranjang k
+            JOIN tb_menu m ON k.id_menu = m.ID_MENU
+            WHERE k.id_user = $id_user AND m.ID_KANTIN = $id_kantin
+        ";
 
-    if (!mysqli_query($conn, $sql_hapus_keranjang)) {
-        throw new Exception("Gagal membersihkan keranjang: " . mysqli_error($conn));
+        if (!$conn->query($sql_hapus_keranjang)) {
+            throw new Exception("Gagal membersihkan keranjang.");
+        }
     }
 
-    // ── 6. Commit ────────────────────────────────────────────
-    mysqli_commit($conn);
+    // Commit Transaksi 
+    $conn->commit();
 
-    if($metode === "QRIS"){
+    if ($metode === "QRIS") {
         $redirect_url = "qris.php?trx=$id_transaksi&id_kantin=$id_kantin";
-    }
-    else{
+    } else {
         $redirect_url = "struckdigital.php?trx=$id_transaksi";
     }
-
-
 
     echo json_encode([
         'status'        => 'success',
@@ -169,7 +178,8 @@ try {
     ]);
 
 } catch (Exception $e) {
-    mysqli_rollback($conn);
+
+    $conn->rollback();
     echo json_encode([
         'status'  => 'error',
         'message' => 'Checkout gagal: ' . $e->getMessage(),
