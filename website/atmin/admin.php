@@ -496,7 +496,7 @@ $terlaris = mysqli_query($conn, "
                         <i class="fas fa-store"></i>
                     </div>
                     <div class="stat-content">
-                        <span>Total Outlet</span>
+                        <span>Total Kantin</span>
                         <h2><?= $dataOutlet['total'] ?? 0 ?></h2>
                     </div>
                 </div>
