@@ -1,5 +1,6 @@
 <?php
 require_once '../include/koneksi.php';
+require_once __DIR__ . "/../include/session/penjualC.php";
 
 $id_menu = $_GET['id'] ?? '';
 

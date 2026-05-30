@@ -1,5 +1,6 @@
 <?php
-session_start();
+// session_start();
+require_once __DIR__ . "/../include/session/adminC.php";
 require_once __DIR__ . "/../include/koneksi.php";
 
 // ==========================================

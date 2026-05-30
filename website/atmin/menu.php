@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . "/../include/koneksi.php";
+require_once __DIR__ . "/../include/session/adminC.php";
 
 if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);

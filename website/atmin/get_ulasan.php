@@ -1,5 +1,6 @@
 <?php
-require_once '../include/koneksi.php'; // Pastikan di dalam ini nama variabelnya adalah $conn
+require_once __DIR__ . '/../include/koneksi.php'; // Pastikan di dalam ini nama variabelnya adalah $conn
+require_once __DIR__ . "/../include/session/adminC.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aksi']) && $_POST['aksi'] === 'hapus') {
     header('Content-Type: application/json');

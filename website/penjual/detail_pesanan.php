@@ -1,6 +1,7 @@
 <?php
 // 1. Hubungkan ke database dan aktifkan session
 require_once __DIR__ . "/../include/koneksi.php";
+require_once __DIR__ . "/../include/session/penjualC.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

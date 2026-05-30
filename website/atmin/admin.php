@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../include/koneksi.php";
+require_once __DIR__ . "/../include/session/adminC.php";
 
 $totalProduk = mysqli_query($conn, "
     SELECT COUNT(*) as total 

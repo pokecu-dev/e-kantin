@@ -1,12 +1,6 @@
 <?php
-session_start();
 
-// 1. Proteksi Halaman
-if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
-    header("location: ../login.php");
-    exit();
-}
-
+require_once __DIR__ . "/../include/session/pembeliC.php";
 require_once __DIR__ . "/../include/koneksi.php";
 
 // 2. Ambil data menggunakan ID dari Session

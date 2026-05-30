@@ -1,3 +1,10 @@
+<?php
+
+    require_once __DIR__ . "/../include/session/adminC.php";
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="id">
 

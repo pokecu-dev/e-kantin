@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../include/koneksi.php";
-session_start();
+require_once __DIR__ . "/../include/session/adminC.php";
+// session_start();
 if ($_SESSION['role'] != 'ADMIN') {
     header('Location: ../login.php');
 }

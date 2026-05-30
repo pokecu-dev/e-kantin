@@ -1,11 +1,6 @@
 <?php
-session_start();
 
-if (!isset($_SESSION['status']) || $_SESSION['status'] != 'success') {
-    header("location: ../login.php");
-    exit();
-}
-
+require_once __DIR__ . "/../include/session/penjualC.php";
 require_once __DIR__ . "/../include/koneksi.php";
 
 $id_user = $_SESSION['id_user'];

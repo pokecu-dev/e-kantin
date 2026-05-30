@@ -372,12 +372,21 @@ require_once '../include/koneksi.php';
                 $no = 1;
                 while ($row = $result_kantin->fetch_assoc()) {
                     if ($row['STATUS'] == 1) {
+                        $nama_kantin = $row['NAMA_KANTIN'];
+                        if (str_contains(strtolower($nama_kantin), 'kantin')) {
+    
+                            // 2. Potong/hapus kata "kantin" beserta spasi setelahnya
+                            $nama_kantin = str_ireplace('kantin ', '', $nama_kantin);
+
+                            // echo $nama_kantin;
+                        }
+
                 ?>
                         <div class="slide">
-                            <img src="./../../source/foto_kantin/<?php echo $row['FOTO_KANTIN']; ?>" alt="Gambar Kantin">
+                            <img src="./../../source/foto_kantin/<?= $row['FOTO_KANTIN']; ?>" alt="Gambar Kantin">
 
-                            <a href="kantin.php?id_kantin=<?php echo $row['ID']; ?>" class="co-btn kantin-btn">
-                                Kantin <?php echo $row['ID']; ?>
+                            <a href="kantin.php?id_kantin=<?= $row['ID']; ?>" class="co-btn kantin-btn">
+                                kantin <?= $nama_kantin ?> 
                             </a>
                         </div>
                 <?php

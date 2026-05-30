@@ -3,8 +3,8 @@
 // KONEKSI & SESSION
 // ===============================
 require_once __DIR__ . "/../include/koneksi.php";
-
-session_start();
+require_once __DIR__ . "/../include/session/penjualC.php";
+// session_start();
 
 // ===============================
 // PROTEKSI HALAMAN

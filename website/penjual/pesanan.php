@@ -1,6 +1,7 @@
 <?php
 // 1. Hubungkan ke file koneksi bawaan kamu
 require_once __DIR__ . "/../include/koneksi.php";
+require_once __DIR__ . "/../include/session/penjualC.php";
 
 // Aktifkan session jika belum aktif untuk tahu siapa yang login
 if (session_status() === PHP_SESSION_NONE) {

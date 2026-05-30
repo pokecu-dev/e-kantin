@@ -1,6 +1,7 @@
 <?php
 // Hubungkan ke file koneksi milikmu
 require_once __DIR__ . "/../include/koneksi.php";
+require_once __DIR__ . "/../include/session/adminC.php";
 
 if ($conn->connect_error) {
     die("Koneksi Gagal: " . $conn->connect_error);

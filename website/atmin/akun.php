@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../include/koneksi.php";
-// require_once __DIR__ . "/../include/session/loginCheck.php";
+require_once __DIR__ . "/../include/session/adminC.php";
 
 if ($conn->error) {
     echo $conn->connect_error;

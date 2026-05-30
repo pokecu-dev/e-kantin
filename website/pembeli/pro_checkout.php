@@ -1,6 +1,7 @@
 <?php
 
-session_start();
+// session_start();
+require_once __DIR__ . "/../include/session/pembeliC.php";
 require_once __DIR__ . '/../include/koneksi.php';
 
 header('Content-Type: application/json');
