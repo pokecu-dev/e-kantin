@@ -255,6 +255,10 @@ h1 {
                                     value="<?php echo $row['ID_MENU']; ?>">
 
                                 <input type="hidden"
+                                    name="action"
+                                    value="add_to_cart">
+
+                                <input type="hidden"
                                     name="qty"
                                     value="1">
 
