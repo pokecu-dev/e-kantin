@@ -449,6 +449,10 @@ require_once '../include/koneksi.php';
                                 name="qty"
                                 value="1">
 
+                            <input type="hidden"
+                                name="action"
+                                value="add_to_cart">
+
                             <button type="submit"
                                 name="add_to_cart"
                                 class="add-btn">+</button>
