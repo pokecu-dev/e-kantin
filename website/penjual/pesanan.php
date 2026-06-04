@@ -513,13 +513,27 @@ $query_transaksi = $conn->query($sql_transaksi);
                             <div>
                                 <form action="" method="POST">
                                     <input type="hidden" name="id_transaksi" value="<?php echo $row['id_transaksi']; ?>">
-                                    <select name="status_baru" onchange="this.form.submit()" class="select-status">
-                                        <option value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending</option>
-                                        <option value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi</option>
-                                        <option value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses</option>
-                                        <option value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
-                                        <option value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan</option>
-                                    </select>
+                                    <?php 
+                                        if($row['status'] == 'selesai'):
+                                    ?>
+                                            <select name="status_baru" onchange="this.form.submit()" class="select-status">
+                                                <option disabled value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending tidak bisa mengubah status</option>
+                                                <option disabled value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi tidak bisa mengubah status</option>
+                                                <option disabled value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses tidak bisa mengubah status</option>
+                                                <option disabled value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
+                                                <option disabled value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan tidak bisa mengubah status</option>
+                                            </select>
+                                        <?php else: ?>
+
+                                            <select name="status_baru" onchange="this.form.submit()" class="select-status">
+                                                <option value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending</option>
+                                                <option value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi</option>
+                                                <option value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses</option>
+                                                <option value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
+                                                <option value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan</option>
+                                            </select>
+
+                                    <?php endif; ?>
                                 </form>
                             </div>
 

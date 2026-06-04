@@ -356,9 +356,9 @@ require_once '../include/koneksi.php';
                             placeholder="Cari menu..."
                             class="search"
                             value="<?php echo $_GET['search'] ?? ''; ?>">
-                        <button type="submit" class="btn-search">
+                        <!-- <button type="submit" class="btn-search">
                             <img src="../../source/icon/search.svg" class="iconsch">
-                        </button>
+                        </button> -->
                     </div>
                 </form>
             </div>
