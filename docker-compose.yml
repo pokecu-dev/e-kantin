@@ -47,6 +47,17 @@ services:
       - my-database
     networks:
       - kantin-network
+  
+  cloudflare-tunnel:
+    image: cloudflare/cloudflared:latest
+    restart: always
+    volumes:
+      # Mengintip langsung folder .cloudflared asli di Windows lu (Ganti 'Administrator' sesuai user PC-mu jika beda)
+      - C:\Users\Administrator\.cloudflared:/home/nonroot/.cloudflared
+    # Tembak langsung file credentials (.json) yang ada di dalam volume tadi
+    command: tunnel --credentials-file /home/nonroot/.cloudflared/5da79a10-29af-44d5-ba4e-84baa3f5654a.json run --url http://web-server:80 5da79a10-29af-44d5-ba4e-84baa3f5654a
+    networks:
+      - kantin-network
 
 networks:
   kantin-network:
