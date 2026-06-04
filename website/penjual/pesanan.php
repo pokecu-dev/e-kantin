@@ -77,7 +77,7 @@ $sql_transaksi = "
     FROM transaksi t
     LEFT JOIN users u ON t.id_user = u.ID
     $where_clause
-    ORDER BY t.ID_TRANSAKSI DESC, t.tgl DESC, t.waktu DESC
+    ORDER BY t.ID_TRANSAKSI ASC, t.tgl ASC, t.waktu ASC
 ";
 
 $query_transaksi = $conn->query($sql_transaksi);
