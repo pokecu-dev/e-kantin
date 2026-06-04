@@ -10,7 +10,7 @@
 
         public function add($usn, $pass, $nama_lengkap, $no_tlp, $email,$nisn,$id_kelas,$tempat_lahir,$tanggal_lahir,$alamat_rumah)
         {
-            $hasil = $this->AddUsers($usn, $pass, $nama_lengkap, $no_tlp, $email, "MURID");
+            $hasil = $this->AddUsers($usn, $pass, $nama_lengkap, $no_tlp, $email, "PEMBELI","1");
 
 
             if ($hasil) {

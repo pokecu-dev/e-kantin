@@ -6,7 +6,7 @@
         exit();
     }
 
-    if($_SESSION['role'] == 'GURU' || $_SESSION['role'] == 'MURID'){
+    if($_SESSION['role'] == 'PEMBELI'){
         header('location: pembeli/pembeli.php');
     }
     elseif ($_SESSION['role'] == 'PENJUAL') {

@@ -7,7 +7,7 @@
 
         public function add($usn, $pass, $nama_lengkap, $no_tlp, $email)
         {
-            $hasil = $this->AddUsers($usn, $pass, $nama_lengkap, $no_tlp, $email, "ADMIN");
+            $hasil = $this->AddUsers($usn, $pass, $nama_lengkap, $no_tlp, $email, "ADMIN","1");
 
 
             if ($hasil) {
