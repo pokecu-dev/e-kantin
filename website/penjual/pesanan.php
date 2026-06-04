@@ -516,7 +516,6 @@ $query_transaksi = $conn->query($sql_transaksi);
                                     <?php 
                                         if($row['status'] == 'selesai'):
                                     ?>
-                                            <p>ha</p>
                                             <select name="status_baru" onchange="this.form.submit()" class="select-status">
                                                 <option disabled value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending tidak bisa mengubah status</option>
                                                 <option disabled value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi tidak bisa mengubah status</option>
@@ -585,6 +584,7 @@ $query_transaksi = $conn->query($sql_transaksi);
                             
                             <div class="actions-wrapper-mobile">
                                 <form action="" method="POST" style="flex: 1;">
+                                    <input type="hidden" name="id_transaksi" value="<?php echo $row['id_transaksi']; ?>">
                                     <?php 
                                         if($row['status'] == 'selesai'):
                                     ?>
@@ -606,6 +606,7 @@ $query_transaksi = $conn->query($sql_transaksi);
                                             </select>
 
                                     <?php endif; ?>
+                                    
                                 </form>
                                 <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">Detail</button>
                             </div>
