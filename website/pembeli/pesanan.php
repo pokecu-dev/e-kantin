@@ -382,14 +382,14 @@ $result_pesanan = $stmt->get_result();
 
                                     if (!$rateedit):
                                 ?>
-                                        <h3>Tulis rating mu gan :D</h3>
+                                        <h3>Beri Rating!</h3>
                                         <form action="pro_tesrate.php" method="post">
                                             <input type="hidden" name="id_menu" value="<?= $id_menu ?>">
                                             <input type="hidden" name="id_user" value="<?= $id_user ?>">
                                             <input type="hidden" name="id_kantin" value="<?= $id_kantin ?>">
                                             
                                             <div class="rating-box">
-                                                <label class="rating-label">Rating coy :D</label>
+                                                <label class="rating-label">Rating:</label>
 
                                                 <div class="stars">
                                                     <span class="star" data-value="1">★</span>
@@ -402,8 +402,8 @@ $result_pesanan = $stmt->get_result();
                                                 <input type="hidden" name="rating" class="rating-value" value="0">
                                             </div>
     
-                                        <textarea name="desk" placeholder="Komentar gan :D" required></textarea>
-                                            <button type="submit" name="submit" class="btn-submit-rate">Kirim :D</button>
+                                        <textarea name="desk" placeholder="Komentar" required></textarea>
+                                            <button type="submit" name="submit" class="btn-submit-rate">Kirim</button>
                                         </form>
                                     <?php else: ?>
                                         <p style="font-size: 13px; color: #2ecc71; font-weight: 600;">✓ Kamu sudah memberikan ulasan untuk menu ini</p>
