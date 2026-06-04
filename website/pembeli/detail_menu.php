@@ -60,7 +60,7 @@ if (!$data) {
             gap:50px;
             align-items:flex-start;
             width: 100%;
-            margin: 20px;
+            margin: 0px;
         }
 
         .ulasan-section{
@@ -425,6 +425,8 @@ if (!$data) {
             .top-content {
                 flex-direction: column;
                 gap: 25px;
+                margin: 0;
+                width: 100%;
             }
 
             .gambar img {
