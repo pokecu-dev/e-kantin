@@ -63,6 +63,17 @@ services:
   #   networks:
   #     - kantin-network
 
+  cloudflare-tunnel:
+      image: cloudflare/cloudflared:latest
+      profiles: ["tunnel-aktif"] 
+      restart: always
+      environment:
+        - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+      command: tunnel run
+      networks:
+        - kantin-network
+
+
 networks:
   kantin-network:
     driver: bridge
