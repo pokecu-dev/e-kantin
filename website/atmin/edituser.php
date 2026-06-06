@@ -303,8 +303,9 @@ if ($result->num_rows > 0) {
                         <div class="form-group">
                             <input type="hidden" name="id" value="<?= $id ?>">
                             <label>Username <span>(BEFORE: <?= $dataUsers['USERNAME'] ?>)</span></label>
-                            <input type="text" name="usn" value="<?= htmlspecialchars($dataUsers['USERNAME']) ?>">
+                            <input type="text" name="usn" id="usn" value="<?= htmlspecialchars($dataUsers['USERNAME']) ?>">
                         </div>
+
                         <div class="form-group">
                             <label>Password <span>(BEFORE: <?= $dataUsers['PASS'] ?>)</span></label>
                             <input type="text" name="pass" value="">
@@ -315,16 +316,16 @@ if ($result->num_rows > 0) {
                     <div class="card">
                         <div class="form-group">
                             <label>Nama Lengkap <span>(BEFORE: <?= $dataUsers['NAMA_LENGKAP'] ?>)</span></label>
-                            <input type="text" name="nama_lengkap" value="<?= htmlspecialchars($dataUsers['NAMA_LENGKAP']) ?>">
+                            <input type="text" name="nama_lengkap" id="nama" value="<?= htmlspecialchars($dataUsers['NAMA_LENGKAP']) ?>">
                         </div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                             <div class="form-group">
                                 <label>Nomor Telepon <span>(BEFORE: <?= $dataUsers['NO_TLP'] ?>)</span></label>
-                                <input type="text" name="no_tlp" value="<?= htmlspecialchars($dataUsers['NO_TLP']) ?>">
+                                <input type="text" id="no_tlp" name="no_tlp" value="<?= htmlspecialchars($dataUsers['NO_TLP']) ?>">
                             </div>
                             <div class="form-group">
                                 <label>Email <span>(BEFORE: <?= $dataUsers['EMAIL'] ?>)</span></label>
-                                <input type="email" name="email" value="<?= htmlspecialchars($dataUsers['EMAIL']) ?>">
+                                <input type="email" id="email" name="email" value="<?= htmlspecialchars($dataUsers['EMAIL']) ?>">
                             </div>
                         </div>
                     </div>
@@ -355,17 +356,36 @@ if ($result->num_rows > 0) {
         </form>
     </div>
 
-    <script src="./../shared/js/script.js">
-        console.log("hai")
-        window.location.reload();
-    </script>
+    
     <script>
-        // const btn = document.querySelector('.btn-submit')
-        // btn.addEventListener('click', (e) => {
-        //     setTimeout(() => {
-        //         window.location.reload();
-        //     }, 2000); // 2 detik
-        // })
+        document.getElementById('no_tlp').addEventListener('input', function (e) {
+            this.style.borderBottom = '2px solid #F47B20';
+            document.getElementById('notif').innerHTML = '';
+
+            let value = this.value;
+            let hasPlus = value.startsWith('+');
+
+            let numbers = value.replace(/\D/g, '');
+
+            let formatted = '';
+            if (hasPlus) formatted += '+';
+            else formatted += '+';
+
+            if (numbers.length > 0) {
+              formatted += numbers.substring(0, 2);
+            }
+            if (numbers.length > 2) {
+              formatted += ' ' + numbers.substring(2, 5);
+            }
+            if (numbers.length > 5) {
+              formatted += ' ' + numbers.substring(5, 9);
+            }
+            if (numbers.length > 9) {
+              formatted += ' ' + numbers.substring(9, 13);
+            }
+
+            this.value = formatted;
+        });
     </script>
 </body>
 

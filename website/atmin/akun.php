@@ -765,6 +765,20 @@ document.addEventListener('submit', (e) => {
         }, 1000);
     }
 });
+
+// Event delegation untuk format input telepon di dalam modal
+document.addEventListener('input', function(e) {
+    if (e.target.id === 'no_tlp' && e.target.closest('#modalBody')) {
+        let value = e.target.value;
+        let numbers = value.replace(/\D/g, '');
+        let formatted = '+';
+        if (numbers.length > 0) formatted += numbers.substring(0, 2);
+        if (numbers.length > 2) formatted += ' ' + numbers.substring(2, 5);
+        if (numbers.length > 5) formatted += ' ' + numbers.substring(5, 9);
+        if (numbers.length > 9) formatted += ' ' + numbers.substring(9, 13);
+        e.target.value = formatted;
+    }
+});
 </script>
 </body>
 </html>

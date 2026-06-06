@@ -143,10 +143,25 @@ if (isset($_GET['ajax_search'])) {
                     <input type="text" id="inputSearch" placeholder="Cari outlet..." oninput="liveSearchOutlet()">
                 </div>
 
-                <button class="add-btn" onclick="bukaModalTambah()">
-                    <i class="fas fa-plus"></i>
-                    Tambah Outlet
-                </button>
+                <?php
+                    $sql = "SELECT * FROM list_kantin WHERE STATUS = '1'";
+                    $add = true;
+                    if($conn->query($sql)->num_rows >= 10){
+                        $add = false;
+                    }
+                    if($add):
+                ?>
+
+                        <button class="add-btn" onclick="bukaModalTambah()">
+                            <i class="fas fa-plus"></i>
+                            Tambah Outlet
+                        </button>
+                    <?php else: ?>
+                        <button class="add-btn" onclick="alert('total kantin sudah 10!')">
+                            <i class="fas fa-plus"></i>
+                            Tambah Outlet
+                        </button>
+                    <?php endif; ?>
             </div>
         </div>
 
