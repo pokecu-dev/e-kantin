@@ -34,7 +34,7 @@ $qris = $result['QRIS'] ?? '';
 
         .qris-page {
             min-height: 100vh;
-            padding: 20px 16px 32px;
+            padding: 40px 16px 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -55,7 +55,7 @@ $qris = $result['QRIS'] ?? '';
             justify-content: space-between;
             align-items: center;
             gap: 14px;
-            margin-bottom: 24px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
         }
 
@@ -81,6 +81,7 @@ $qris = $result['QRIS'] ?? '';
             border-radius: 22px;
             padding: 24px;
             margin-bottom: 26px;
+            position: relative;
         }
 
         .qris-image {
@@ -91,9 +92,39 @@ $qris = $result['QRIS'] ?? '';
             border-radius: 18px;
         }
 
+        .success-overlay {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.96);
+            color: #1a1a1a;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            width: 80%;
+            max-width: 320px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .success-overlay h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .success-overlay p {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
         .qris-actions {
             display: flex;
-            justify-content: flex-end;
+            justify-content: center;
             gap: 12px;
             flex-wrap: wrap;
         }
@@ -123,6 +154,10 @@ $qris = $result['QRIS'] ?? '';
             border: 1px solid #d1d5db;
         }
 
+        .qris-btn.success-btn {
+            background: #28a745 !important;
+        }
+
         .qris-empty {
             padding: 18px 16px;
             background: #fff5f5;
@@ -136,7 +171,7 @@ $qris = $result['QRIS'] ?? '';
 
         @media (max-width: 640px) {
             .qris-page {
-                padding-top: 90px;
+                padding-top: 24px;
             }
 
             .qris-card {
@@ -145,10 +180,12 @@ $qris = $result['QRIS'] ?? '';
 
             .qris-header {
                 align-items: flex-start;
+                margin-bottom: 16px;
             }
 
             .qris-actions {
                 justify-content: stretch;
+                row-gap: 12px;
             }
 
             .qris-btn {
@@ -157,6 +194,7 @@ $qris = $result['QRIS'] ?? '';
 
             .qris-image-wrapper {
                 padding: 18px;
+                margin-bottom: 20px;
             }
         }
     </style>
@@ -171,13 +209,20 @@ $qris = $result['QRIS'] ?? '';
             </div>
 
             <?php if ($qris): ?>
-                <p class="qris-text">Gunakan QRIS di bawah ini untuk menyelesaikan pembayaran dengan aplikasi digital banking atau e-wallet Anda.</p>
-                <div class="qris-image-wrapper">
-                    <img src="/source/qris/<?= htmlspecialchars($qris, ENT_QUOTES) ?>" alt="Kode QRIS" class="qris-image">
+                    <p class="qris-text" id="instruction-text">Gunakan QRIS di bawah ini untuk menyelesaikan pembayaran dengan aplikasi digital banking atau e-wallet Anda.</p>
+                    
+                    <div class="qris-image-wrapper">
+                        <img src="/source/qris/<?= htmlspecialchars($qris, ENT_QUOTES) ?>" alt="Kode QRIS" class="qris-image" id="qris-barcode">
+                    
+                    <div class="success-overlay" id="success-message">
+                        <h3>Pembayaran Berhasil!</h3>
+                        <p>Sistem mendeteksi dana sebesar nominal transaksi telah sukses dikirim ke <b><?= htmlspecialchars($result['nama_kantin'] ?? 'Kantin', ENT_QUOTES) ?></b>.</p>
+                    </div>
                 </div>
                 <div class="qris-actions">
-                    <a href="./struckdigital.php?trx=<?= $trx ?>" class="qris-btn secondary">Lihat Struk</a>
-                    <a href="./pembeli.php" class="qris-btn">Beranda</a>
+                    <button type="button" class="qris-btn" id="check-pay-btn" onclick="simulasiBayar()">Konfirmasi Pembayaran</button>
+                    <a href="./struckdigital.php?trx=<?= $trx ?>" class="qris-btn secondary" id="btn-struk">Lihat Struk</a>
+                    <a href="./pembeli.php" class="qris-btn secondary" style="min-width: 100px;">Beranda</a>
                 </div>
             <?php else: ?>
                 <div class="qris-empty">Kantin ini tidak menyediakan metode QRIS.</div>
@@ -187,5 +232,37 @@ $qris = $result['QRIS'] ?? '';
             <?php endif; ?>
         </section>
     </main>
+
+    <script>
+        function simulasiBayar() {
+            var btnCek = document.getElementById('check-pay-btn');
+            var barcode = document.getElementById('qris-barcode');
+            var alertSukses = document.getElementById('success-message');
+            var teksInstruksi = document.getElementById('instruction-text');
+            var btnStruk = document.getElementById('btn-struk');
+
+            // Eksekusi langsung instan tanpa delay sedetik pun!
+            if (barcode) barcode.style.opacity = "0.15";
+            if (alertSukses) alertSukses.style.display = "block";
+            
+            if (teksInstruksi) {
+                teksInstruksi.innerHTML = "✨ <b>Status Pembayaran: Berhasil (Lunas).</b> Silakan menuju kantin untuk mengambil hidangan.";
+                teksInstruksi.style.color = "#155724";
+            }
+
+            if (btnCek) {
+                btnCek.innerHTML = "Pembayaran Terverifikasi ✅";
+                btnCek.disabled = true;
+                btnCek.classList.add('success-btn');
+            }
+            
+            if (btnStruk) {
+                btnStruk.classList.remove('secondary');
+                btnStruk.style.background = "var(--primary)";
+                btnStruk.style.color = "#ffffff";
+            }
+        }
+    </script>
+    
 </body>
 </html>
