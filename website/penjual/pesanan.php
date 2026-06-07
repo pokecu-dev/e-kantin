@@ -26,7 +26,8 @@ $id_kantin_toko = $data_kantin['ID'] ?? 1;
 $hari_ini = date('Y-m-d');
 
 $sql_auto_cancel = "UPDATE transaksi 
-                    SET status = 'dibatalkan'
+                    SET status = 'dibatalkan', 
+                        catatan = '(Dibatalkan otomatis karena melewati tanggal pemesanan)'
                     WHERE id_kantin = '$id_kantin_toko' 
                     AND tgl < '$hari_ini' 
                     AND status NOT IN ('selesai', 'dibatalkan')";
