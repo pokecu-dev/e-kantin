@@ -181,7 +181,7 @@ if ($search_user !== '') {
             margin-inline: auto;
             padding: 24px;
             box-sizing: border-box;
-            margin-top: 60px;
+            margin-top: 70px;
         }
 
         .header {

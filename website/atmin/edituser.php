@@ -329,22 +329,7 @@ if ($result->num_rows > 0) {
                         </div>
                     </div>
 
-                    <span class="category-title">Status Akun</span>
-                    <div class="card">
-                        <div class="form-group">
-                            <div class="form-group">
-                                <label for="status"><i class="fa-solid fa-toggle-on"></i> Status Pengguna</label>
-                                <div class="select-wrapper">
-                                    <select name="status" id="status">
-                                        <option value="1" <?= $dataUsers['STATUS'] == '1' ? 'selected' : '' ?>>🟢 1 atau Aktif</option>
-                                        <option value="0" <?= $dataUsers['STATUS'] == '0' ? 'selected' : '' ?>>🔴 0 atau Nonaktif</option>
-                                    </select>
-
-                                    <i class="fa-solid fa-chevron-down select-icon"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                   
 
                     <button type="submit" class="btn-submit">
                         <i class="fa fa-save"></i> SUBMIT PERUBAHAN
