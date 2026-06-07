@@ -3,6 +3,47 @@
 require_once __DIR__ . "/../include/koneksi.php";
 require_once __DIR__ . "/../include/session/adminC.php";
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['aksi']) && $_POST['aksi'] === 'soft_delete') {
+    
+    // Set header respons agar dibaca sebagai JSON oleh JavaScript (SweetAlert2)
+    header('Content-Type: application/json');
+    
+    // Ambil dan konversi ID User ke Integer agar aman dari SQL Injection
+    $idUser = isset($_POST['id_user']) ? intval($_POST['id_user']) : 0;
+    
+    if ($idUser > 0) {
+        // QUERY SOFT DELETE: Mengubah kolom penanda (misal: is_deleted) menjadi 1
+        // *Silakan ganti 'is_deleted' atau 'id' jika nama kolom di databasemu berbeda
+        $sql = "UPDATE users SET STATUS = 'delete' WHERE id = ?";
+        
+        // Memperiapkan query (Prepared Statement) dengan gaya OOP mysqli
+        if ($stmt = $conn->prepare($sql)) {
+            
+            // "i" berarti parameter yang diikat berjenis Integer (idUser)
+            $stmt->bind_param("i", $idUser);
+            $stmt->execute();
+            
+            // Cek apakah ada baris data di database yang berubah
+            if ($stmt->affected_rows > 0) {
+                echo json_encode(['status' => 'success', 'message' => 'User berhasil dihapus dari daftar aktif.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus. User tidak ditemukan atau sudah dihapus sebelumnya.']);
+            }
+            
+            // Tutup statement database
+            $stmt->close();
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menyiapkan query: ' . $conn->error]);
+        }
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'ID User tidak valid.']);
+    }
+    
+    // WAJIB EXIT: Supaya sisa kode HTML di bawah tidak ikut terkirim ke dalam AJAX
+    exit; 
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['toggle_status'])) {
     header('Content-Type: application/json');
     try {
@@ -795,43 +836,53 @@ if ($search_user !== '') {
                 </div>
 
                 <?php if ($query && $query->num_rows > 0): ?>
-                    <?php while ($user = $query->fetch_assoc()): ?>
-                        <div class="user-table__row">
-                            <div class="user-table__cell">#<?= htmlspecialchars($user['ID']) ?></div>
-                            <div class="user-table__cell">
-                                <strong><?= htmlspecialchars($user['USERNAME']) ?></strong>
-                            </div>
-                            <div class="user-table__cell"><?= htmlspecialchars($user['NAMA_LENGKAP']) ?></div>
-                            <div class="user-table__cell"><?= htmlspecialchars($user['NO_TLP']) ?></div>
-                            <div class="user-table__cell"><?= htmlspecialchars($user['EMAIL']) ?></div>
-                            <div class="user-table__cell">
-                                <span class="badge"><?= htmlspecialchars($user['ROLE']) ?></span>
-                            </div>
-                            
-                            <div class="user-table__cell">
-                                <label class="switch">
-                                    <input 
-                                        type="checkbox" 
-                                        class="toggle-status" 
-                                        data-id="<?= (int)$user['ID'] ?>" 
-                                        data-username="<?= htmlspecialchars($user['USERNAME']) ?>"
-                                        <?= (isset($user['STATUS']) && $user['STATUS'] == '1') ? 'checked' : '' ?>>
-                                    <span class="slider round"></span>
-                                </label>
-                            </div>
-
-                            <div class="user-table__cell">
-                                <button
-                                    type="button"
-                                    class="user-table__link"
-                                    style="background:none;border:none;cursor:pointer;"
-                                    onclick="openEditModal(<?= (int)$user['ID'] ?>)">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                    Edit
-                                </button>
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
+                    <?php while ($user = $query->fetch_assoc()):
+                            if($user['STATUS'] != 'delete'):    
+                    ?>
+                                <div class="user-table__row">
+                                    <div class="user-table__cell">#<?= htmlspecialchars($user['ID']) ?></div>
+                                    <div class="user-table__cell">
+                                        <strong><?= htmlspecialchars($user['USERNAME']) ?></strong>
+                                    </div>
+                                    <div class="user-table__cell"><?= htmlspecialchars($user['NAMA_LENGKAP']) ?></div>
+                                    <div class="user-table__cell"><?= htmlspecialchars($user['NO_TLP']) ?></div>
+                                    <div class="user-table__cell"><?= htmlspecialchars($user['EMAIL']) ?></div>
+                                    <div class="user-table__cell">
+                                        <span class="badge"><?= htmlspecialchars($user['ROLE']) ?></span>
+                                    </div>
+                                    
+                                    <div class="user-table__cell">
+                                        <label class="switch">
+                                            <input 
+                                                type="checkbox" 
+                                                class="toggle-status" 
+                                                data-id="<?= (int)$user['ID'] ?>" 
+                                                data-username="<?= htmlspecialchars($user['USERNAME']) ?>"
+                                                <?= (isset($user['STATUS']) && $user['STATUS'] == '1') ? 'checked' : '' ?>>
+                                            <span class="slider round"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="user-table__cell">
+                                        <button
+                                            type="button"
+                                            class="user-table__link"
+                                            style="background:none;border:none;cursor:pointer;"
+                                            onclick="openEditModal(<?= (int)$user['ID'] ?>)">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                            Edit
+                                        </button>
+                                        <span onclick="hapusUserSoft(<?= $user['ID'] ?>)"
+                                            style="cursor: pointer; color: #ef4444;"
+                                            title="Hapus Menu">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                    <?php
+                            endif; 
+                        endwhile;
+                     ?>
                 <?php else: ?>
                     <div style="padding:40px; text-align:center; color:#94a3b8; font-weight:600;">
                         User tidak ditemukan.
@@ -863,7 +914,7 @@ if ($search_user !== '') {
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="./../shared/js/script.js"></script>
 <script>
 const editModal = document.getElementById("editUserModal");
@@ -1185,6 +1236,66 @@ btnConfirmOk.addEventListener('click', () => {
         targetCheckbox = null;
     });
 });
+
+function hapusUserSoft(idUser) {
+    if (typeof Swal === 'undefined') {
+        console.error("SweetAlert2 belum di-load di halaman ini!");
+        return;
+    }
+
+    Swal.fire({
+        title: 'Apakah anda yakin?',
+        text: "User ini akan dihapus dari daftar aktif dashboard!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const formData = new FormData();
+            formData.append('aksi', 'soft_delete');
+            formData.append('id_user', idUser);
+
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: 'User telah berhasil dihapus.',
+                        icon: 'success',
+                        confirmButtonColor: '#ff7e14',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan: ' + data.message,
+                        icon: 'error',
+                        confirmButtonColor: '#ff7e14'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan sistem atau jaringan.',
+                    icon: 'error',
+                    confirmButtonColor: '#ff7e14'
+                });
+            });
+        }
+    });
+}
 </script>
 </body>
 </html>

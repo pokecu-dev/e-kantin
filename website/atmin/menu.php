@@ -811,6 +811,7 @@ if ($search !== '') {
                             <span onclick="hapusMenuSoft(<?= $menu['ID_MENU'] ?>)"
                                 style="cursor: pointer; color: #ef4444;"
                                 title="Hapus Menu">
+                                
                                 <i class="fas fa-trash-alt"></i>
                             </span>
                         </div>
