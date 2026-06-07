@@ -59,6 +59,7 @@ $terlaris = mysqli_query($conn, "
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -81,7 +82,7 @@ $terlaris = mysqli_query($conn, "
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg-gray);
+            background: #F8FAFC;
             color: var(--text-dark);
             line-height: 1.5;
             margin: 0;
@@ -123,6 +124,12 @@ $terlaris = mysqli_query($conn, "
             color: #64748b;
         }
 
+        .card-link-style {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
         .stats-scroll {
             overflow-x: auto;
             padding-bottom: 10px;
@@ -139,7 +146,7 @@ $terlaris = mysqli_query($conn, "
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
             width: 100%;
         }
@@ -397,7 +404,7 @@ $terlaris = mysqli_query($conn, "
 
         @media (min-width: 1024px) {
             .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(3, 1fr);
                 gap: 24px;
             }
 
@@ -443,6 +450,7 @@ $terlaris = mysqli_query($conn, "
         }
     </style>
 </head>
+
 <body>
 
     <nav class="navbar">
@@ -469,128 +477,124 @@ $terlaris = mysqli_query($conn, "
             <h1>Dashboard Admin</h1>
             <p>Pantau semua aktivitas kantin secara real-time.</p>
         </div>
+        <a href="menu.php" class="card-link-style">
+            <div class="stats-scroll">
+                <div class="stats-grid">
+                    <div class="stat-card prod-orange">
+                        <div class="icon-box">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span>Total Produk</span>
+                            <h2><?= $dataProduk['total'] ?? 0 ?></h2>
+                        </div>
+                    </div>
+        </a>
+        <a href="akun.php" class="card-link-style">
+            <div class="stat-card user-blue">
+                <div class="icon-box">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <span>Total User</span>
+                    <h2><?= $dataUser['total'] ?? 0 ?></h2>
+                </div>
+            </div>
+        </a>
+        <div class="stat-card shop-green">
+            <div class="icon-box">
+                <i class="fas fa-store"></i>
+            </div>
+            <a href="oulet.php" class="card-link-style">
+                <div class="stat-content">
+                    <span>Total Kantin</span>
+                    <h2><?= $dataOutlet['total'] ?? 0 ?></h2>
+                </div>
+        </div>
+        </a>
 
-        <div class="stats-scroll">
-            <div class="stats-grid">
-                <div class="stat-card prod-orange">
-                    <div class="icon-box">
-                        <i class="fas fa-box"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span>Total Produk</span>
-                        <h2><?= $dataProduk['total'] ?? 0 ?></h2>
-                    </div>
+    </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="card">
+            <h3>Transaksi Terbaru</h3>
+            <div class="table">
+                <div class="table-row table-header">
+                    <div>ID</div>
+                    <div>Kantin</div>
+                    <div>Total Bayar</div>
+                    <div>Status</div>
                 </div>
 
-                <div class="stat-card user-blue">
-                    <div class="icon-box">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span>Total User</span>
-                        <h2><?= $dataUser['total'] ?? 0 ?></h2>
-                    </div>
-                </div>
+                <?php if (mysqli_num_rows($transaksi) > 0): ?>
+                    <?php while ($trx = mysqli_fetch_assoc($transaksi)): ?>
+                        <?php
+                        $statusClass = '';
+                        $status_check = strtolower($trx['STATUS']);
 
-                <div class="stat-card shop-green">
-                    <div class="icon-box">
-                        <i class="fas fa-store"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span>Total Kantin</span>
-                        <h2><?= $dataOutlet['total'] ?? 0 ?></h2>
-                    </div>
-                </div>
-
-                <div class="stat-card empty-red">
-                    <div class="icon-box">
-                        <i class="fas fa-exclamation-triangle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <span>Produk Habis</span>
-                        <h2><?= $dataHabis['total'] ?? 0 ?></h2>
-                    </div>
-                </div>
+                        if ($status_check == 'pending') {
+                            $statusClass = 'badge-warning';
+                        } elseif ($status_check == 'success' || $status_check == 'selesai') {
+                            $statusClass = 'badge-success';
+                        } else {
+                            $statusClass = 'badge-danger';
+                        }
+                        ?>
+                        <div class="table-row">
+                            <div style="color: #ff7e14;">#<?= htmlspecialchars($trx['ID_TRANSAKSI']) ?></div>
+                            <div style="font-weight: 500; color: #64748b;">
+                                <?= htmlspecialchars($trx['NAMA_KANTIN'] ?? 'KantinKita') ?>
+                            </div>
+                            <div style="font-weight: 600; color: #1e293b;">
+                                Rp <?= number_format($trx['TOTAL'], 0, ',', '.') ?>
+                            </div>
+                            <div>
+                                <span class="status-badge <?= $statusClass ?>">
+                                    <span style="font-size: 8px; margin-right: 4px;">●</span>
+                                    <?= htmlspecialchars($trx['STATUS']) ?>
+                                </span>
+                            </div>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <div style="padding: 20px; text-align: center; color: #64748b;">Belum ada transaksi.</div>
+                <?php endif; ?>
             </div>
         </div>
 
-        <div class="dashboard-grid">
-            <div class="card">
-                <h3>Transaksi Terbaru</h3>
-                <div class="table">
-                    <div class="table-row table-header">
-                        <div>ID</div>
-                        <div>Kantin</div>
-                        <div>Total Bayar</div>
-                        <div>Status</div>
-                    </div>
+        <div class="rating-container">
+            <h3>Produk Rating Tertinggi</h3>
+            <div class="rating-list">
+                <?php if (mysqli_num_rows($terlaris) > 0): ?>
+                    <?php while ($top = mysqli_fetch_assoc($terlaris)): ?>
+                        <div class="rating-item">
+                            <?php if (!empty($top['FOTO_MENU'])): ?>
+                                <img src="../../source/gambar_menu/<?= htmlspecialchars($top['FOTO_MENU']) ?>" alt="<?= htmlspecialchars($top['NAMA_MENU']) ?>" class="rating-img">
+                            <?php else: ?>
+                                <div class="rating-img-fallback">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                            <?php endif; ?>
 
-                    <?php if (mysqli_num_rows($transaksi) > 0): ?>
-                        <?php while ($trx = mysqli_fetch_assoc($transaksi)): ?>
-                            <?php
-                            $statusClass = '';
-                            $status_check = strtolower($trx['STATUS']);
-
-                            if ($status_check == 'pending') {
-                                $statusClass = 'badge-warning';
-                            } elseif ($status_check == 'success' || $status_check == 'selesai') {
-                                $statusClass = 'badge-success';
-                            } else {
-                                $statusClass = 'badge-danger';
-                            }
-                            ?>
-                            <div class="table-row">
-                                <div style="color: #ff7e14;">#<?= htmlspecialchars($trx['ID_TRANSAKSI']) ?></div>
-                                <div style="font-weight: 500; color: #64748b;">
-                                    <?= htmlspecialchars($trx['NAMA_KANTIN'] ?? 'KantinKita') ?>
-                                </div>
-                                <div style="font-weight: 600; color: #1e293b;">
-                                    Rp <?= number_format($trx['TOTAL'], 0, ',', '.') ?>
-                                </div>
-                                <div>
-                                    <span class="status-badge <?= $statusClass ?>">
-                                        <span style="font-size: 8px; margin-right: 4px;">●</span>
-                                        <?= htmlspecialchars($trx['STATUS']) ?>
-                                    </span>
-                                </div>
+                            <div class="rating-info">
+                                <span class="menu-title"><?= htmlspecialchars($top['NAMA_MENU']) ?></span>
+                                <span class="kantin-name">🏪 <?= htmlspecialchars($top['NAMA_KANTIN'] ?? 'KantinKita') ?></span>
                             </div>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <div style="padding: 20px; text-align: center; color: #64748b;">Belum ada transaksi.</div>
-                    <?php endif; ?>
-                </div>
-            </div>
 
-            <div class="rating-container">
-                <h3>Produk Rating Tertinggi</h3>
-                <div class="rating-list">
-                    <?php if (mysqli_num_rows($terlaris) > 0): ?>
-                        <?php while ($top = mysqli_fetch_assoc($terlaris)): ?>
-                            <div class="rating-item">
-                                <?php if (!empty($top['FOTO_MENU'])): ?>
-                                    <img src="../../source/gambar_menu/<?= htmlspecialchars($top['FOTO_MENU']) ?>" alt="<?= htmlspecialchars($top['NAMA_MENU']) ?>" class="rating-img">
-                                <?php else: ?>
-                                    <div class="rating-img-fallback">
-                                        <i class="fas fa-utensils"></i>
-                                    </div>
-                                <?php endif; ?>
-
-                                <div class="rating-info">
-                                    <span class="menu-title"><?= htmlspecialchars($top['NAMA_MENU']) ?></span>
-                                    <span class="kantin-name">🏪 <?= htmlspecialchars($top['NAMA_KANTIN'] ?? 'KantinKita') ?></span>
-                                </div>
-
-                                <div class="rating-score-box">
-                                    <i class="fas fa-star"></i>
-                                    <span><?= number_format($top['RATING'] ?? 0, 1) ?></span>
-                                </div>
+                            <div class="rating-score-box">
+                                <i class="fas fa-star"></i>
+                                <span><?= number_format($top['RATING'] ?? 0, 1) ?></span>
                             </div>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <div style="padding: 20px; text-align: center; color: #64748b;">Belum ada rating produk.</div>
-                    <?php endif; ?>
-                </div>
+                        </div>
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <div style="padding: 20px; text-align: center; color: #64748b;">Belum ada rating produk.</div>
+                <?php endif; ?>
             </div>
-        </div> 
-    </div> </body>
+        </div>
+    </div>
+    </div>
+</body>
+
 </html>

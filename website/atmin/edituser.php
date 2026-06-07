@@ -66,12 +66,7 @@ if ($result->num_rows > 0) {
             width: 100%;
         }
 
-        body {
-            /* background-color: var(--bg-body);
-            color: var(--text-main);
-           
-            line-height: 1.5; */
-        }
+
 
         /* width: 100%;
     max-width: 1400px;
@@ -283,7 +278,11 @@ if ($result->num_rows > 0) {
 
 <body>
     <div class="main">
-        <form data-ajax="true" data-action="./process/pro_edit.php" data-notif="notif">
+      <form
+        data-ajax="true"
+        data-action="./process/pro_edit.php"
+        data-notif="notif"
+        onsubmit="return confirm('Data lama Anda akan diganti. Apakah Anda yakin?')">
             <div class="main-grid">
 
                 <!-- KOLOM KIRI -->
@@ -340,7 +339,7 @@ if ($result->num_rows > 0) {
                                         <option value="1" <?= $dataUsers['STATUS'] == '1' ? 'selected' : '' ?>>🟢 1 atau Aktif</option>
                                         <option value="0" <?= $dataUsers['STATUS'] == '0' ? 'selected' : '' ?>>🔴 0 atau Nonaktif</option>
                                     </select>
-                                    
+
                                     <i class="fa-solid fa-chevron-down select-icon"></i>
                                 </div>
                             </div>
@@ -356,9 +355,9 @@ if ($result->num_rows > 0) {
         </form>
     </div>
 
-    
+
     <script>
-        document.getElementById('no_tlp').addEventListener('input', function (e) {
+        document.getElementById('no_tlp').addEventListener('input', function(e) {
             this.style.borderBottom = '2px solid #F47B20';
             document.getElementById('notif').innerHTML = '';
 
@@ -372,20 +371,29 @@ if ($result->num_rows > 0) {
             else formatted += '+';
 
             if (numbers.length > 0) {
-              formatted += numbers.substring(0, 2);
+                formatted += numbers.substring(0, 2);
             }
             if (numbers.length > 2) {
-              formatted += ' ' + numbers.substring(2, 5);
+                formatted += ' ' + numbers.substring(2, 5);
             }
             if (numbers.length > 5) {
-              formatted += ' ' + numbers.substring(5, 9);
+                formatted += ' ' + numbers.substring(5, 9);
             }
             if (numbers.length > 9) {
-              formatted += ' ' + numbers.substring(9, 13);
+                formatted += ' ' + numbers.substring(9, 13);
             }
 
             this.value = formatted;
         });
+
+      document.querySelector('button[type="submit"]').addEventListener('click', function(e){
+
+    if(!confirm('Data lama Anda akan diganti. Apakah Anda yakin?')){
+        e.preventDefault();
+        return false;
+    }
+
+});
     </script>
 </body>
 

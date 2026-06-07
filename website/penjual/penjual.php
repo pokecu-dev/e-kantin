@@ -70,12 +70,18 @@ $query_produk = $conn->query($sql_produk);
 $data_produk = $query_produk->fetch_assoc();
 $total_produk = $data_produk['total_produk'] ?? 0;
 
+$sql_habis = "SELECT COUNT(*) AS produk_habis FROM tb_menu WHERE id_kantin = '$id_kantin_toko' AND (stok = 0 OR STATUS = 'habis') AND STATUS != 'nonaktif'";
+$query_habis = $conn->query($sql_habis);
+$data_habis = $query_habis->fetch_assoc();
+$produk_habis = $data_habis['produk_habis'] ?? 0;
 // ==========================================
 // KONFIGURASI PAGINATION (TRANSAKSI HARI INI)
 // ==========================================
 $limit = 10; // Jumlah baris data transaksi per halaman
 $page = isset($_GET['halaman']) ? (int)$_GET['halaman'] : 1;
-if ($page < 1) { $page = 1; }
+if ($page < 1) {
+    $page = 1;
+}
 $offset = ($page - 1) * $limit;
 
 // 1. Kueri untuk hitung TOTAL DATA transaksi khusus HARI INI
@@ -166,37 +172,73 @@ if (!$query_transaksi) {
         }
 
         /* --- SUMMARY GRID --- */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 24px;
-        }
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
 
-        .card-summary {
-            background: #ffffff;
-            padding: 24px;
-            border-radius: 16px;
-            border: 1px solid #eaeaea;
-        }
+.card-link-style {
+    text-decoration: none; 
+    color: inherit;        
+    display: block;  
+    transition: transform 0.2s ease;
+}
 
-        .card-icon-trend {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
+.card-link-style:hover {
+    transform: translateY(-4px); /* Efek interaktif sedikit naik saat di-hover */
+}
 
-        .icon-box {
-            width: 45px;
-            height: 45px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
+.card-summary {
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center; /* Membuat ikon dan teks sejajar vertikal di tengah */
+    gap: 16px; /* Memberikan jarak horizontal antara kotak ikon dan teks */
+    border: 1px solid #eaeaea;
+}
 
+/* Kotak pembungkus teks judul dan angka agar menyusun ke bawah */
+.card-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-summary p {
+    font-size: 13px;
+    color: #888888;
+    text-transform: uppercase; /* Membuat teks judul berhuruf besar semua seperti gambar 1 */
+    font-weight: 600;
+    margin: 0;
+}
+
+.card-summary h1,
+.card-summary h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111111;
+    margin: 4px 0 0 0;
+    line-height: 1;
+}
+
+/* Menghapus margin-bottom yang tidak diperlukan lagi agar layout flexbox bekerja sempurna */
+.card-icon-trend {
+    display: flex;
+    align-items: center;
+}
+
+.icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0; /* Mencegah ukuran icon box mengecil */
+}
         .icon-pendapatan {
             background-color: #fbeee6;
             color: #e06313;
@@ -213,13 +255,13 @@ if (!$query_transaksi) {
         }
 
         .card-summary p {
-            font-size: 14px;
+            font-size: 12px;
             color: #666;
         }
 
         .card-summary h1,
         .card-summary h2 {
-            font-size: 26px;
+            font-size: 23px;
             font-weight: 700;
             color: #111;
             margin-top: 4px;
@@ -488,41 +530,74 @@ if (!$query_transaksi) {
 
     </nav>
 
-
-
-
-    <div class="container" style="margin-top: 70px;">
-        <section class="summary-grid">
-            <div class="card-summary">
-                <div class="card-icon-trend">
-                    <div class="icon-box icon-pendapatan">
-                        <i class="fa-solid fa-wallet"></i>
-                    </div>
+<div class="container" style="margin-top: 70px;">
+ <section class="summary-grid">
+    
+    <!-- CARD 1: TOTAL PENDAPATAN -->
+    <a href="pendapatan.php" class="card-link-style">
+        <div class="card-summary">
+            <div class="card-icon-trend">
+                <div class="icon-box icon-pendapatan">
+                    <i class="fa-solid fa-wallet"></i>
                 </div>
+            </div>
+            <!-- Pembungkus Teks -->
+            <div class="card-info">
                 <p>Total Pendapatan</p>
                 <h1>Rp <?= number_format($total_hari_ini, 0, ',', '.'); ?></h1>
             </div>
+        </div>
+    </a>
 
-            <div class="card-summary">
-                <div class="card-icon-trend">
-                    <div class="icon-box icon-terjual">
-                        <i class="fa-solid fa-box"></i>
-                    </div>
+    <!-- CARD 2: TOTAL PRODUK -->
+    <a href="produk.php" class="card-link-style">
+        <div class="card-summary">
+            <div class="card-icon-trend">
+                <div class="icon-box icon-terjual">
+                    <i class="fa-solid fa-box"></i>
                 </div>
+            </div>
+            <!-- Pembungkus Teks -->
+            <div class="card-info">
                 <p>Total Produk</p>
-                <h2><?= $total_produk; ?> Produk</h2>
+                <h2><?= $total_produk; ?></h2>
             </div>
+        </div>
+    </a>
 
-            <div class="card-summary">
-                <div class="card-icon-trend">
-                    <div class="icon-box icon-pesanan">
-                        <i class="fa-solid fa-star"></i>
-                    </div>
+    <!-- CARD 3: PRODUK HABIS -->
+    <a href="produk.php?filter=habis" class="card-link-style">
+        <div class="card-summary">
+            <div class="card-icon-trend">
+                <div class="icon-box" style="background-color: #ffe5e5; color: #ff4d4d;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
-                <p>Rating Toko</p>
-                <h2><?= number_format($avg_rating, 1); ?> / 5.0</h2>
             </div>
-        </section>
+            <!-- Pembungkus Teks -->
+            <div class="card-info">
+                <p>Produk Habis</p>
+                <h2><?= $produk_habis; ?></h2>
+            </div>
+        </div>
+    </a>
+
+    <!-- CARD 4: RATING TOKO -->
+    <a href="produk.php" class="card-link-style">
+        <div class="card-summary">
+            <div class="card-icon-trend">
+                <div class="icon-box icon-pesanan">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+            </div>
+            <!-- Pembungkus Teks -->
+            <div class="card-info">
+                <p>Rating Toko</p>
+                <h2><?= number_format($avg_rating, 1); ?></h2>
+            </div>
+        </div>
+    </a>
+
+</section>
 
         <main class="main-layout">
             <div class="card-section">
@@ -530,94 +605,95 @@ if (!$query_transaksi) {
                     <h3>Riwayat Transaksi Harian</h3>
                 </div>
 
-               <div class="grid-table">
-    <div class="grid-row-header">
-        <div>ID Transaksi</div>
-        <div>Menu</div>
-        <div>Jumlah</div>
-        <div>Total Harga</div>
-        <div>Waktu</div>
-        <div>Aksi</div>
-    </div>
-
-    <?php if ($query_transaksi && $query_transaksi->num_rows > 0): ?>
-        <?php while ($row = $query_transaksi->fetch_assoc()): ?>
-
-            <div class="grid-row-data">
-                <div class="desktop-cell">#-<?php echo $row['id_transaksi']; ?></div>
-                <div class="desktop-cell" style="font-weight:500; color:#111;">
-                    <?php
-                    // Memecah teks berdasarkan tanda kurung buka '('
-                    $nama_menu_saja = explode('(', $row['daftar_menu'])[0];
-                    echo htmlspecialchars(trim($nama_menu_saja));
-                    ?>
-                </div>
-                <div class="desktop-cell"><?php echo $row['total_qty']; ?> Porsi</div>
-                <div class="desktop-cell">
-                    Rp <?php echo number_format($row['total_harga'] ?? 0, 0, ',', '.'); ?>
-                </div>
-                <div class="desktop-cell">
-                    <?php echo date('H:i', strtotime($row['WAKTU'])); ?> WIB
-                </div>
-                <div class="desktop-cell">
-                    <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">
-                        Detail
-                    </button>
-                </div>
-
-                <div class="mobile-left-wrapper">
-                    <div class="mb-meta-top">
-                        <span class="mb-time"><?= date('H:i', strtotime($row['WAKTU'])); ?> WIB</span>
-                        <span class="mb-id">#-<?= $row['id_transaksi']; ?></span>
+                <div class="grid-table">
+                    <div class="grid-row-header">
+                        <div>ID Transaksi</div>
+                        <div>Menu</div>
+                        <div>Jumlah</div>
+                        <div>Total Harga</div>
+                        <div>Waktu</div>
+                        <div>Aksi</div>
                     </div>
-                    <div class="mb-menu-list">
-                        <?= htmlspecialchars($row['daftar_menu'] ?? 'Menu'); ?>
-                    </div>
+
+                    <?php if ($query_transaksi && $query_transaksi->num_rows > 0): ?>
+                        <?php while ($row = $query_transaksi->fetch_assoc()): ?>
+
+                            <div class="grid-row-data">
+                                <div class="desktop-cell">#-<?php echo $row['id_transaksi']; ?></div>
+                                <div class="desktop-cell" style="font-weight:500; color:#111;">
+                                    <?php
+                                    // Memecah teks berdasarkan tanda kurung buka '('
+                                    $nama_menu_saja = explode('(', $row['daftar_menu'])[0];
+                                    echo htmlspecialchars(trim($nama_menu_saja));
+                                    ?>
+                                </div>
+                                <div class="desktop-cell"><?php echo $row['total_qty']; ?> Porsi</div>
+                                <div class="desktop-cell">
+                                    Rp <?php echo number_format($row['total_harga'] ?? 0, 0, ',', '.'); ?>
+                                </div>
+                                <div class="desktop-cell">
+                                    <?php echo date('H:i', strtotime($row['WAKTU'])); ?> WIB
+                                </div>
+                                <div class="desktop-cell">
+                                    <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">
+                                        Detail
+                                    </button>
+                                </div>
+
+                                <div class="mobile-left-wrapper">
+                                    <div class="mb-meta-top">
+                                        <span class="mb-time"><?= date('H:i', strtotime($row['WAKTU'])); ?> WIB</span>
+                                        <span class="mb-id">#-<?= $row['id_transaksi']; ?></span>
+                                    </div>
+                                    <div class="mb-menu-list">
+                                        <?= htmlspecialchars($row['daftar_menu'] ?? 'Menu'); ?>
+                                    </div>
+                                </div>
+
+                                <div class="mobile-right-wrapper">
+                                    <div class="mb-price">
+                                        Rp <?= number_format($row['total_harga'] ?? 0, 0, ',', '.'); ?>
+                                    </div>
+                                    <button type="button" class="btn-detail btn-buka-modal" data-id="<?= $row['id_transaksi']; ?>" style="width: 100%;">
+                                        Detail
+                                    </button>
+                                </div>
+                            </div>
+
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <div style="text-align:center; color:#888; padding: 40px 0;">
+                            Belum ada transaksi masuk untuk hari ini.
+                        </div>
+                    <?php endif; ?>
                 </div>
 
-                <div class="mobile-right-wrapper">
-                    <div class="mb-price">
-                        Rp <?= number_format($row['total_harga'] ?? 0, 0, ',', '.'); ?>
+                <?php if ($total_halaman > 1): ?>
+                    <div class="pagination-wrapper" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px;">
+
+                        <?php if ($page > 1): ?>
+                            <a href="?halaman=<?= $page - 1; ?>" class="btn-page" style="padding: 8px 12px; background: #fff; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333;">&laquo; Prev</a>
+                        <?php else: ?>
+                            <span class="btn-page disabled" style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 6px; color: #ccc; cursor: not-allowed;">&laquo; Prev</span>
+                        <?php endif; ?>
+
+                        <?php for ($i = 1; $i <= $total_halaman; $i++): ?>
+                            <?php if ($i == $page): ?>
+                                <span class="btn-page active" style="padding: 8px 14px; background: #F47B20; border: 1px solid #F47B20; border-radius: 6px; color: #fff; font-weight: bold;"><?= $i; ?></span>
+                            <?php else: ?>
+                                <a href="?halaman=<?= $i; ?>" class="btn-page" style="padding: 8px 14px; background: #fff; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333;"><?= $i; ?></a>
+                            <?php endif; ?>
+                        <?php endfor; ?>
+
+                        <?php if ($page < $total_halaman): ?>
+                            <a href="?halaman=<?= $page + 1; ?>" class="btn-page" style="padding: 8px 12px; background: #fff; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333;">Next &raquo;</a>
+                        <?php else: ?>
+                            <span class="btn-page disabled" style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 6px; color: #ccc; cursor: not-allowed;">Next &raquo;</span>
+                        <?php endif; ?>
+
                     </div>
-                    <button type="button" class="btn-detail btn-buka-modal" data-id="<?= $row['id_transaksi']; ?>" style="width: 100%;">
-                        Detail
-                    </button>
-                </div>
+                <?php endif; ?>
             </div>
-
-        <?php endwhile; ?>
-    <?php else: ?>
-        <div style="text-align:center; color:#888; padding: 40px 0;">
-            Belum ada transaksi masuk untuk hari ini.
-        </div>
-    <?php endif; ?>
-</div>
-
-<?php if ($total_halaman > 1): ?>
-    <div class="pagination-wrapper" style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px;">
-        
-        <?php if ($page > 1): ?>
-            <a href="?halaman=<?= $page - 1; ?>" class="btn-page" style="padding: 8px 12px; background: #fff; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333;">&laquo; Prev</a>
-        <?php else: ?>
-            <span class="btn-page disabled" style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 6px; color: #ccc; cursor: not-allowed;">&laquo; Prev</span>
-        <?php endif; ?>
-
-        <?php for ($i = 1; $i <= $total_halaman; $i++): ?>
-            <?php if ($i == $page): ?>
-                <span class="btn-page active" style="padding: 8px 14px; background: #F47B20; border: 1px solid #F47B20; border-radius: 6px; color: #fff; font-weight: bold;"><?= $i; ?></span>
-            <?php else: ?>
-                <a href="?halaman=<?= $i; ?>" class="btn-page" style="padding: 8px 14px; background: #fff; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333;"><?= $i; ?></a>
-            <?php endif; ?>
-        <?php endfor; ?>
-
-        <?php if ($page < $total_halaman): ?>
-            <a href="?halaman=<?= $page + 1; ?>" class="btn-page" style="padding: 8px 12px; background: #fff; border: 1px solid #ddd; border-radius: 6px; text-decoration: none; color: #333;">Next &raquo;</a>
-        <?php else: ?>
-            <span class="btn-page disabled" style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 6px; color: #ccc; cursor: not-allowed;">Next &raquo;</span>
-        <?php endif; ?>
-
-    </div>
-<?php endif; ?>  </div>
         </main>
     </div>
 
