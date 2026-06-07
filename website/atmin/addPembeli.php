@@ -110,23 +110,23 @@
 
            
         <label class="yaya">Username</label>
-            <input type="text" name="usn" class="input-box">
+            <input type="text" name="usn" class="input-box"  required>
 
             
         <label class="yaya">Password</label>
-            <input type="text" name="pass" class="input-box">
+            <input type="password" name="pass" class="input-box" required>
 
             
         <label class="yaya">Nama Lengkap</label>
-            <input type="text" name="nama_lengkap" class="input-box">
+            <input type="text" name="nama_lengkap" class="input-box" required>
 
           
         <label class="yaya">Nomor telpeon</label>
-            <input type="text" name="no_tlp" class="input-box">
+            <input type="text" id="no_tlp" name="no_tlp" class="input-box" required>
 
           
         <label class="yaya">Email</label>
-            <input type="email" name="email" class="input-box">
+            <input type="email" name="email" class="input-box" required>
 
             <button type="submit" class="btn">Tambah</button>
 

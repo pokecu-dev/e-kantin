@@ -13,7 +13,7 @@
             $nama_lengkap = $_POST['nama_lengkap'] ?? '';
             $no_tlp = $_POST['no_tlp'] ?? '';
             $email = $_POST['email'] ?? '';
-            $status = $_POST['status'] ?? '';
+            // $status = $_POST['status'] ?? '';
 
             if(empty($id) || empty($username)){
                 echo json_encode([
@@ -27,10 +27,10 @@
                 
                 $pass = password_hash($pass, PASSWORD_DEFAULT);
     
-                $sql = "UPDATE users SET USERNAME= ? , PASS = ? , NAMA_LENGKAP = ? , NO_TLP = ? , EMAIL = ? , STATUS = ? WHERE ID = ? ";
+                $sql = "UPDATE users SET USERNAME= ? , PASS = ? , NAMA_LENGKAP = ? , NO_TLP = ? , EMAIL = ? WHERE ID = ? ";
                 
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("ssssssi", $username, $pass, $nama_lengkap, $no_tlp, $email, $status, $id);
+                $stmt->bind_param("sssssi", $username, $pass, $nama_lengkap, $no_tlp, $email, $id);
                 
                 if($stmt->execute()){
                     echo json_encode([
@@ -44,10 +44,10 @@
                 $stmt->close();
 
             } else {
-                $sql = "UPDATE users SET USERNAME= ? , NAMA_LENGKAP = ? , NO_TLP = ? , EMAIL = ? , STATUS = ? WHERE ID = ? ";
+                $sql = "UPDATE users SET USERNAME= ? , NAMA_LENGKAP = ? , NO_TLP = ? , EMAIL = ? WHERE ID = ? ";
                 
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("sssssi", $username, $nama_lengkap, $no_tlp, $email, $status, $id);
+                $stmt->bind_param("ssssi", $username, $nama_lengkap, $no_tlp, $email, $id);
                 
                 if($stmt->execute()){
                     echo json_encode([

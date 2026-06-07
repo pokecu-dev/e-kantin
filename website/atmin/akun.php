@@ -1012,7 +1012,7 @@ document.addEventListener('submit', async (e) => {
         e.preventDefault(); // Kunci reload bawaan browser
         
         const form = e.target;
-        const actionUrl = form.getAttribute('action') || ''; 
+        const actionUrl = form.getAttribute('data-action') || ''; 
         const formData = new FormData(form);
 
         // Cari tombol submit di dalam form untuk efek loading teks
@@ -1034,7 +1034,7 @@ document.addEventListener('submit', async (e) => {
             
             try {
                 const data = JSON.parse(responseText);
-                
+                console.log('hai')
                 if (data.status === 'success') {
                     // KALAU SUKSES: Tutup modal, munculkan centang hijau, lalu reload halaman
                     closeAddModal();
@@ -1044,8 +1044,10 @@ document.addEventListener('submit', async (e) => {
                     setTimeout(() => { 
                         window.location.reload(); 
                     }, 1500);
+                    console.log("hia")
 
                 } else {
+                    console.log("woi")
                     // KALAU GAGAL: MODAL TETAP KEBUKA & TANPA NOTIF SILANG MERAH MELAYANG
                     // Kembalikan tombol submit agar bisa diklik lagi setelah data diperbaiki oleh user
                     if (btnSubmit) {
@@ -1054,14 +1056,17 @@ document.addEventListener('submit', async (e) => {
                     }
                 }
             } catch (jsonError) {
+                console.log("wahl")
                 // BACKUP: Jika file PHP membalikan error HTML string biasa yang terindikasi duplicate entry
                 if (responseText.includes('Duplicate entry') || responseText.includes('gagal') || responseText.includes('Fatal error')) {
                     // Cukup normalkan tombol submit tanpa memunculkan toast melayang
+                    console.log(responseText)
                     if (btnSubmit) {
                         btnSubmit.disabled = false;
                         btnSubmit.innerHTML = originalBtnText;
                     }
                 } else {
+                    console.log("rawrrrr")
                     // Jika lolos dan dianggap murni sukses
                     closeAddModal();
                     closeEditModal();
