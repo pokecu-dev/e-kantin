@@ -1,29 +1,15 @@
 <?php
-// =========================
-// SESSION & KONEKSI
-// =========================
-// session_start();
 require_once '../include/koneksi.php';
 require_once __DIR__ . '/../include/session/penjualC.php';
-// =========================
-// PROTEKSI LOGIN
-// =========================
+
 if (!isset($_SESSION['id_user'])) {
     header("Location: ../login.php");
     exit();
 }
 
 $id_login = $_SESSION['id_user'];
-
-// =========================
-// SEARCH
-// =========================
 $search = $_GET['search'] ?? '';
 
-
-// =========================
-// QUERY MENU
-// =========================
 $query_menu = "
 SELECT m.* FROM tb_menu m
 JOIN list_kantin k ON m.id_kantin = k.id
@@ -36,13 +22,10 @@ if (!empty($search)) {
 
 $stmt = mysqli_prepare($conn, $query_menu);
 
-// Sekarang bind_param-nya akan menyesuaikan
 if (!empty($search)) {
     $searchValue = "%$search%";
-  
     mysqli_stmt_bind_param($stmt, "is", $id_login, $searchValue);
 } else {
-    // "i" artinya untuk id_login
     mysqli_stmt_bind_param($stmt, "i", $id_login);
 }
 
@@ -68,30 +51,25 @@ $result_menu = mysqli_stmt_get_result($stmt);
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
-/* 1. Sembunyikan untuk browser berbasis Webkit (Chrome, Safari, Edge Baru, Opera) */
-::-webkit-scrollbar {
-    width: 0px !important;
-    background: transparent !important;
-}
 
-/* 2. Sembunyikan untuk Firefox */
-html, body, *, div {
-    scrollbar-width: none !important;
-}
+        ::-webkit-scrollbar {
+            width: 0px !important;
+            background: transparent !important;
+        }
 
-/* 3. Sembunyikan untuk Internet Explorer & Edge Lama */
-html, body, *, div {
-    -ms-overflow-style: none !important;
-}
+        html,
+        body,
+        *,
+        div {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+
         body {
             background: #f8fafc;
             color: #1e293b;
             overflow-x: hidden;
         }
-
-        /* Hide scrollbar */
-        ::-webkit-scrollbar { width: 0; height: 0; }
-        * { scrollbar-width: none; }
 
         .container {
             max-width: 1400px;
@@ -99,28 +77,26 @@ html, body, *, div {
             padding: 20px;
             margin-top: 90px;
         }
-/* ACTIONS HEADER (SEARCH & ADD BUTTON) */
+
         .action-header-area {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px; /* Jarak antara kolom search dan tombol */
+            gap: 12px;
             margin-bottom: 25px;
             width: 100%;
         }
 
-        /* Memaksa box search mengambil semua sisa ruang kosong di desktop */
-        .search-box { 
-            flex: 1; 
+        .search-box {
+            flex: 1;
             position: relative;
         }
-        
-        .search-form { 
-            display: flex; 
+
+        .search-form {
+            display: flex;
             width: 100%;
         }
-        
-        /* Ikon Search dikunci posisinya di dalam input */
+
         .search-icon {
             position: absolute;
             left: 16px;
@@ -134,7 +110,7 @@ html, body, *, div {
         .search-form input {
             flex: 1;
             width: 100%;
-            padding: 14px 16px 14px 44px; /* Padding kiri dinaikkan (44px) agar teks tidak menabrak ikon */
+            padding: 14px 16px 14px 44px;
             border: 1px solid #e2e8f0;
             border-radius: 16px;
             outline: none;
@@ -143,15 +119,15 @@ html, body, *, div {
             font-size: 14px;
             transition: 0.3s;
         }
-        
+
         .search-form input:focus {
             border-color: #F47B20;
             box-shadow: 0 0 0 4px rgba(244, 123, 32, 0.1);
         }
-        
+
         .btn-orange-main {
             padding: 14px 24px;
-            height: 48px; /* Menyamakan tinggi tombol dengan input search */
+            height: 48px;
             border: none;
             border-radius: 16px;
             background: #F47B20;
@@ -166,36 +142,20 @@ html, body, *, div {
             gap: 8px;
             box-shadow: 0 4px 14px rgba(244, 123, 32, 0.25);
             text-decoration: none;
-            white-space: nowrap; /* Mencegah teks tombol terlipat ke bawah pas di HP */
+            white-space: nowrap;
         }
-        
-        .btn-orange-main:hover { 
-            background: #dd6b1d; 
+
+        .btn-orange-main:hover {
+            background: #dd6b1d;
             transform: translateY(-1px);
         }
 
-        /* RESPONSIVE MOBILE ADJUSTMENT */
-        @media (max-width: 576px) {
-            .search-form input {
-                padding: 12px 16px 12px 40px; /* Sedikit lebih kecil di HP agar proporsional */
-            }
-            .btn-orange-main {
-                padding: 12px 16px; /* Mengurangi padding tombol di HP agar tidak kesempitan */
-                font-size: 13px;
-                height: 44px;
-            }
-            .search-icon {
-                left: 14px;
-            }
-        }
-        /* GRID */
         .parent {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 24px;
         }
 
-        /* CARD */
         .child {
             background: white;
             border-radius: 24px;
@@ -205,37 +165,82 @@ html, body, *, div {
             transition: .25s;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
-        .child:hover { 
-            transform: translateY(-6px); 
+
+        .child:hover {
+            transform: translateY(-6px);
             box-shadow: 0 15px 30px rgba(15, 23, 42, 0.08);
         }
-        .child img {
+
+        .image-wrapper {
+            position: relative;
             width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            border-radius: 18px;
+
             margin-bottom: 14px;
         }
-        .child h3 { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 6px; }
-        
+
+        .child img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 18px;
+        }
+
+        .stok-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .stok-aman {
+            background: #e6f7ed;
+            color: #1f9254;
+        }
+
+        .stok-rendah {
+            background: #fff8e6;
+            color: #b7791f;
+        }
+
+        .stok-habis {
+            background: #fde8e8;
+            color: #9b1c1c;
+        }
+
+        .child h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 6px;
+        }
+
         .rating {
-            color: #F47B20;
+            color: #f59e0b;
             font-size: 13px;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 4px;
         }
+
+        .rating-empty {
+            color: #cbd5e1;
+        }
+
         .harga {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
-            color: #0f172a;
+            color: #F47B20;
             margin-bottom: 16px;
         }
 
-        /* GROUP BUTTONS */
         .action-group {
             display: flex;
             gap: 8px;
@@ -243,7 +248,8 @@ html, body, *, div {
             width: 100%;
         }
 
-        .edit-btn, .review-btn {
+        .edit-btn,
+        .review-btn {
             flex: 1;
             height: 42px;
             border-radius: 12px;
@@ -255,29 +261,29 @@ html, body, *, div {
             font-weight: 600;
             transition: .2s;
             cursor: pointer;
+            background: white;
         }
 
         .edit-btn {
-            border: 1.5px solid #F47B20;
-            color: #F47B20;
-            background: transparent;
+            border: 1.5px solid #204ef4;
+            color: #2027f4;
         }
+
         .edit-btn:hover {
-            background: #F47B20;
+            background: #3220f4;
             color: white;
         }
 
         .review-btn {
-            border: 1.5px solid #2563eb;
-            color: #2563eb;
-            background: transparent;
+            border: 1.5px solid #F47B20;
+            color: #F47B20;
         }
+
         .review-btn:hover {
-            background: #2563eb;
+            background: #F47B20;
             color: white;
         }
 
-        /* MODAL OVERLAY */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -289,8 +295,11 @@ html, body, *, div {
             z-index: 1001;
             padding: 16px;
         }
-        .modal-overlay.active { display: flex; }
-        
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
         .modal-box {
             width: min(540px, 100%);
             background: white;
@@ -302,6 +311,7 @@ html, body, *, div {
             box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
             border: 1px solid rgba(241, 245, 249, 0.8);
         }
+
         .modal-close {
             position: absolute;
             top: 20px;
@@ -319,9 +329,12 @@ html, body, *, div {
             justify-content: center;
             transition: 0.2s;
         }
-        .modal-close:hover { background: #e2e8f0; color: #0f172a; }
 
-        /* FORM STYLE DI DALAM MODAL TAMBAH */
+        .modal-close:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
         .modal-title {
             font-size: 20px;
             font-weight: 700;
@@ -331,20 +344,24 @@ html, body, *, div {
             align-items: center;
             gap: 10px;
         }
+
         .form-grid-two {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
+
         .form-group-item {
             display: flex;
             flex-direction: column;
             gap: 8px;
             margin-bottom: 18px;
         }
+
         .form-group-item.full-width {
             grid-column: span 2;
         }
+
         .form-group-item label {
             font-size: 11px;
             font-weight: 700;
@@ -352,6 +369,7 @@ html, body, *, div {
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
         .form-style-input {
             height: 48px;
             background: #f8fafc;
@@ -363,11 +381,13 @@ html, body, *, div {
             transition: 0.2s;
             color: #1e293b;
         }
+
         .form-style-input:focus {
             border-color: #F47B20;
             background: white;
             box-shadow: 0 0 0 4px rgba(244, 123, 32, 0.08);
         }
+
         .custom-upload-area {
             border: 2px dashed #cbd5e1;
             background: #f8fafc;
@@ -377,15 +397,18 @@ html, body, *, div {
             cursor: pointer;
             transition: 0.2s;
         }
+
         .custom-upload-area:hover {
             border-color: #F47B20;
             background: rgba(244, 123, 32, 0.01);
         }
+
         .custom-upload-area i {
             font-size: 24px;
             color: #94a3b8;
             margin-bottom: 6px;
         }
+
         .custom-upload-area p {
             font-size: 13px;
             color: #64748b;
@@ -399,136 +422,99 @@ html, body, *, div {
             font-size: 15px;
         }
 
-        /* RESPONSIVE */
-       @media(max-width:768px){
-    .container { 
-        padding: 14px; 
-        margin-top: 80px; 
-    }
-    
-    /* Ganti susunan header area agar searah jarum jam / berurutan rapi */
-    .action-header-area { 
-        display: flex;
-        flex-direction: column; 
-        gap: 12px; 
-        width: 100%;
-    }
+        @media (max-width: 768px) {
+            .container {
+                padding: 14px;
+                margin-top: 80px;
+            }
 
-    /* Bungkus form pencarian agar input dan tombol cari tetap sebaris (inline) */
-    .search-box {
-        width: 100%;
-    }
-    .search-form { 
-        display: flex; 
-        flex-direction: row !important; /* Paksa tetap sebaris di mobile */
-        gap: 8px; 
-        width: 100%;
-    }
-    .search-form input {
-        flex: 1; /* Biar input text memanjang menghabiskan space */
-        height: 46px;
-        padding: 0 14px;
-        font-size: 13px;
-    }
-    .search-form button {
-        width: auto !important;
-        padding: 0 16px !important;
-        height: 46px !important;
-        font-size: 13px;
-    }
+            .action-header-area {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                width: 100%;
+            }
 
-    /* Tombol tambah produk di bawahnya, dibuat full width biar enak di-klik jempol */
-    .btn-orange-main#js-add-product-trigger { 
-        width: 100%; 
-        height: 46px; 
-        justify-content: center;
-        font-size: 13px;
-        order: 2; /* Taruh di bawah form search */
-    }
+            .search-box {
+                flex: 1 !important;
+                width: auto !important;
+            }
 
-    /* Grid layout produk di mobile biar jadi 2 kolom presisi */
-    .parent { 
-        grid-template-columns: repeat(2, 1fr); 
-        gap: 12px; 
-    }
-    .child {
-        padding: 12px;
-        border-radius: 18px;
-    }
-    .child h3 { font-size: 14px; }
-    .harga { font-size: 14px; margin-bottom: 12px; }
+            .search-form {
+                display: flex !important;
+                width: 100% !important;
+            }
 
-    .action-group { 
-        flex-direction: column; 
-        gap: 6px; 
-    }
-    .edit-btn, .review-btn { 
-        height: 36px; 
-        font-size: 12px; 
-    }
+            .search-form input {
+                width: 100% !important;
+                padding: 12px 14px 12px 38px;
+                border-radius: 12px;
+                font-size: 13px;
+            }
 
-    /* Form di dalam modal pop-up biar responsive mengalir ke bawah */
-    .form-grid-two { 
-        grid-template-columns: 1fr; 
-    }
-    .form-group-item.full-width { 
-        grid-column: span 1; 
-    }
-}
-/* ========================================================
-   GANTI KODE DI DALAM MEDIA QUERY MOBILE KAMU DENGAN INI
-   ======================================================== */
-@media (max-width: 768px) {
-    
-    /* Mengunci area agar selalu berjejer horizontal kanan-kiri */
-    .action-header-area {
-        display: flex !important;
-        flex-direction: row !important; 
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px; /* Jarak pas antar elemen di HP */
-        width: 100%;
-    }
+            .btn-orange-main {
+                flex: 0 0 auto !important;
+                width: auto !important;
+                max-width: 135px;
+                padding: 0 14px;
+                height: 44px;
+                border-radius: 12px;
+                font-size: 13px;
+                font-weight: 600;
+                white-space: nowrap;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
 
-    /* 1. MEMAKSA SEARCH BOX & FORM MENJADI YANG PALING PANJANG */
-    .search-box {
-        flex: 1 !important; /* Mengambil semua sisa ruang kosong */
-        width: auto !important;
-    }
+            .btn-orange-main i {
+                font-size: 13px !important;
+                margin-right: 4px;
+            }
 
-    .search-form {
-        display: flex !important;
-        width: 100% !important;
-    }
+            .parent {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
 
-    .search-form input {
-        width: 100% !important; /* Input text melar penuh di dalam search box */
-        padding: 12px 14px 12px 38px;
-        border-radius: 12px;
-        font-size: 13px;
-    }
+            .child {
+                padding: 12px;
+                border-radius: 18px;
+            }
 
-    /* 2. MENGUNCI TOMBOL TAMBAH PRODUK AGAR TIDAK IKUT MELAR/PANJANG */
-    .btn-orange-main {
-        flex: 0 0 auto !important;
-        width: auto !important; 
-        max-width: 135px;
-        padding: 0 14px; /* Memberikan space kanan-kiri teks di HP agar rapi */
-        height: 44px; /* Menyamakan tinggi tombol dengan input search */
-        border-radius: 12px;
-        font-size: 13px;
-        font-weight: 600;
-        white-space: nowrap; /* Teks "Tambah Produk" dikunci lurus ke samping */
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
+            .child h3 {
+                font-size: 14px;
+            }
 
-    .btn-orange-main i {
-        font-size: 13px !important;
-        margin-right: 4px;
-    }
-}
+            .harga {
+                font-size: 15px;
+                margin-bottom: 12px;
+            }
+
+            .action-group {
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .edit-btn,
+            .review-btn {
+                height: 36px;
+                font-size: 12px;
+            }
+
+            .form-grid-two {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group-item.full-width {
+                grid-column: span 1;
+            }
+        }
+        .swal2-container {
+            z-index: 999999 !important;
+        }
     </style>
 </head>
 
@@ -545,7 +531,7 @@ html, body, *, div {
             </label>
             <ul class="nav-links">
                 <li><a href="penjual.php">Beranda</a></li>
-                   <li><a href="pendapatan.php" >Pendapatan</a></li>
+                <li><a href="pendapatan.php">Pendapatan</a></li>
                 <li><a href="pesanan.php">Pesanan</a></li>
                 <li><a href="edit1.php" class="active">Produk</a></li>
                 <li><a href="profil.php">Profil</a></li>
@@ -555,37 +541,58 @@ html, body, *, div {
     </nav>
 
     <div class="container">
-<div class="action-header-area">
-    <div class="search-box">
-        <form method="GET" class="search-form">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" name="search" placeholder="Cari menu harian..." value="<?= htmlspecialchars($search ?? '') ?>">
-        </form>
-    </div>
-    <button class="btn-orange-main" id="js-add-product-trigger">
-        <i class="fas fa-plus"></i> Tambah Produk
-    </button>
-</div>
+        <div class="action-header-area">
+            <div class="search-box">
+                <form method="GET" class="search-form">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" name="search" placeholder="Cari menu harian..." value="<?= htmlspecialchars($search ?? '') ?>">
+                </form>
+            </div>
+            <button class="btn-orange-main" id="js-add-product-trigger">
+                <i class="fas fa-plus"></i> Tambah Produk
+            </button>
+        </div>
 
         <div class="parent">
             <?php if (mysqli_num_rows($result_menu) > 0): ?>
                 <?php while ($row = mysqli_fetch_assoc($result_menu)): ?>
+                    <?php
+                    $stok = intval($row['STOK'] ?? 0);
+                    if ($stok <= 0) {
+                        $badgeClass = 'stok-habis';
+                        $badgeText = 'Habis';
+                    } elseif ($stok < 5) {
+                        $badgeClass = 'stok-rendah';
+                        $badgeText = 'Tersisa ' . $stok;
+                    } else {
+                        $badgeClass = 'stok-aman';
+                        $badgeText = 'Tersedia ' . $stok;
+                    }
+
+                    $ratingValue = $row['RATING'];
+                    $isRated = ($ratingValue !== null && $ratingValue > 0);
+                    ?>
                     <div class="child">
-                        <img src="../../source/gambar_menu/<?= htmlspecialchars($row['FOTO_MENU'] ?? 'default.jpg') ?>" alt="<?= htmlspecialchars($row['NAMA_MENU']) ?>">
-                        <h3><?= htmlspecialchars($row['NAMA_MENU']) ?></h3>
-                        
-                        <div class="rating">
-                            <i class="fas fa-star"></i>
-                            <span><?= $row['RATING'] ?? 'belum ada rating' ?></span>
+                        <div class="image-wrapper">
+                            <span class="stok-badge <?= $badgeClass ?>"><?= $badgeText ?></span>
+                            <img src="../../source/gambar_menu/<?= htmlspecialchars($row['FOTO_MENU'] ?? 'default.jpg') ?>" alt="<?= htmlspecialchars($row['NAMA_MENU']) ?>">
                         </div>
+
+                        <h3><?= htmlspecialchars($row['NAMA_MENU']) ?></h3>
+
+                        <div class="rating <?= !$isRated ? 'rating-empty' : '' ?>">
+                            <i class="fas fa-star"></i>
+                            <span><?= $isRated ? number_format($ratingValue, 1, '.', '') : '(0.0)' ?></span>
+                        </div>
+
                         <p class="harga">Rp <?= number_format($row['HARGA'], 0, ',', '.') ?></p>
 
                         <div class="action-group">
                             <a href="#" class="edit-btn js-edit-btn" data-id="<?= urlencode($row['ID_MENU']) ?>">
-                                <i class="fas fa-edit"></i>&nbsp;Edit
+                                <i class="fas fa-edit"></i>&nbsp; Edit Produk
                             </a>
                             <button class="review-btn js-review-btn" data-id="<?= urlencode($row['ID_MENU']) ?>">
-                                <i class="fas fa-comments"></i>&nbsp;Ulasan
+                                <i class="fas fa-comments"></i>&nbsp;Lihat Ulasan
                             </button>
                         </div>
                     </div>
@@ -606,65 +613,64 @@ html, body, *, div {
         </div>
     </div>
 
-   <template id="add-product-form-template">
-    <div class="modal-title">
-        <i class="fas fa-folder-plus" style="color:#F47B20;"></i> Tambah Produk Baru
-    </div>
-    <form action="process/proses_tambah.php" method="POST" enctype="multipart/form-data">
-        <div class="form-grid-two">
-            <div class="form-group-item full-width">
-                <label>Nama Menu</label>
-                <input type="text" name="nama_menu" class="form-style-input" placeholder="Contoh: Nasi Goreng Gila" required>
-            </div>
-            
-            <div class="form-group-item full-width">
-                <label>Deskripsi Produk</label>
-                <textarea name="desk" class="form-style-input" style="height: 80px; padding-top: 10px;" placeholder="Ceritakan kelezatan produkmu..." required></textarea>
-            </div>
+    <template id="add-product-form-template">
+        <div class="modal-title">
+            <i class="fas fa-folder-plus" style="color:#F47B20;"></i> Tambah Produk Baru
+        </div>
+        <form action="process/proses_tambah.php" method="POST" enctype="multipart/form-data">
+            <div class="form-grid-two">
+                <div class="form-group-item full-width">
+                    <label>Nama Menu</label>
+                    <input type="text" name="nama_menu" class="form-style-input" placeholder="Contoh: Nasi Goreng Gila" required>
+                </div>
 
-            <div class="form-group-item">
-                <label>Harga (Rp)</label>
-                <input type="number" name="harga" id="modal_tambah_harga" class="form-style-input" value="1000" min="500" required>
-            </div>
+                <div class="form-group-item full-width">
+                    <label>Deskripsi Produk</label>
+                    <textarea name="desk" class="form-style-input" style="height: 80px; padding-top: 10px;" placeholder="Ceritakan kelezatan produkmu..." required></textarea>
+                </div>
 
-            <div class="form-group-item">
-                <label>Stok Awal</label>
-                <input type="number" name="stok" id="modal_tambah_stok" class="form-style-input" value="10" min="0" required>
-            </div>
+                <div class="form-group-item">
+                    <label>Harga (Rp)</label>
+                    <input type="number" name="harga" id="modal_tambah_harga" class="form-style-input" value="1000" min="500" required>
+                </div>
 
-            <div class="form-group-item">
-                <label>Kategori</label>
-                <select name="kategori" class="form-style-input" required>
-                    <option value="makanan">Makanan</option>
-                    <option value="minuman">Minuman</option>
-                    <option value="snack">Camilan</option>
-                </select>
-            </div>
+                <div class="form-group-item">
+                    <label>Stok Awal</label>
+                    <input type="number" name="stok" id="modal_tambah_stok" class="form-style-input" value="10" min="0" required>
+                </div>
 
-            <div class="form-group-item">
-                <label>Status</label>
-                <select name="status" id="modal_tambah_status" class="form-style-input" required>
-                    <option value="tersedia">Tersedia</option>
-                    <option value="habis">Habis</option>
-                </select>
-            </div>
+                <div class="form-group-item">
+                    <label>Kategori</label>
+                    <select name="kategori" class="form-style-input" required>
+                        <option value="makanan">Makanan</option>
+                        <option value="minuman">Minuman</option>
+                        <option value="snack">Camilan</option>
+                    </select>
+                </div>
 
-            <div class="form-group-item full-width">
-                <label>Foto Menu</label>
-                <div class="custom-upload-area" onclick="document.getElementById('modal_tambah_file').click()">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p id="upload-text-info">Klik untuk upload foto</p>
-                    <input type="file" name="foto_menu" id="modal_tambah_file" style="display:none;" accept="image/*" required onchange="document.getElementById('upload-text-info').innerText = this.files[0].name">
+                <div class="form-group-item">
+                    <label>Status</label>
+                    <select name="status" id="modal_tambah_status" class="form-style-input" required>
+                        <option value="tersedia">Tersedia</option>
+                        <option value="habis">Habis</option>
+                    </select>
+                </div>
+
+                <div class="form-group-item full-width">
+                    <label>Foto Menu</label>
+                    <div class="custom-upload-area" onclick="document.getElementById('modal_tambah_file').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p id="upload-text-info">Klik untuk upload foto</p>
+                        <input type="file" name="foto_menu" id="modal_tambah_file" style="display:none;" accept="image/*" required onchange="document.getElementById('upload-text-info').innerText = this.files[0].name">
+                    </div>
                 </div>
             </div>
-        </div>
-        <button type="submit" class="btn-orange-main" style="width:100%; margin-top:10px; height:50px; justify-content:center;">
-            Simpan Produk
-        </button>
-    </form>
-</template>
-
-    <script>
+            <button type="submit" class="btn-orange-main" style="width:100%; margin-top:10px; height:50px; justify-content:center;">
+                Simpan Produk
+            </button>
+        </form>
+    </template>
+<script>
         document.addEventListener("DOMContentLoaded", () => {
             const modal = document.getElementById("editModal");
             const modalContent = document.getElementById("modalContent");
@@ -676,36 +682,71 @@ html, body, *, div {
                 document.body.style.overflow = "hidden";
             };
 
-            // 1. EVENT KLIK TOMBOL TAMBAH PRODUK BARU
             const addTrigger = document.getElementById("js-add-product-trigger");
-            if(addTrigger) {
+            if (addTrigger) {
                 addTrigger.addEventListener("click", () => {
                     const template = document.getElementById("add-product-form-template");
                     modalContent.innerHTML = template.innerHTML;
                     modal.classList.add("active");
                     document.body.style.overflow = "hidden";
-                    
-                    // Inisialisasi validasi instan untuk form tambah yang baru dimasukkan
                     initTambahFormValidation();
+                    initFormSubmitAjax(); // Inisialisasi AJAX untuk form Tambah Produk
                 });
             }
 
-            // 2. EVENT KLIK TOMBOL EDIT (MEMANGGIL editproduk.php)
-            document.querySelectorAll(".js-edit-btn").forEach(btn => {
-                btn.addEventListener("click", async (e) => {
-                    e.preventDefault();
-                    const id = btn.dataset.id;
-                    try {
-                        showLoading();
-                        const res = await fetch(`editproduk.php?id=${id}`);
-                        modalContent.innerHTML = await res.text();
-                    } catch (err) {
-                        modalContent.innerHTML = `<div style="text-align:center; padding:40px; color:#ef4444;"><i class="fas fa-exclamation-triangle"></i> Gagal memuat data edit.</div>`;
-                    }
-                });
-            });
+document.querySelectorAll(".js-edit-btn").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                e.preventDefault();
+                const id = btn.dataset.id;
+                try {
+                    showLoading();
+                    const res = await fetch(`editproduk.php?id=${id}`);
+                    modalContent.innerHTML = await res.text();
 
-            // 3. EVENT KLIK TOMBOL RATING/ULASAN (MEMANGGIL detail_ulasan.php BARU)
+                    // =========================================================
+                    // UTAMA: INTERCEPT FORM EDIT BIAR PAKE SWEETALERT + AUTO REFRESH
+                    // =========================================================
+                    const formEdit = modalContent.querySelector("form");
+                    if (formEdit) {
+                        formEdit.addEventListener("submit", async (evt) => {
+                            evt.preventDefault(); // Menghentikan reload bawaan form kuno
+
+                            const formData = new FormData(formEdit);
+                            formData.append("update", "1"); // Pastikan key 'update' dikirim ke editproduk.php
+
+                            try {
+                                const response = await fetch("editproduk.php?id=" + id, {
+                                    method: "POST",
+                                    body: formData
+                                });
+
+                                if (response.ok) {
+                                    // Munculin popup SweetAlert yang beneran melayang di depan
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Berhasil!',
+                                        text: 'Data produk berhasil diperbarui.',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        window.location.reload(); // Selesai notif langsung refresh otomatis halaman utama
+                                    });
+                                } else {
+                                    Swal.fire('Gagal!', 'Terjadi kesalahan saat menyimpan data.', 'error');
+                                }
+                            } catch (err) {
+                                Swal.fire('Error!', 'Gagal menghubungkan ke server.', 'error');
+                            }
+                        });
+                    }
+                    // =========================================================
+
+                } catch (err) {
+                    modalContent.innerHTML = `<div style="text-align:center; padding:40px; color:#ef4444;"><i class="fas fa-exclamation-triangle"></i> Gagal memuat data edit.</div>`;
+                }
+            });
+        });
+
             document.querySelectorAll(".js-review-btn").forEach(btn => {
                 btn.addEventListener("click", async (e) => {
                     e.preventDefault();
@@ -720,7 +761,6 @@ html, body, *, div {
                 });
             });
 
-            // TUTUP MODAL FUNGSI
             const close = () => {
                 modal.classList.remove("active");
                 modalContent.innerHTML = "";
@@ -732,7 +772,6 @@ html, body, *, div {
                 if (e.target === modal) close();
             });
 
-            // Validasi Input Real-time khusus Form Tambah Baru
             function initTambahFormValidation() {
                 const inputSTOCK = document.getElementById("modal_tambah_stok");
                 const inputHARGA = document.getElementById("modal_tambah_harga");
@@ -742,7 +781,7 @@ html, body, *, div {
 
                 inputSTOCK.oninput = (e) => {
                     let val = parseInt(e.target.value);
-                    if(e.target.value === "" || isNaN(val) || val < 0) {
+                    if (e.target.value === "" || isNaN(val) || val < 0) {
                         e.target.value = 0;
                         val = 0;
                     }
@@ -751,48 +790,98 @@ html, body, *, div {
 
                 inputHARGA.onchange = (e) => {
                     let val = parseInt(e.target.value);
-                    if(e.target.value === "" || isNaN(val) || val < 500) {
+                    if (e.target.value === "" || isNaN(val) || val < 500) {
                         e.target.value = 500;
-                    } else if(val % 500 !== 0) {
-                        // Jika bukan kelipatan 500, bulatkan otomatis ke kelipatan 500 terdekat
+                    } else if (val % 500 !== 0) {
                         e.target.value = Math.round(val / 500) * 500;
                     }
                 };
+            }
+
+            // ========================================================
+            // FUNGSI UTAMA AJAX SUBMIT + SWEETALERT + AUTO REFRESH
+            // ========================================================
+            function initFormSubmitAjax() {
+                // Cari form yang ada di dalam modalContent (bisa form edit atau form tambah)
+                const form = modalContent.querySelector("form");
+                if (!form) return;
+
+                form.addEventListener("submit", async (e) => {
+                    e.preventDefault(); // Mencegah pindah halaman manual/bawaan form HTML
+
+                    const formData = new FormData(form);
+                    // Jika file editproduk.php membutuhkan deteksi nama button seperti isset($_POST['update'])
+                    // kita bantu sisipkan secara manual ke formData:
+                    formData.append('update', '1'); 
+
+                    try {
+                        // Ambil atribut action dari form tag, kalau kosong kirim ke file asal
+                        const targetUrl = form.getAttribute("action") || window.location.href;
+
+                        const response = await fetch(targetUrl, {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        // Cek status response dari server PHP
+                        if (response.ok) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Data produk berhasil diperbarui.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload(); // Otomatis refresh halaman utama biar data terupdate
+                            });
+                        } else {
+                            Swal.fire('Gagal!', 'Terjadi kesalahan saat menyimpan data.', 'error');
+                        }
+                    } catch (error) {
+                        Swal.fire('Error!', 'Terjadi kegagalan sistem koneksi.', 'error');
+                    }
+                });
             }
         });
     </script>
 
     <script src="./../shared/js/script.js"></script>
-    
+
     <script>
-        // Logika global bawaan untuk file edit lama (tetap dipertahankan agar tidak bentrok)
-        window.UpdateHarga = function (step){
+        window.UpdateHarga = function(step) {
             const inputHARGA = document.getElementById("harga");
             if (!inputHARGA) return;
             let newValH = parseInt(inputHARGA.value) + step;
-            if(newValH >= 500 && newValH % 500 == 0){ inputHARGA.value = newValH; } 
+            if (newValH >= 500 && newValH % 500 == 0) {
+                inputHARGA.value = newValH;
+            }
         }
 
-        window.UpdateStock = function (step){
+        window.UpdateStock = function(step) {
             const inputSTOCK = document.getElementById("stok");
             const inputSTATUS = document.getElementById("status");
             if (!inputSTOCK) return;
             let newValS = parseInt(inputSTOCK.value) + step;
             if (newValS >= 0) {
                 inputSTOCK.value = newValS;
-                if (inputSTATUS) { inputSTATUS.value = (newValS <= 0) ? "habis" : "tersedia"; }
+                if (inputSTATUS) {
+                    inputSTATUS.value = (newValS <= 0) ? "habis" : "tersedia";
+                }
             }
         }
 
-        window.updateFileName = function (input){
+        window.updateFileName = function(input) {
             const fileNameDisplay = document.getElementById('file-chosen');
-            if(input.files.length > 0){
+            if (input.files.length > 0) {
                 fileNameDisplay.textContent = input.files[0].name;
-            }
-            else{
+            } else {
                 fileNameDisplay.textContent = 'Pilih Foto Menu... '
             }
         }
     </script>
+
+        
+
 </body>
+
 </html>
