@@ -1,11 +1,5 @@
 <?php
-/**
- * keranjang.php — VERSI BARU
- * Auto group by kantin pakai while loop PHP native
- * Author: CEO Fullstack Dev
- */
 
-// session_start();
 require_once '../include/koneksi.php';
 require_once __DIR__ . "/../include/session/pembeliC.php";
 
@@ -404,7 +398,7 @@ $total_all = array_sum(array_column($grouped, 'total'));
                         <p class="nama"><?= htmlspecialchars($item['nama_menu']) ?></p>
                         <p class="harga">Rp <?= number_format($item['harga'], 0, ',', '.') ?></p>
                         
-                        <?php if ($item['status'] === 'habis'): ?>
+                        <?php if ($item['stok'] <= 0): ?>
                             <p class="stok-warn">⚠ Menu habis</p>
                         <?php elseif ($item['stok'] < $item['qty']): ?>
                             <p class="stok-warn">⚠ Stok kurang (sisa: <?= $item['stok'] ?>)</p>
@@ -414,7 +408,16 @@ $total_all = array_sum(array_column($grouped, 'total'));
                     <!-- Qty Control -->
                     <div class="kr-qty-wrap">
                         <button class="kr-qty-btn" onclick="updateQty(<?= $item['id_keranjang'] ?>, <?= $item['qty'] - 1 ?>)">−</button>
-                        <span class="kr-qty-val"><?= $item['qty'] ?></span>
+                        
+                        <!-- Mengubah span menjadi input number -->
+                        <input type="number" 
+                            class="kr-qty-val" 
+                            value="<?= $item['qty'] ?>" 
+                            min="1" 
+                            max="<?= $item['stok'] ?>" 
+                            onchange="inputQtyManual(this, <?= $item['id_keranjang'] ?>, <?= $item['stok'] ?>)"
+                            style="width: 55px; height: 32px; font-size: 14px; font-weight: 700; text-align: center; border: 1.5px solid #e0e0e0; border-radius: 8px; font-family: 'Poppins', sans-serif;">
+                            
                         <button class="kr-qty-btn" onclick="updateQty(<?= $item['id_keranjang'] ?>, <?= $item['qty'] + 1 ?>)">+</button>
                         <button class="kr-btn-del" onclick="hapusItem(<?= $item['id_keranjang'] ?>)" title="Hapus">🗑</button>
                     </div>
@@ -474,6 +477,25 @@ $total_all = array_sum(array_column($grouped, 'total'));
         };
         xhr.send('id_keranjang=' + idKeranjang + '&qty=' + qtyBaru);
         
+    }
+
+    
+    function inputQtyManual(inputElement, idKeranjang, stokMaksimal) {
+        let qtyBaru = parseInt(inputElement.value);
+
+        if (isNaN(qtyBaru) || qtyBaru < 1) {
+            alert("Jumlah pembelian minimal adalah 1 porsi.");
+            qtyBaru = 1;
+            inputElement.value = 1;
+        }
+     
+        if (qtyBaru > stokMaksimal) {
+            alert("Maaf, stok menu di kantin tidak mencukupi. Batas maksimal pembelian adalah " + stokMaksimal + " porsi.");
+            qtyBaru = stokMaksimal;
+            inputElement.value = stokMaksimal; // Mengembalikan nilai input ke batas stok riil
+        }
+
+        updateQty(idKeranjang, qtyBaru);
     }
 
     // Hapus item via AJAX
