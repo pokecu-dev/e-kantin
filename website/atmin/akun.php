@@ -613,8 +613,99 @@ if ($search_user !== '') {
         }
         .btn-confirm-ok:hover {
             opacity: 0.9;
-        }
-    </style>
+        }/* --- TOAST NOTIFICATION DI TENGAH LAYAR --- */
+.toast-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none; /* Biar ngga ngeblok klik di layar */
+}
+
+.toast-alert {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column; /* Icon di atas, teks di bawah biar mantap di tengah */
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    min-width: 280px;
+    max-width: 90vw;
+    text-align: center;
+    opacity: 0;
+    scale: 0.8;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.toast-alert.show {
+    opacity: 1;
+    scale: 1;
+}
+
+.toast-success {
+    border-top: 5px solid #10b981; /* Garis hiasan pindah ke atas */
+    color: #065f46;
+}
+
+.toast-error {
+    border-top: 5px solid #ef4444; /* Garis hiasan pindah ke atas */
+    color: #991b1b;
+}
+
+/* Style SVG Animasi Centang */
+.checkmark-wrapper {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+.checkmark {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 3;
+    stroke: #10b981;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #10b981;
+    animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out forwards;
+}
+.checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 3;
+    stroke-miterlimit: 10;
+    stroke: #10b981;
+    fill: none;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+.checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+}
+
+/* Keyframes Animasi */
+@keyframes stroke {
+    100% { stroke-dashoffset: 0; }
+}
+@keyframes scale {
+    0%, 100% { transform: none; }
+    50% { transform: scale3d(1.1, 1.1, 1.1); }
+}
+@keyframes fill {
+    100% { box-shadow: inset 0px 0px 0px 40px #e6f4ea; }
+}
+</style>
 </head>
 
 <body>
@@ -770,12 +861,15 @@ if ($search_user !== '') {
             </div>
         </div>
     </div>
-<script src="./../shared/js/script.js"></script>
 
+    <div class="toast-container" id="toastContainer"></div>
+
+<script src="./../shared/js/script.js"></script>
 <script>
 const editModal = document.getElementById("editUserModal");
 const modalBody = document.getElementById("modalBody");
 
+// Fungsi membuka modal edit user via AJAX
 async function openEditModal(userId) {
     editModal.classList.add("active");
     modalBody.innerHTML = `
@@ -806,6 +900,7 @@ async function openEditModal(userId) {
     }
 }
 
+// Fungsi menutup modal edit user
 function closeEditModal() { 
     editModal.classList.remove("active"); 
     setTimeout(() => { modalBody.innerHTML = ''; }, 200);
@@ -820,11 +915,13 @@ editModal.addEventListener("click", (e) => {
 const addModal = document.getElementById("addModal");
 const addModalContent = addModal.querySelector(".modal-content");
 
+// Fungsi membuka modal tambah user
 function openAddUserModal() {
     addModal.classList.add("active");
     resetAddMenu();
 }
 
+// Fungsi menutup modal tambah user
 function closeAddModal() {
     addModal.classList.remove("active");
     setTimeout(() => { resetAddMenu(); }, 200);
@@ -836,6 +933,7 @@ addModal.addEventListener("click", (e) => {
     }
 });
 
+// Reset tampilan menu pilihan jenis akun di dalam modal tambah
 function resetAddMenu() {
     addModalContent.innerHTML = `
         <button class="close-modal" onclick="closeAddModal()">&times;</button>
@@ -846,6 +944,7 @@ function resetAddMenu() {
     `;
 }
 
+// Memuat form tambah user secara dinamis (AJAX)
 async function loadForm(file) {
     addModalContent.innerHTML = `
         <button type="button" class="close-modal-right" onclick="closeAddModal()">&times;</button>
@@ -870,6 +969,7 @@ async function loadForm(file) {
     }
 }
 
+// Menutup semua modal dengan tombol Escape di keyboard
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         closeEditModal();
@@ -878,14 +978,111 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-document.addEventListener('submit', (e) => {
-    if (e.target.closest('#modalBody') || e.target.closest('.modal-content')) {
+// Fungsi memunculkan Toast sukses murni di tengah layar
+function tampilkanNotif(pesan, jenis = 'success') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.className = `toast-alert toast-${jenis}`;
+    
+    if (jenis === 'success') {
+        toast.innerHTML = `
+            <div class="checkmark-wrapper">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+            </div>
+            <span>${pesan}</span>
+        `;
+        container.appendChild(toast);
+        setTimeout(() => { toast.classList.add('show'); }, 50);
         setTimeout(() => {
-            window.location.reload();
-        }, 1000);
+            toast.classList.remove('show');
+            setTimeout(() => { toast.remove(); }, 300);
+        }, 3000);
+    }
+}
+
+// Mencegat submit form tambah/edit user (VERSI: Tanpa Notif Gagal Melayang)
+document.addEventListener('submit', async (e) => {
+    if (e.target.closest('#modalBody') || e.target.closest('.modal-content')) {
+        
+        e.preventDefault(); // Kunci reload bawaan browser
+        
+        const form = e.target;
+        const actionUrl = form.getAttribute('action') || ''; 
+        const formData = new FormData(form);
+
+        // Cari tombol submit di dalam form untuk efek loading teks
+        const btnSubmit = form.querySelector('button[type="submit"]') || form.querySelector('.btn-action');
+        const originalBtnText = btnSubmit ? btnSubmit.innerHTML : '';
+        
+        if (btnSubmit) {
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+        }
+
+        try {
+            const response = await fetch(actionUrl, {
+                method: 'POST',
+                body: formData
+            });
+
+            const responseText = await response.text();
+            
+            try {
+                const data = JSON.parse(responseText);
+                
+                if (data.status === 'success') {
+                    // KALAU SUKSES: Tutup modal, munculkan centang hijau, lalu reload halaman
+                    closeAddModal();
+                    closeEditModal();
+                    tampilkanNotif(data.message || 'Data berhasil disimpan!', 'success');
+                    
+                    setTimeout(() => { 
+                        window.location.reload(); 
+                    }, 1500);
+
+                } else {
+                    // KALAU GAGAL: MODAL TETAP KEBUKA & TANPA NOTIF SILANG MERAH MELAYANG
+                    // Kembalikan tombol submit agar bisa diklik lagi setelah data diperbaiki oleh user
+                    if (btnSubmit) {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = originalBtnText;
+                    }
+                }
+            } catch (jsonError) {
+                // BACKUP: Jika file PHP membalikan error HTML string biasa yang terindikasi duplicate entry
+                if (responseText.includes('Duplicate entry') || responseText.includes('gagal') || responseText.includes('Fatal error')) {
+                    // Cukup normalkan tombol submit tanpa memunculkan toast melayang
+                    if (btnSubmit) {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = originalBtnText;
+                    }
+                } else {
+                    // Jika lolos dan dianggap murni sukses
+                    closeAddModal();
+                    closeEditModal();
+                    tampilkanNotif('Data pengguna berhasil diproses!', 'success');
+                    setTimeout(() => { 
+                        window.location.reload(); 
+                    }, 1500);
+                }
+            }
+
+        } catch (error) {
+            console.error(error);
+            if (btnSubmit) {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = originalBtnText;
+            }
+        }
     }
 });
 
+// Auto-formatting nomor telepon +62 otomatis di dalam input modal
 document.addEventListener('input', function(e) {
     if (e.target.id === 'no_tlp' && e.target.closest('#modalBody')) {
         let value = e.target.value;
@@ -899,22 +1096,22 @@ document.addEventListener('input', function(e) {
     }
 });
 
-/* FIX: LOGIKA MODAL PERUBAHAN STATUS MENGGUNAKAN EVENT DELEGATION */
+/* LOGIKA MODAL PERUBAHAN STATUS MENGGUNAKAN EVENT DELEGATION */
 const confirmModal = document.getElementById("confirmStatusModal");
 const confirmMessage = document.getElementById("confirmStatusMessage");
 const btnConfirmOk = document.getElementById("btnConfirmOk");
 const btnConfirmCancel = document.getElementById("btnConfirmCancel");
 
-let targetCheckbox = null; // Menyimpan elemen checkbox yang sedang diklik
-let targetAkanAktif = false; // Menyimpan status masa depan yang diinginkan
+let targetCheckbox = null; 
+let targetAkanAktif = false; 
 
-// Dengerin event 'change' di seluruh dokumen (Event Delegation)
+// Dengerin event switch toggle status aktif/nonaktif akun
 document.addEventListener('change', function(e) {
     if (e.target && e.target.classList.contains('toggle-status')) {
         targetCheckbox = e.target;
         targetAkanAktif = targetCheckbox.checked; 
         
-        // Kembalikan dulu visual switch-nya ke posisi semula sebelum di-approve user via Modal
+        // Kembalikan dulu visual switch-nya sebelum di-approve user via Modal Konfirmasi
         targetCheckbox.checked = !targetAkanAktif;
 
         const username = targetCheckbox.getAttribute('data-username');
@@ -925,7 +1122,6 @@ document.addEventListener('change', function(e) {
     }
 });
 
-// Jika User menekan tombol Batal
 btnConfirmCancel.addEventListener('click', closeConfirmModal);
 
 confirmModal.addEventListener('click', (e) => {
@@ -939,7 +1135,7 @@ function closeConfirmModal() {
     targetCheckbox = null;
 }
 
-// Jika User menekan tombol Yakin
+// Eksekusi perubahan status akun aktif/tidak aktif via AJAX
 btnConfirmOk.addEventListener('click', () => {
     if (!targetCheckbox) return;
 
@@ -960,7 +1156,6 @@ btnConfirmOk.addEventListener('click', () => {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            // Animasi toggle bergerak ke posisi baru hanya jika sukses di database
             targetCheckbox.checked = targetAkanAktif;
         } else {
             alert('Gagal mengubah status: ' + data.message);

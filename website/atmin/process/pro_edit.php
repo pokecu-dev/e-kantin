@@ -4,69 +4,79 @@
 
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
-        try{
+        try {
+            header('Content-Type: application/json');
 
-            header('content-type: application/json');
+            $id = $_POST['id'] ?? null;
+            $username = trim($_POST['usn'] ?? '');
+            $pass = $_POST['pass'] ?? '';
+            $nama_lengkap = $_POST['nama_lengkap'] ?? '';
+            $no_tlp = $_POST['no_tlp'] ?? '';
+            $email = $_POST['email'] ?? '';
+            $status = $_POST['status'] ?? '';
 
-            $id = $_POST['id'];
-            $username = $_POST['usn'];
-            $pass = $_POST['pass'] ?? 0;
-            $nama_lengkap = $_POST['nama_lengkap'];
-            $no_tlp = $_POST['no_tlp'];
-            $email = $_POST['email'];
-            $status = $_POST['status'];
+            if(empty($id) || empty($username)){
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Username dan ID tidak boleh kosong!'
+                ]);
+                exit;
+            }
 
-            if($pass){
+            if(!empty($pass)){
                 
-                $pass = password_hash($pass,PASSWORD_DEFAULT);
+                $pass = password_hash($pass, PASSWORD_DEFAULT);
     
                 $sql = "UPDATE users SET USERNAME= ? , PASS = ? , NAMA_LENGKAP = ? , NO_TLP = ? , EMAIL = ? , STATUS = ? WHERE ID = ? ";
                 
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("ssssssi",$username,$pass,$nama_lengkap,$no_tlp,$email,$status,$id);
+                $stmt->bind_param("ssssssi", $username, $pass, $nama_lengkap, $no_tlp, $email, $status, $id);
+                
                 if($stmt->execute()){
-    
                     echo json_encode([
                         'status' => 'success',
-                        'message' => 'berhasil!,mohon tunggu 1 detik untuk auto refresh!(jika dalam waktu 1 detik tidak refresh,mohon untuk refresh manual atau submit lagi)'
+                        'message' => 'Data pengguna berhasil diperbarui!'
                     ]);
-                }
-                else{
-                    echo json_encode([
-                        'status' => 'error',
-                        'message' => 'gagal memperbarui data' . $stmt->error
-                    ]);
+                } else {
+                    // Memicu catch jika execute mengembalikan false akibat duplicate key/error lain
+                    throw new Exception($stmt->error);
                 }
                 $stmt->close();
 
-            }
-            else{
+            } else {
                 $sql = "UPDATE users SET USERNAME= ? , NAMA_LENGKAP = ? , NO_TLP = ? , EMAIL = ? , STATUS = ? WHERE ID = ? ";
                 
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("sssssi",$username,$nama_lengkap,$no_tlp,$email,$status,$id);
+                $stmt->bind_param("sssssi", $username, $nama_lengkap, $no_tlp, $email, $status, $id);
+                
                 if($stmt->execute()){
-    
                     echo json_encode([
                         'status' => 'success',
-                        'message' => 'berhasil!,mohon tunggu 1 detik untuk auto refresh!(jika dalam waktu 1 detik tidak refresh,mohon untuk refresh manual atau submit lagi)'
+                        'message' => 'Data pengguna berhasil diperbarui!'
                     ]);
+                } else {
+                    // Memicu catch jika execute mengembalikan false akibat duplicate key/error lain
+                    throw new Exception($stmt->error);
                 }
-                else{
-                    echo json_encode([
-                        'status' => 'error',
-                        'message' => 'gagal memperbarui data' . $stmt->error
-                    ]);
-                }
+                $stmt->close();
             }
 
         }
         catch(Exception $e){
-            echo json_encode(['status' => 'error','message' => 'gagal' . $e->getMessage()]);
+            $error_msg = $e->getMessage();
+            $pesan_custom = 'Gagal memperbarui data.';
 
+            // Deteksi jika penyebab gagalnya karena username/email kembar (Duplicate Entry)
+            if (str_contains($error_msg, 'Duplicate entry')) {
+                $pesan_custom = "Username '@$username' sudah terdaftar di sistem! Silakan gunakan nama lain.";
+            } else {
+                $pesan_custom .= ' ' . $error_msg;
+            }
+
+            echo json_encode([
+                'status' => 'error',
+                'message' => $pesan_custom
+            ]);
         }
-        
-
     }
-    
 ?>
