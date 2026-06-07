@@ -99,19 +99,19 @@
     <form data-ajax="true" data-action="./process/pro_addAdmin.php" data-notif="notif">
         
         <label>Username</label>
-        <input type="text" name="usn" class="input-box">
+        <input type="text" name="usn" class="input-box" required>
 
         <label>Password</label>
-        <input type="text" name="pass">
+        <input type="password" name="pass" class="input-box" required>
 
         <label>Nama Lengkap</label>
-        <input type="text" name="nama_lengkap" class="input-box">
+        <input type="text" name="nama_lengkap" class="input-box" required>
 
         <label>Nomor telpeon</label>
-        <input type="text" name="no_tlp" class="input-box">
+        <input type="text" id="no_tlp"  name="no_tlp" class="input-box" required>
 
         <label>Email</label>
-        <input type="email" name="email" class="input-box">
+        <input type="email" name="email" class="input-box" required>
 
         <button type="submit" class="btn">Tambah</button>
 
@@ -120,6 +120,37 @@
     <div id="notif"></div>
 
     <script src="./../shared/js/script.js"></script>
+    <script>
+        document.getElementById("no_tlp").addEventListener('input', function(e) {
+            this.style.borderBottom = '2px solid #F47B20'
+            document.getElementById('notif').innerHTML = '';
+            let value = this.value;
+            let hasPlus = value.startsWith('+');
+
+            let numbers = value.replace(/\D/g, '');
+
+            let formatted = '';
+
+            if (hasPlus) formatted += '+';
+            else formatted += '+';
+
+            if (numbers.length > 0) {
+              formatted += numbers.substring(0, 2);
+            }
+            if (numbers.length > 2) {
+              formatted += ' ' + numbers.substring(2, 5);
+            }
+            if (numbers.length > 5) {
+              formatted += ' ' + numbers.substring(5, 9);
+            }
+            if (numbers.length > 9) {
+              formatted += ' ' + numbers.substring(9, 13);
+            }
+
+            this.value = formatted;
+
+            }) 
+    </script>
 </body>
 </html>
 
