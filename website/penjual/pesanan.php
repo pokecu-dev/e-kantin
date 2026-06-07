@@ -21,6 +21,18 @@ $data_kantin = $query_kantin->fetch_assoc();
 
 $id_kantin_toko = $data_kantin['ID'] ?? 1;
 
+
+// --- FITUR REVISI AUTOMATIC CANCEL EXPIRED ORDERS ---
+$hari_ini = date('Y-m-d');
+
+$sql_auto_cancel = "UPDATE transaksi 
+                    SET status = 'dibatalkan'
+                    WHERE id_kantin = '$id_kantin_toko' 
+                    AND tgl < '$hari_ini' 
+                    AND status NOT IN ('selesai', 'dibatalkan')";
+$conn->query($sql_auto_cancel);
+
+
 // --- PROSES UPDATE STATUS PESANAN ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_transaksi']) && isset($_POST['status_baru'])) {
     $id_transaksi_update = $conn->real_escape_string($_POST['id_transaksi']);
@@ -30,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_transaksi']) && is
     $sql_update = "UPDATE transaksi SET status = '$status_baru' WHERE ID_TRANSAKSI = '$id_transaksi_update' AND id_kantin = '$id_kantin_toko'";
     if ($conn->query($sql_update)) {
         // Refresh halaman agar perubahan terlihat
-        header("Location: pesanan.php?status_filter=" . ($_GET['status_filter'] ?? 'semua') . "&msg=success");
+        header("Location: pesanan.php?status_filter=" . ($_GET['status_filter'] ?? 'semua') . "&urutan_filter=" . ($_GET['urutan_filter'] ?? 'DESC') . "&msg=success");
         exit;
     }
 }
@@ -67,7 +79,7 @@ $sql_counter = "
 $query_counter = $conn->query($sql_counter);
 $counts = $query_counter->fetch_assoc();
 
-// --- QUERY DAFTAR PESANAN (Urutan Paling Baru di Atas Berdasarkan ID/Waktu) ---
+// --- QUERY DAFTAR PESANAN ---
 $sql_transaksi = "
     SELECT 
         t.ID_TRANSAKSI AS id_transaksi, 
@@ -78,7 +90,7 @@ $sql_transaksi = "
         t.status, 
         t.catatan,
         u.NAMA_LENGKAP AS nama_pembeli,
-        u.PASS AS password_pembeli, /* Digunakan untuk mockup pw 12345 jika diperlukan */
+        u.PASS AS password_pembeli,
         (
             SELECT GROUP_CONCAT(CONCAT(dt.nama_menu, ' (', dt.qty, ')') SEPARATOR '<br>') 
             FROM detail_transaksi dt 
@@ -87,7 +99,7 @@ $sql_transaksi = "
     FROM transaksi t
     LEFT JOIN users u ON t.id_user = u.ID
     $where_clause
-    ORDER BY t.ID_TRANSAKSI $urutan_filter, t.tgl $urutan_filter, t.waktu $urutan_filter
+    ORDER BY t.tgl $urutan_filter, t.waktu $urutan_filter, t.ID_TRANSAKSI $urutan_filter
 ";
 
 $query_transaksi = $conn->query($sql_transaksi);
@@ -101,6 +113,7 @@ $query_transaksi = $conn->query($sql_transaksi);
     <title>Daftar Pesanan Masuk</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* --- RESET & GLOBAL STYLE --- */
         * {
@@ -180,33 +193,30 @@ $query_transaksi = $conn->query($sql_transaksi);
             background: #ffffff;
             color: #ff6600;
         }
-        .badge.badge-orange { background: #ff6600; }
-        .badge.badge-purple { background: #8b5cf6; }
+.badge.badge-orange { background: #ff6600; }
 
-        /* --- INDIKATOR WARNA STATUS (MATCH MOCKUP) --- */
-        .border-baru, .border-pending { border-left: 5px solid #ffcc00 !important; }
-        .border-dikonfirmasi { border-left: 5px solid #3b82f6 !important; }
-        .border-diproses { border-left: 5px solid #8b5cf6 !important; }
-        .border-selesai { border-left: 5px solid #10b981 !important; }
-        .border-dibatalkan { border-left: 5px solid #ef4444 !important; }
-        .border-siap_diambil { border-left: 5px solid #0d9488 !important; }
+/* --- INDIKATOR WARNA STATUS (FIXED) --- */
+.border-baru, .border-pending { border-left: 5px solid #ffcc00 !important; }
+.border-dikonfirmasi { border-left: 5px solid #3b82f6 !important; }
+.border-diproses { border-left: 5px solid #8b5cf6 !important; }
+.border-selesai { border-left: 5px solid #10b981 !important; }
+.border-dibatalkan { border-left: 5px solid #ef4444 !important; }
+.border-siap, .border-siap_diambil { border-left: 5px solid #F47B20 !important; }
 
-        .status-pill {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            display: inline-block;
-        }
-        .pill-baru, .pill-pending { background: #fffbeb; color: #b45309; }
-        .pill-dikonfirmasi { background: #eff6ff; color: #1d4ed8; }
-        .pill-diproses { background: #f5f3ff; color: #6d28d9; }
-        .pill-selesai { background: #ecfdf5; color: #047857; }
-        .pill-dibatalkan { background: #fef2f2; color: #b91c1c; }
-        .pill-siap_diambil { background: #ccfbf1; color: #115e59; }
-
-        /* --- NOTIFIKASI ALERTS --- */
+.status-pill {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    display: inline-block;
+}
+.pill-baru, .pill-pending { background: #fffbeb; color: #b45309; }
+.pill-dikonfirmasi { background: #eff6ff; color: #1d4ed8; }
+.pill-diproses { background: #f5f3ff; color: #6d28d9; }
+.pill-selesai { background: #ecfdf5; color: #047857; }
+.pill-dibatalkan { background: #fef2f2; color: #b91c1c; }
+.pill-siap, .pill-siap_diambil { background: #ccfbf1; color: #cf620e; }
         .alert-success {
             background-color: #d1fae5;
             color: #065f46;
@@ -217,9 +227,7 @@ $query_transaksi = $conn->query($sql_transaksi);
             font-size: 14px;
         }
 
-        /* ========================================================
-           DESKTOP VIEW IMPLEMENTATION (TABLE LAYOUT)
-           ======================================================== */
+        /* --- DESKTOP VIEW PANEL --- */
         .desktop-card-panel {
             background: #ffffff;
             border-radius: 16px;
@@ -227,12 +235,44 @@ $query_transaksi = $conn->query($sql_transaksi);
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
+        
+        /* HEADER PANEL UTAMA */
+        .panel-header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
         .panel-title {
             font-size: 18px;
             font-weight: 600;
             color: #0f172a;
-            margin-bottom: 20px;
         }
+
+        /* REVISI ELEGAN ORDER FILTER */
+        .filter-time-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 6px 14px;
+            border-radius: 10px;
+        }
+        .filter-time-box i {
+            color: #ff6600;
+            font-size: 14px;
+        }
+        .filter-select-clean {
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            outline: none;
+            cursor: pointer;
+        }
+
         .grid-table {
             display: flex;
             flex-direction: column;
@@ -266,7 +306,6 @@ $query_transaksi = $conn->query($sql_transaksi);
             background-color: #f8fafc;
         }
 
-        /* Dropdown custom styling matching Gambar 3 */
         .select-status {
             padding: 8px 12px;
             border-radius: 8px;
@@ -298,8 +337,11 @@ $query_transaksi = $conn->query($sql_transaksi);
             color: #ffffff;
         }
 
-        /* --- MOBILE LAYOUT SYSTEM (HIDDEN BY DEFAULT ON DESKTOP) --- */
+        /* --- MOBILE LAYOUT SYSTEM --- */
         .mobile-orders-container {
+            display: none;
+        }
+        .mobile-section-header {
             display: none;
         }
 
@@ -308,7 +350,18 @@ $query_transaksi = $conn->query($sql_transaksi);
            ======================================================== */
         @media (max-width: 768px) {
             .desktop-card-panel {
-                display: none; /* Sembunyikan panel desktop total */
+                display: none;
+            }
+            .mobile-section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 14px;
+                padding: 0 4px;
+            }
+            .mobile-section-header h2 {
+                font-size: 16px;
+                font-weight: 600;
             }
             .mobile-orders-container {
                 display: flex;
@@ -316,7 +369,6 @@ $query_transaksi = $conn->query($sql_transaksi);
                 gap: 16px;
             }
             
-            /* Card design matching Gambar 1 */
             .mobile-order-card {
                 background: #ffffff;
                 border: 1px solid #e2e8f0;
@@ -432,10 +484,10 @@ $query_transaksi = $conn->query($sql_transaksi);
             </label>
             <ul class="nav-links">
                 <li><a href="penjual.php">Beranda</a></li>
-                   <li><a href="pendapatan.php" >Pendapatan</a></li>
+                <li><a href="pendapatan.php">Pendapatan</a></li>
                 <li><a href="pesanan.php" class="active">Pesanan</a></li>
                 <li><a href="edit1.php">Produk</a></li>
-                <li><a href="profil.php" >Profil</a></li>
+                <li><a href="profil.php">Profil</a></li>
                 <li><a href="./../logout.php">Log Out</a></li>
             </ul>
         </div>
@@ -443,7 +495,8 @@ $query_transaksi = $conn->query($sql_transaksi);
 
     <div class="container" style="margin-top: 70px;">
         <header class="header-title">
-            
+            <h1>Pesanan Masuk</h1>
+            <p>Kelola dan konfirmasi pesanan pelanggan kantin Anda.</p>
         </header>
 
         <?php if (isset($_GET['msg']) && $_GET['msg'] == 'success'): ?>
@@ -453,43 +506,43 @@ $query_transaksi = $conn->query($sql_transaksi);
         <?php endif; ?>
 
         <div class="tabs-container">
-            <a href="pesanan.php?status_filter=semua" class="tab-chip <?php echo $status_filter == 'semua' ? 'active' : ''; ?>">
+            <a href="pesanan.php?status_filter=semua&urutan_filter=<?= $urutan_filter ?>" class="tab-chip <?php echo $status_filter == 'semua' ? 'active' : ''; ?>">
                 Semua Pesanan
             </a>
-            <a href="pesanan.php?status_filter=pending" class="tab-chip <?php echo $status_filter == 'pending' ? 'active' : ''; ?>">
+            <a href="pesanan.php?status_filter=pending&urutan_filter=<?= $urutan_filter ?>" class="tab-chip <?php echo $status_filter == 'pending' ? 'active' : ''; ?>">
                 Baru <span class="badge badge-orange"><?php echo $counts['total_baru'] ?? 0; ?></span>
             </a>
-           
-            <a href="pesanan.php?status_filter=dikonfirmasi" class="tab-chip <?php echo $status_filter == 'dikonfirmasi' ? 'active' : ''; ?>">
-                Dikonfirmasi<span class="badge badge-orange"><?php echo $counts['total_konfirmasi'] ?? 0; ?></span>
+            <a href="pesanan.php?status_filter=dikonfirmasi&urutan_filter=<?= $urutan_filter ?>" class="tab-chip <?php echo $status_filter == 'dikonfirmasi' ? 'active' : ''; ?>">
+                Dikonfirmasi <span class="badge badge-orange"><?php echo $counts['total_konfirmasi'] ?? 0; ?></span>
             </a> 
-             <a href="pesanan.php?status_filter=diproses" class="tab-chip <?php echo $status_filter == 'diproses' ? 'active' : ''; ?>">
+            <a href="pesanan.php?status_filter=diproses&urutan_filter=<?= $urutan_filter ?>" class="tab-chip <?php echo $status_filter == 'diproses' ? 'active' : ''; ?>">
                 Diproses <span class="badge"><?php echo $counts['total_diproses'] ?? 0; ?></span>
             </a>
-            <a href="pesanan.php?status_filter=siap diambil" class="tab-chip <?php echo $status_filter == 'siap diambil' ? 'active' : ''; ?>">
-                Siap Diambil <span class="badge badge-teal"><?php echo $counts['total_siap_diambil'] ?? 0; ?></span>
+            <a href="pesanan.php?status_filter=siap diambil&urutan_filter=<?= $urutan_filter ?>" class="tab-chip <?php echo $status_filter == 'siap diambil' ? 'active' : ''; ?>">
+                Siap Diambil <span class="badge"><?php echo $counts['total_siap_diambil'] ?? 0; ?></span>
             </a>
-            <a href="pesanan.php?status_filter=selesai" class="tab-chip <?php echo $status_filter == 'selesai' ? 'active' : ''; ?>">
+            <a href="pesanan.php?status_filter=selesai&urutan_filter=<?= $urutan_filter ?>" class="tab-chip <?php echo $status_filter == 'selesai' ? 'active' : ''; ?>">
                 Selesai
             </a>
-            <a href="pesanan.php?status_filter=dibatalkan" class="tab-chip <?php echo $status_filter == 'dibatalkan' ? 'active' : ''; ?>">
+            <a href="pesanan.php?status_filter=dibatalkan&urutan_filter=<?= $urutan_filter ?>" class="tab-chip <?php echo $status_filter == 'dibatalkan' ? 'active' : ''; ?>">
                 Dibatalkan
             </a>
         </div>
-        <div class="tabs-container">
-            <div class="filter-group">
-                <label for="urutan_filter" class="filter-label">Urutan Waktu</label>
-                <select name="urutan_filter" id="urutan_filter" class="filter-select" onchange="updateUrutanFilter(this.value)">
-                    <option value="DESC" <?php echo $urutan_filter == 'DESC' ? 'selected' : ''; ?>>🔄 Terbaru (Paling Baru)</option>
-                    <option value="ASC" <?php echo $urutan_filter == 'ASC' ? 'selected' : ''; ?>>⏳ Terlama (Paling Lama)</option>
-                </select>
-            </div>
-        </div>
 
         <main class="desktop-card-panel">
-            <div class="panel-title">Semua Pesanan</div>
-            <div class="grid-table">
+            <div class="panel-header-wrapper">
+                <div class="panel-title">Daftar Transaksi</div>
                 
+                <div class="filter-time-box">
+                    <i class="fa-solid fa-arrow-down-up-wide"></i>
+                    <select name="urutan_filter" class="filter-select-clean" onchange="updateUrutanFilter(this.value)">
+                        <option value="DESC" <?php echo $urutan_filter == 'DESC' ? 'selected' : ''; ?>>Terbaru</option>
+                        <option value="ASC" <?php echo $urutan_filter == 'ASC' ? 'selected' : ''; ?>>Terlama</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-table">
                 <div class="grid-row-header">
                     <div>Waktu & Kode</div>
                     <div>Pembeli</div>
@@ -501,12 +554,10 @@ $query_transaksi = $conn->query($sql_transaksi);
 
                 <?php if ($query_transaksi && $query_transaksi->num_rows > 0): ?>
                     <?php 
-                    // Reset pointer data biar bisa di-looping ulang untuk mobile di bawah
                     $transaksi_data = [];
                     while ($row = $query_transaksi->fetch_assoc()) {
                         $transaksi_data[] = $row;
                         $status_clean = strtolower($row['status']);
-                        // Fallback ke border pending jika status bernilai 'baru'
                         $border_class = ($status_clean == 'baru') ? 'border-pending' : 'border-' . $status_clean;
                     ?>
                         <div class="grid-row-data <?php echo $border_class; ?>">
@@ -537,28 +588,15 @@ $query_transaksi = $conn->query($sql_transaksi);
                             <div>
                                 <form action="" method="POST">
                                     <input type="hidden" name="id_transaksi" value="<?php echo $row['id_transaksi']; ?>">
-                                    <?php 
-                                        if($row['status'] == 'selesai'):
-                                    ?>
+                                    <?php if($row['status'] == 'selesai'): ?>
                                             <select name="status_baru" onchange="this.form.submit()" class="select-status">
-                                                <option disabled value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending tidak bisa mengubah status</option>
-                                                <option disabled value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi tidak bisa mengubah status</option>
-                                                <option disabled value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses tidak bisa mengubah status</option>
-                                                <option disabled value="siap diambil" <?php echo $row['status'] == 'siap diambil' ? 'selected' : ''; ?>>🟠 Siap Diambil tidak bisa mengubah status</option>
-                                                <option disabled value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
-                                                <option disabled value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan tidak bisa mengubah status</option>
+                                                <option disabled value="selesai" selected>🟢 Selesai</option>
                                             </select>
                                         <?php elseif($row['status'] == 'dibatalkan'): ?>
                                             <select name="status_baru" onchange="this.form.submit()" class="select-status">
-                                                <option disabled value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending tidak bisa mengubah status</option>
-                                                <option disabled value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi tidak bisa mengubah status</option>
-                                                <option disabled value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses tidak bisa mengubah status</option>
-                                                <option disabled value="siap diambil" <?php echo $row['status'] == 'siap diambil' ? 'selected' : ''; ?>>🟠 Siap Diambil tidak bisa mengubah status</option>
-                                                <option disabled value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai tidak bisa mengubah status</option>
-                                                <option disabled value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan </option>
+                                                <option disabled value="dibatalkan" selected>🔴 Dibatalkan</option>
                                             </select>
                                         <?php else: ?>
-
                                             <select name="status_baru" onchange="this.form.submit()" class="select-status">
                                                 <option value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending</option>
                                                 <option value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi</option>
@@ -567,7 +605,6 @@ $query_transaksi = $conn->query($sql_transaksi);
                                                 <option value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
                                                 <option value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan</option>
                                             </select>
-
                                     <?php endif; ?>
                                 </form>
                             </div>
@@ -582,6 +619,17 @@ $query_transaksi = $conn->query($sql_transaksi);
                 <?php endif; ?>
             </div>
         </main>
+
+        <div class="mobile-section-header">
+            <h2>Daftar Pesanan</h2>
+            <div class="filter-time-box">
+                <i class="fa-solid fa-arrow-down-up-wide"></i>
+                <select name="urutan_filter" class="filter-select-clean" onchange="updateUrutanFilter(this.value)">
+                    <option value="DESC" <?php echo $urutan_filter == 'DESC' ? 'selected' : ''; ?>>Terbaru</option>
+                    <option value="ASC" <?php echo $urutan_filter == 'ASC' ? 'selected' : ''; ?>>Terlama</option>
+                </select>
+            </div>
+        </div>
 
         <main class="mobile-orders-container">
             <?php if (!empty($transaksi_data)): ?>
@@ -620,28 +668,15 @@ $query_transaksi = $conn->query($sql_transaksi);
                             <div class="actions-wrapper-mobile">
                                 <form action="" method="POST" style="flex: 1;">
                                     <input type="hidden" name="id_transaksi" value="<?php echo $row['id_transaksi']; ?>">
-                                    <?php 
-                                        if($row['status'] == 'selesai'):
-                                    ?>
+                                    <?php if($row['status'] == 'selesai'): ?>
                                             <select name="status_baru" onchange="this.form.submit()" class="select-status">
-                                                <option disabled value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending tidak bisa mengubah status</option>
-                                                <option disabled value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi tidak bisa mengubah status</option>
-                                                <option disabled value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses tidak bisa mengubah status</option>
-                                                <option disabled value="siap diambil" <?php echo $row['status'] == 'siap diambil' ? 'selected' : ''; ?>>🟠 Siap Diambil tidak bisa mengubah status</option>
-                                                <option disabled value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
-                                                <option disabled value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan tidak bisa mengubah status</option>
+                                                <option disabled value="selesai" selected>🟢 Selesai</option>
                                             </select>
                                         <?php elseif($row['status'] == 'dibatalkan'): ?>
                                             <select name="status_baru" onchange="this.form.submit()" class="select-status">
-                                                <option disabled value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending tidak bisa mengubah status</option>
-                                                <option disabled value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi tidak bisa mengubah status</option>
-                                                <option disabled value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses tidak bisa mengubah status</option>
-                                                <option disabled value="siap diambil" <?php echo $row['status'] == 'siap diambil' ? 'selected' : ''; ?>>🟠 Siap Diambil tidak bisa mengubah status</option>
-                                                <option disabled value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai tidak bisa mengubah status</option>
-                                                <option disabled value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan</option>
+                                                <option disabled value="dibatalkan" selected>🔴 Dibatalkan</option>
                                             </select>
                                         <?php else: ?>
-
                                             <select name="status_baru" onchange="this.form.submit()" class="select-status">
                                                 <option value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending</option>
                                                 <option value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi</option>
@@ -650,9 +685,7 @@ $query_transaksi = $conn->query($sql_transaksi);
                                                 <option value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
                                                 <option value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan</option>
                                             </select>
-
                                     <?php endif; ?>
-                                    
                                 </form>
                                 <button type="button" class="btn-detail btn-buka-modal" data-id="<?php echo $row['id_transaksi']; ?>">Detail</button>
                             </div>

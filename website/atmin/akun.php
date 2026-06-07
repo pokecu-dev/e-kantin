@@ -3,6 +3,45 @@
 require_once __DIR__ . "/../include/koneksi.php";
 require_once __DIR__ . "/../include/session/adminC.php";
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['toggle_status'])) {
+    header('Content-Type: application/json');
+    try {
+        $id = $_POST['id'] ?? null;
+        $status = $_POST['status'] ?? null;
+
+        if (empty($id) || !isset($status)) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Parameter tidak lengkap!'
+            ]);
+            exit;
+        }
+
+        $sql = "UPDATE users SET STATUS = ? WHERE ID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("si", $status, $id);
+        
+        if($stmt->execute()){
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Status berhasil diperbarui'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => $stmt->error
+            ]);
+        }
+        $stmt->close();
+    } catch (Exception $e) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ]);
+    }
+    exit;
+}
+
 if ($conn->error) {
     echo $conn->connect_error;
 }
@@ -93,14 +132,13 @@ if ($search_user !== '') {
             --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.05);
             --radius: 18px;
 
-            /* GRID UTAMA - DISESUAIKAN UNTUK KOLOM STATUS */
             --col-id: 0.6fr;
             --col-username: 1fr;
             --col-name: 1.4fr;
             --col-phone: 1.1fr;
             --col-email: 1.6fr;
             --col-role: 0.8fr;
-            --col-status: 0.9fr; /* Tambahan kolom baru */
+            --col-status: 0.9fr; 
             --col-action: 0.7fr;
         }
 
@@ -121,10 +159,9 @@ if ($search_user !== '') {
             line-height: 1.5;
             margin: 0;
             padding: 0;
-            padding-right: 0px !important; /* Mencegah pergeseran layout saat modal aktif */
+            padding-right: 0px !important; 
         }
 
-        /* NAVBAR STYLE */
         .nav-links a {
             text-decoration: none;
             color: #888;
@@ -138,7 +175,6 @@ if ($search_user !== '') {
             padding-bottom: 5px;
         }
 
-        /* CONTAINER */
         .container {
             width: 100%;
             max-width: 1400px;
@@ -148,7 +184,6 @@ if ($search_user !== '') {
             margin-top: 60px;
         }
 
-        /* HEADER */
         .header {
             margin-bottom: 30px;
         }
@@ -162,7 +197,6 @@ if ($search_user !== '') {
             color: var(--text-muted);
         }
 
-        /* SEARCH BOX */
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -257,7 +291,6 @@ if ($search_user !== '') {
             }
         }
 
-        /* STATS */
         .stats-grid {
             display: flex;
             gap: 20px;
@@ -313,7 +346,6 @@ if ($search_user !== '') {
             font-size: 26px;
         }
 
-        /* ACTION BAR */
         .btn-action {
             background: white;
             border: 1px solid var(--border-color);
@@ -332,7 +364,6 @@ if ($search_user !== '') {
             border-color: var(--primary-orange);
         }
 
-        /* USER TABLE & GRID */
         .user-table {
             background: white;
             border-radius: var(--radius);
@@ -393,7 +424,6 @@ if ($search_user !== '') {
             color: #ea580c;
         }
 
-        /* Style warna badge untuk Status */
         .badge-active {
             background: #dcfce7;
             color: #15803d;
@@ -413,7 +443,6 @@ if ($search_user !== '') {
             font-weight: 600;
         }
 
-        /* MOBILE RESPONSIVE */
         @media (max-width: 768px) {
             .container {
                 padding: 16px;
@@ -433,7 +462,6 @@ if ($search_user !== '') {
             }
         }
 
-        /* MODAL CUSTOM OVERLAY */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -492,6 +520,99 @@ if ($search_user !== '') {
 
         .close-modal-right:hover {
             color: #1e293b;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background-color: #8fff5782;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        /* MODAL KONFIRMASI KUSTOM (KantinKita-style) */
+        .confirm-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+        .confirm-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .confirm-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .btn-confirm-cancel {
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-confirm-cancel:hover {
+            background: #e2e8f0;
+        }
+        .btn-confirm-ok {
+            background: var(--primary-orange);
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-confirm-ok:hover {
+            opacity: 0.9;
         }
     </style>
 </head>
@@ -597,11 +718,15 @@ if ($search_user !== '') {
                             </div>
                             
                             <div class="user-table__cell">
-                                <?php if (isset($user['STATUS']) && $user['STATUS'] == '1'): ?>
-                                    <span class="badge badge-active">Aktif</span>
-                                <?php else: ?>
-                                    <span class="badge badge-inactive">Nonaktif</span>
-                                <?php endif; ?>
+                                <label class="switch">
+                                    <input 
+                                        type="checkbox" 
+                                        class="toggle-status" 
+                                        data-id="<?= (int)$user['ID'] ?>" 
+                                        data-username="<?= htmlspecialchars($user['USERNAME']) ?>"
+                                        <?= (isset($user['STATUS']) && $user['STATUS'] == '1') ? 'checked' : '' ?>>
+                                    <span class="slider round"></span>
+                                </label>
                             </div>
 
                             <div class="user-table__cell">
@@ -635,12 +760,19 @@ if ($search_user !== '') {
             </div>
     </div>
 
+    <div id="confirmStatusModal" class="modal-overlay">
+        <div class="modal-content" style="width: 400px;">
+            <div class="confirm-title">Konfirmasi Perubahan</div>
+            <div class="confirm-text" id="confirmStatusMessage">Apakah Anda yakin ingin mengubah status user ini?</div>
+            <div class="confirm-buttons">
+                <button type="button" class="btn-confirm-cancel" id="btnConfirmCancel">Batal</button>
+                <button type="button" class="btn-confirm-ok" id="btnConfirmOk">Yakin</button>
+            </div>
+        </div>
+    </div>
 <script src="./../shared/js/script.js"></script>
 
 <script>
-// ==========================================
-// KONTROL MODAL EDIT USER (Custom div Overlay)
-// ==========================================
 const editModal = document.getElementById("editUserModal");
 const modalBody = document.getElementById("modalBody");
 
@@ -679,17 +811,12 @@ function closeEditModal() {
     setTimeout(() => { modalBody.innerHTML = ''; }, 200);
 }
 
-// FIX: Tutup Modal Edit saat klik di luar area putih (.modal-content)
 editModal.addEventListener("click", (e) => {
     if (e.target === editModal) {
         closeEditModal();
     }
 });
 
-
-// ==========================================
-// KONTROL MODAL TAMBAH USER (Custom Overlay)
-// ==========================================
 const addModal = document.getElementById("addModal");
 const addModalContent = addModal.querySelector(".modal-content");
 
@@ -703,7 +830,6 @@ function closeAddModal() {
     setTimeout(() => { resetAddMenu(); }, 200);
 }
 
-// FIX: Tutup Modal Tambah saat klik di luar area putih
 addModal.addEventListener("click", (e) => {
     if (e.target === addModal) {
         closeAddModal();
@@ -744,20 +870,14 @@ async function loadForm(file) {
     }
 }
 
-
-// ==========================================
-// GLOBAL EVENT (Tombol Keyboard & Auto Reload)
-// ==========================================
-
-// Tutup semua modal saat menekan tombol Escape (Esc)
 document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
         closeEditModal();
         closeAddModal();
+        closeConfirmModal();
     }
 });
 
-// Penanganan reload halaman setelah form disubmit
 document.addEventListener('submit', (e) => {
     if (e.target.closest('#modalBody') || e.target.closest('.modal-content')) {
         setTimeout(() => {
@@ -766,7 +886,6 @@ document.addEventListener('submit', (e) => {
     }
 });
 
-// Event delegation untuk format input telepon di dalam modal
 document.addEventListener('input', function(e) {
     if (e.target.id === 'no_tlp' && e.target.closest('#modalBody')) {
         let value = e.target.value;
@@ -778,6 +897,83 @@ document.addEventListener('input', function(e) {
         if (numbers.length > 9) formatted += ' ' + numbers.substring(9, 13);
         e.target.value = formatted;
     }
+});
+
+/* FIX: LOGIKA MODAL PERUBAHAN STATUS MENGGUNAKAN EVENT DELEGATION */
+const confirmModal = document.getElementById("confirmStatusModal");
+const confirmMessage = document.getElementById("confirmStatusMessage");
+const btnConfirmOk = document.getElementById("btnConfirmOk");
+const btnConfirmCancel = document.getElementById("btnConfirmCancel");
+
+let targetCheckbox = null; // Menyimpan elemen checkbox yang sedang diklik
+let targetAkanAktif = false; // Menyimpan status masa depan yang diinginkan
+
+// Dengerin event 'change' di seluruh dokumen (Event Delegation)
+document.addEventListener('change', function(e) {
+    if (e.target && e.target.classList.contains('toggle-status')) {
+        targetCheckbox = e.target;
+        targetAkanAktif = targetCheckbox.checked; 
+        
+        // Kembalikan dulu visual switch-nya ke posisi semula sebelum di-approve user via Modal
+        targetCheckbox.checked = !targetAkanAktif;
+
+        const username = targetCheckbox.getAttribute('data-username');
+        const statusTeks = targetAkanAktif ? 'mengaktifkan' : 'menonaktifkan';
+        
+        confirmMessage.innerHTML = `Apakah Anda yakin ingin <strong>${statusTeks}</strong> akun milik <strong>${username}</strong>?`;
+        confirmModal.classList.add("active");
+    }
+});
+
+// Jika User menekan tombol Batal
+btnConfirmCancel.addEventListener('click', closeConfirmModal);
+
+confirmModal.addEventListener('click', (e) => {
+    if (e.target === confirmModal) {
+        closeConfirmModal();
+    }
+});
+
+function closeConfirmModal() {
+    confirmModal.classList.remove("active");
+    targetCheckbox = null;
+}
+
+// Jika User menekan tombol Yakin
+btnConfirmOk.addEventListener('click', () => {
+    if (!targetCheckbox) return;
+
+    const userId = targetCheckbox.getAttribute('data-id');
+    const statusNilai = targetAkanAktif ? '1' : '0';
+    
+    const formData = new FormData();
+    formData.append('toggle_status', '1');
+    formData.append('id', userId);
+    formData.append('status', statusNilai);
+    
+    confirmModal.classList.remove("active");
+
+    fetch('', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Animasi toggle bergerak ke posisi baru hanya jika sukses di database
+            targetCheckbox.checked = targetAkanAktif;
+        } else {
+            alert('Gagal mengubah status: ' + data.message);
+            targetCheckbox.checked = !targetAkanAktif;
+        }
+        targetCheckbox = null;
+    })
+    .catch(error => {
+        alert('Terjadi kesalahan koneksi sistem.');
+        console.error(error);
+        targetCheckbox.checked = !targetAkanAktif;
+        targetCheckbox = null;
+    });
 });
 </script>
 </body>
