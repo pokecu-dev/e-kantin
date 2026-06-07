@@ -210,6 +210,8 @@ require_once '../include/koneksi.php';
             font-weight: bold;
             cursor: pointer;
             white-space: nowrap;
+            text-decoration: none; 
+            display: inline-block;
         }
 
         .slides::-webkit-scrollbar {
@@ -244,13 +246,15 @@ require_once '../include/koneksi.php';
 
         .child {
             background: #ffffff;
-            padding: 10px;
+            padding: 8px;
             border-radius: 20px;
             text-align: center;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
             transition: transform 0.3s ease;
             overflow: hidden;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .child:hover {
@@ -266,6 +270,21 @@ require_once '../include/koneksi.php';
             margin-bottom: 10px;
         }
 
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 160px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .child h3 {
             font-size: 16px;
             font-weight: 600;
@@ -273,6 +292,20 @@ require_once '../include/koneksi.php';
             text-align: left;
             padding: 0 5px;
             color: #1A1A1A;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 40px;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            padding: 0 4px;
+            margin-top: auto; 
+            margin-bottom: 4px;
         }
 
         .child .rating {
@@ -283,9 +316,37 @@ require_once '../include/koneksi.php';
             padding: 0 5px;
         }
 
+        .child .nama-kantin {
+            font-size: 11px;
+            color: #777777;
+            font-weight: 500;
+            text-align: right;
+            max-width: 50%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .child .rating-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255, 255, 255, 0.9); /* Latar putih semi transparan */
+            color: #F47B20;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        
         .child .harga {
-            font-size: 14px;
-            color: #1A1A1A;
+            font-size: 16px;
+            color: #F47B20;
+            font-weight: 700;
             margin-top: 2px;
             margin-bottom: 5px;
             text-align: left;
@@ -301,8 +362,8 @@ require_once '../include/koneksi.php';
         .add-btn {
             text-decoration: none;
             display: flex;
-            right: 10px;
-            top: 138px;
+            right: 8px;
+            top: 136px;
             position: absolute;
             background: #F47B20;
             color: #ffffff;
@@ -323,6 +384,30 @@ require_once '../include/koneksi.php';
             transform: scale(1.1);
             background: #F47B20;
         }
+        /* --- CSS BARU UNTUK EFEK STOK HABIS --- */
+/* Membuat gambar menu yang habis menjadi agak redup dan blur */
+.img-blur-habis {
+    filter: grayscale(60%) blur(1.5px) !important;
+    opacity: 0.7;
+}
+
+/* Kotak merah tulisan "Habis" di tengah foto */
+.badge-habis-tengah {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(229, 57, 53, 0.9); /* Warna merah tegas */
+    color: #ffffff;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    z-index: 4;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
     </style>
 </head>
 
@@ -383,12 +468,13 @@ require_once '../include/koneksi.php';
 
                 ?>
                         <div class="slide">
+                            <a href="kantin.php?id_kantin=<?= $row['ID']; ?>" style="text-decoration: none; display: block; width: 100%; height: 100%;">
                             <img src="./../../source/foto_kantin/<?= $row['FOTO_KANTIN']; ?>" alt="Gambar Kantin">
 
-                            <a href="kantin.php?id_kantin=<?= $row['ID']; ?>" class="co-btn kantin-btn">
-                                kantin <?= $nama_kantin ?> 
-                            </a>
-                        </div>
+                            <span class="kantin-btn">
+                                    Kantin <?= $nama_kantin ?> 
+                                </span>
+                        </a> </div>
                 <?php
                     }
                 }
@@ -401,65 +487,62 @@ require_once '../include/koneksi.php';
 
             if (isset($_GET['search']) && $_GET['search'] != '') {
 
-                $search = mysqli_real_escape_string($conn, $_GET['search']);
+                $search = $conn->real_escape_string($_GET['search']);
 
-                $result_menu = mysqli_query(
-                    $conn,
-                    "SELECT m.* FROM tb_menu m
-                        JOIN list_kantin k ON m.ID_KANTIN = k.ID
-                        WHERE k.STATUS = 1
-                        AND m.STATUS != 'nonaktif'
-                        AND REPLACE(m.NAMA_MENU,' ','') LIKE '%" . str_replace(' ', '', $search) . "%'"
-                );
+                $query_string =
+                    "SELECT m.*, k.NAMA_KANTIN FROM tb_menu m
+                     JOIN list_kantin k ON m.ID_KANTIN = k.ID
+                     WHERE k.STATUS = 1
+                     AND m.STATUS != 'nonaktif'
+                     AND REPLACE(m.NAMA_MENU,' ','') LIKE '%" . str_replace(' ', '', $search) . "%'";
+                
             } else {
 
-                $result_menu = mysqli_query(
-                    $conn,
-                    "SELECT m.* FROM tb_menu m
-                        JOIN list_kantin k ON m.ID_KANTIN = k.ID
-                        WHERE k.STATUS = 1
-                        AND m.STATUS != 'nonaktif'"
-                );
+                $query_string = "SELECT m.*, k.NAMA_KANTIN FROM tb_menu m
+                     JOIN list_kantin k ON m.ID_KANTIN = k.ID
+                     WHERE k.STATUS = 1
+                     AND m.STATUS != 'nonaktif'";
             }
 
-            while ($row = mysqli_fetch_assoc($result_menu)):
+            $result_menu = $conn->query($query_string);
+
+            while ($row = $result_menu->fetch_assoc()):
                 if ($row['STATUS'] !== "nonaktif"):
             ?>
-                    <div class="child">
-                        <a href="detail_menu.php?id=<?php echo $row['ID_MENU']; ?>" class="menu-link">
+                    <?php 
+// Membuat penanda pintar: dianggap habis jika STATUS database = 'habis' ATAU angka STOK nya 0
+$menu_habis = ($row['STATUS'] === 'habis' || (int)$row['STOK'] <= 0); 
+?>
 
-                            <img src="/source/gambar_menu/<?php echo $row['FOTO_MENU']; ?>">
+<div class="child" <?= $menu_habis ? 'style="background: #fafafa;"' : ''; ?>>
+    
+    <div class="image-container">
+        <img src="/source/gambar_menu/<?php echo $row['FOTO_MENU']; ?>" alt="Foto Menu" class="<?= $menu_habis ? 'img-blur-habis' : ''; ?>">
+        
+        <div class="rating-badge">★ <?= number_format($row['RATING'] ?? 0, 1) ?></div>
+        
+        <?php if ($menu_habis): ?>
+            <div class="badge-habis-tengah">HABIS</div>
+        <?php else: ?>
+            <form class="form-data" method="POST">
+                <input type="hidden" name="id_menu" value="<?php echo $row['ID_MENU']; ?>">
+                <input type="hidden" name="qty" value="1">
+                <input type="hidden" name="action" value="add_to_cart">
+                <button type="submit" name="add_to_cart" class="add-btn">+</button>
+            </form>
+        <?php endif; ?>
+    </div>
 
-                            <h3><?php echo $row['NAMA_MENU']; ?></h3>
+    <a href="<?= $menu_habis ? '#' : 'detail_menu.php?id='.$row['ID_MENU']; ?>" class="menu-link" <?= $menu_habis ? 'style="pointer-events: none; cursor: default;"' : ''; ?>>
+        <h3><?php echo $row['NAMA_MENU']; ?></h3>
 
-                            <div class="rating">★ <?= $row['RATING'] ?? '0.0' ?></div>
+        <div class="meta-row">
+            <span class="harga">Rp <?= number_format($row['HARGA'], 0, ',', '.'); ?></span>
+            <span class="nama-kantin"><?= $row['NAMA_KANTIN']; ?></span>
+        </div>
+    </a>
 
-                            <p class="harga">
-                                Rp <?php echo number_format($row['HARGA'], 0, ',', '.'); ?>
-                            </p>
-
-                        </a>
-                        <form id="form-data" class="form-data">
-
-                            <input type="hidden"
-                                name="id_menu"
-                                value="<?php echo $row['ID_MENU']; ?>">
-
-                            <input type="hidden"
-                                name="qty"
-                                value="1">
-
-                            <input type="hidden"
-                                name="action"
-                                value="add_to_cart">
-
-                            <button type="submit"
-                                name="add_to_cart"
-                                class="add-btn">+</button>
-
-                        </form>
-
-                    </div>
+</div>
             <?php
                 endif;
             endwhile;

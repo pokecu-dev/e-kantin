@@ -11,13 +11,19 @@ $id_menu_direct = isset($_GET['id_menu']) ? (int)$_GET['id_menu'] : 0;
 $qty_direct = isset($_GET['qty']) ? (int)$_GET['qty'] : 1;
 
 // if ($id_kantin <= 0) { header("Location: keranjang.php"); exit(); }
-if($id_kantin <= 0) echo $id_kantin;
+if($id_kantin <= 0) {
+    echo "<script>window.location.href = 'keranjang.php';</script>";
+    exit(); 
+}
 
 $q_kantin = $conn->query("SELECT * FROM list_kantin WHERE ID = $id_kantin LIMIT 1");
-$kantin   = $q_kantin->fetch_assoc(); // Pakai panah (->) untuk fetch
+$kantin   = $q_kantin->fetch_assoc(); 
 
 // if (!$kantin) { header("Location: keranjang.php"); exit(); }
-if(!$kantin) echo "var kantin gagal";
+if(!$kantin) {
+    echo "<script>window.location.href = 'keranjang.php';</script>";
+    exit();
+}
 $items = []; $total = 0; $ada_error = false;
 
 if ($id_menu_direct > 0) {
@@ -40,7 +46,10 @@ if ($id_menu_direct > 0) {
 }
 
 // if (!$q_items || $q_items->num_rows === 0) { header("Location: keranjang.php"); exit(); }
-if (!$q_items || $q_items->num_rows === 0) echo $q_items;
+if (!$q_items || $q_items->num_rows === 0) {
+    echo "<script>window.location.href = 'keranjang.php';</script>";
+    exit();
+}
 
 
 while ($row = $q_items->fetch_assoc()) {
@@ -49,12 +58,20 @@ while ($row = $q_items->fetch_assoc()) {
     $row['subtotal'] = $subtotal;
     $row['error']    = '';
 
-    if ($row['STATUS'] === 'habis' && $row['STOK'] <= 0) {
+    if ($row['STATUS'] === 'habis' || (int)$row['STOK'] <= 0) {
         $row['error'] = 'Menu ini sudah habis'; $ada_error = true;
-    } elseif ($row['STOK'] < $row['qty']) {
+    } elseif ((int)$row['STOK'] < (int)$row['qty']) {
         $row['error'] = "Stok kurang (sisa: {$row['STOK']})"; $ada_error = true;
     }
     $items[] = $row;
+}
+
+if ($ada_error && $id_menu_direct > 0) {
+    echo "<script>
+            alert('Waduh! Menu ini baru saja habis diborong. Silakan pilih menu lezat lainnya!');
+            window.location.href = 'pembeli.php';
+          </script>";
+    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -385,7 +402,6 @@ while ($row = $q_items->fetch_assoc()) {
         </select>
 
     </div>
-
 
 
     <!-- Catatan -->
