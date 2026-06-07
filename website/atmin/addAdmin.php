@@ -23,7 +23,7 @@
             margin-bottom: 15px;
         }
 
-        label {
+        .yaya {
             font-size: 13px;
             font-weight: 600;
             display: block;
@@ -98,19 +98,19 @@
     <h2 class="text">Tambah Admin</h2>
     <form data-ajax="true" data-action="./process/pro_addAdmin.php" data-notif="notif">
         
-        <label>Username</label>
+        <label class="yaya">Username</label>
         <input type="text" name="usn" class="input-box">
 
-        <label>Password</label>
-        <input type="text" name="pass">
+        <label class="yaya">Password</label>
+        <input type="text" name="pass" class="input-box">
 
-        <label>Nama Lengkap</label>
+        <label class="yaya">Nama Lengkap</label>
         <input type="text" name="nama_lengkap" class="input-box">
 
-        <label>Nomor telpeon</label>
+        <label class="yaya">Nomor telpeon</label>
         <input type="text" name="no_tlp" class="input-box">
 
-        <label>Email</label>
+        <label class="yaya">Email</label>
         <input type="email" name="email" class="input-box">
 
         <button type="submit" class="btn">Tambah</button>
