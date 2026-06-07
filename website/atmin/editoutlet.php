@@ -50,7 +50,7 @@ SELECT SUM(total) as total_rev, COUNT(*) as total_trx
 FROM transaksi
 WHERE id_kantin = ?
 AND DATE(tgl) = ?
-AND status IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'success')
+AND status IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'success','siap diambil')
 ";
 
 $stmt_r = $conn->prepare($query_rev);
@@ -70,7 +70,7 @@ $stmt_r->close();
 $grafik_minggu = array_fill(0, 5, 0);
 $labels_minggu = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
 
-$q_g_minggu = "SELECT WEEKDAY(tgl) as hari, SUM(total) as total FROM transaksi WHERE id_kantin = ? AND YEARWEEK(tgl, 1) = YEARWEEK(CURDATE(), 1) AND WEEKDAY(tgl) BETWEEN 0 AND 4 AND status IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'success') GROUP BY WEEKDAY(tgl)";
+$q_g_minggu = "SELECT WEEKDAY(tgl) as hari, SUM(total) as total FROM transaksi WHERE id_kantin = ? AND YEARWEEK(tgl, 1) = YEARWEEK(CURDATE(), 1) AND WEEKDAY(tgl) BETWEEN 0 AND 4 AND status IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'success', 'siap diambil') GROUP BY WEEKDAY(tgl)";
 $stmt_g1 = $conn->prepare($q_g_minggu);
 $stmt_g1->bind_param("i", $id_kantin);
 $stmt_g1->execute();
@@ -83,7 +83,7 @@ $stmt_g1->close();
 $grafik_bulan = array_fill(0, 12, 0);
 $labels_bulan = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
 
-$q_g_bulan = "SELECT MONTH(tgl) as bulan, SUM(total) as total FROM transaksi WHERE id_kantin = ? AND YEAR(tgl) = YEAR(CURDATE()) AND status IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'success') GROUP BY MONTH(tgl)";
+$q_g_bulan = "SELECT MONTH(tgl) as bulan, SUM(total) as total FROM transaksi WHERE id_kantin = ? AND YEAR(tgl) = YEAR(CURDATE()) AND status IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'success', 'siap diambil') GROUP BY MONTH(tgl)";
 $stmt_g2 = $conn->prepare($q_g_bulan);
 $stmt_g2->bind_param("i", $id_kantin);
 $stmt_g2->execute();
@@ -102,7 +102,7 @@ for ($i = 6; $i >= 0; $i--) {
     $grafik_tahun[$t] = 0;
 }
 
-$q_g_tahun = "SELECT YEAR(tgl) as tahun, SUM(total) as total FROM transaksi WHERE id_kantin = ? AND YEAR(tgl) >= (? - 6) AND status IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'success') GROUP BY YEAR(tgl)";
+$q_g_tahun = "SELECT YEAR(tgl) as tahun, SUM(total) as total FROM transaksi WHERE id_kantin = ? AND YEAR(tgl) >= (? - 6) AND status IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'success', 'siap diambil') GROUP BY YEAR(tgl)";
 $stmt_g3 = $conn->prepare($q_g_tahun);
 $stmt_g3->bind_param("ii", $id_kantin, $tahun_sekarang);
 $stmt_g3->execute();

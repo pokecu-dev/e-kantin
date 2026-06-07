@@ -305,8 +305,8 @@ $stmt_t->close();
                             // Management warna badge status dinamis
                             $badge_class = 'status-pending';
                             $status_clean = strtolower($row_tx['status']);
-
-                            if ($status_clean === 'success' || $status_clean === 'selesai' || $status_clean === 'dikonfirmasi') {
+                            
+                            if ($status_clean === 'success' || $status_clean === 'selesai' || $status_clean === 'dikonfirmasi' || $status_clean === 'siap diambil') {
                                 $badge_class = 'status-success';
                             } elseif ($status_clean === 'cancel' || $status_clean === 'dibatalkan' || $status_clean === 'ditolak') {
                                 $badge_class = 'status-danger';

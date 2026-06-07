@@ -40,19 +40,26 @@ $search = $_GET['query'] ?? '';
 if ($search !== '') {
     $keyword = "%$search%";
 
-    $sql = "SELECT * FROM tb_menu
-            WHERE (NAMA_MENU LIKE ?
-            OR KATEGORI LIKE ?
-            OR CAST(ID_MENU AS CHAR) LIKE ?
-            OR CAST(ID_KANTIN AS CHAR) LIKE ?)
-            AND STATUS != 'nonaktif'";
+    $sql = "SELECT m.*, k.NAMA_KANTIN 
+            FROM tb_menu m
+            LEFT JOIN list_kantin k ON m.ID_KANTIN = k.ID 
+            WHERE (m.NAMA_MENU LIKE ?
+            OR m.KATEGORI LIKE ?
+            OR CAST(m.ID_MENU AS CHAR) LIKE ?
+            OR CAST(m.ID_KANTIN AS CHAR) LIKE ?
+            OR k.NAMA_KANTIN LIKE ?)  
+            AND m.STATUS != 'nonaktif'";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssss", $keyword, $keyword, $keyword, $keyword);
+    $stmt->bind_param("sssss", $keyword ,$keyword, $keyword, $keyword, $keyword);
     $stmt->execute();
     $query = $stmt->get_result();
 } else {
-    $query = $conn->query("SELECT * FROM tb_menu WHERE STATUS != 'nonaktif' ORDER BY ID_MENU DESC");
+    $query = $conn->query("SELECT m.*, k.NAMA_KANTIN 
+                           FROM tb_menu m 
+                           LEFT JOIN list_kantin k ON m.ID_KANTIN = k.ID 
+                           WHERE m.STATUS != 'nonaktif' 
+                           ORDER BY m.ID_MENU DESC");
 }
 ?>
 
@@ -81,6 +88,7 @@ if ($search !== '') {
             --radius: 18px;
 
             --col-product: 2fr;
+            --col-canteen: 1.2fr;  
             --col-category: 1fr;
             --col-price: 1fr;
             --col-stock: 1fr;
@@ -368,7 +376,7 @@ if ($search !== '') {
         .grid-row {
             min-width: 900px;
             display: grid;
-            grid-template-columns: var(--col-product) var(--col-category) var(--col-price) var(--col-stock) var(--col-status) var(--col-action);
+            grid-template-columns: var(--col-product) var(--col-canteen) var(--col-category) var(--col-price) var(--col-stock) var(--col-status) var(--col-action);
             gap: 16px;
             align-items: center;
             padding: 18px 20px;
@@ -709,9 +717,9 @@ if ($search !== '') {
         </div>
 
         <?php
-        $total_produk = $conn->query("SELECT COUNT(*) AS total FROM tb_menu")->fetch_assoc()['total'] ?? 0;
-        $stok_rendah = $conn->query("SELECT COUNT(*) AS total FROM tb_menu WHERE STOK <= 5")->fetch_assoc()['total'] ?? 0;
-        $produk_habis = $conn->query("SELECT COUNT(*) AS total FROM tb_menu WHERE STOK = 0")->fetch_assoc()['total'] ?? 0;
+            $total_produk = $conn->query("SELECT COUNT(*) AS total FROM tb_menu")->fetch_assoc()['total'] ?? 0;
+            $stok_rendah = $conn->query("SELECT COUNT(*) AS total FROM tb_menu WHERE STOK <= 5")->fetch_assoc()['total'] ?? 0;
+            $produk_habis = $conn->query("SELECT COUNT(*) AS total FROM tb_menu WHERE STOK = 0")->fetch_assoc()['total'] ?? 0;
         ?>
         <div class="stats-grid">
             <div class="stat-card card-total">
@@ -752,6 +760,7 @@ if ($search !== '') {
             <div class="grid-wrapper">
                 <div class="grid-header">
                     <div>Produk</div>
+                    <div>Kantin</div> 
                     <div>Kategori</div>
                     <div>Harga</div>
                     <div>Stok</div>
@@ -767,6 +776,8 @@ if ($search !== '') {
                             </div>
                             <strong><?= htmlspecialchars($menu['NAMA_MENU']) ?></strong>
                         </div>
+
+                        <div><?= htmlspecialchars($menu['NAMA_KANTIN']) ?></div>
 
                         <div><?= htmlspecialchars($menu['KATEGORI']) ?></div>
 

@@ -42,6 +42,15 @@ if ($status_filter !== 'semua') {
     $where_clause .= " AND t.status = '" . $conn->real_escape_string($status_filter) . "'";
 }
 
+$urutan_filter = $_GET['urutan_filter'] ?? 'DESC';
+if($urutan_filter != 'DESC'){
+    $urutan_filter = $conn->real_escape_string($urutan_filter);
+}
+if (!in_array($urutan_filter, ['ASC', 'DESC'])) {
+    $urutan_filter = 'DESC';
+}
+
+
 // --- QUERY TOTAL NOTIFIKASI COUNTER BAGIAN ATAS ---
 $sql_counter = "
     SELECT 
@@ -50,7 +59,8 @@ $sql_counter = "
         SUM(CASE WHEN status = 'diproses' THEN 1 ELSE 0 END) as total_diproses,
         SUM(CASE WHEN status = 'dikonfirmasi' THEN 1 ELSE 0 END) as total_konfirmasi,
         SUM(CASE WHEN status = 'selesai' THEN 1 ELSE 0 END) as total_selesai,
-        SUM(CASE WHEN status = 'dibatalkan' THEN 1 ELSE 0 END) as total_batal
+        SUM(CASE WHEN status = 'dibatalkan' THEN 1 ELSE 0 END) as total_batal,
+        SUM(CASE WHEN status = 'siap diambil' THEN 1 ELSE 0 END) as total_siap_diambil
     FROM transaksi 
     WHERE id_kantin = '$id_kantin_toko'
 ";
@@ -77,7 +87,7 @@ $sql_transaksi = "
     FROM transaksi t
     LEFT JOIN users u ON t.id_user = u.ID
     $where_clause
-    ORDER BY t.ID_TRANSAKSI ASC, t.tgl ASC, t.waktu ASC
+    ORDER BY t.ID_TRANSAKSI $urutan_filter, t.tgl $urutan_filter, t.waktu $urutan_filter
 ";
 
 $query_transaksi = $conn->query($sql_transaksi);
@@ -179,6 +189,7 @@ $query_transaksi = $conn->query($sql_transaksi);
         .border-diproses { border-left: 5px solid #8b5cf6 !important; }
         .border-selesai { border-left: 5px solid #10b981 !important; }
         .border-dibatalkan { border-left: 5px solid #ef4444 !important; }
+        .border-siap_diambil { border-left: 5px solid #0d9488 !important; }
 
         .status-pill {
             padding: 4px 10px;
@@ -193,6 +204,7 @@ $query_transaksi = $conn->query($sql_transaksi);
         .pill-diproses { background: #f5f3ff; color: #6d28d9; }
         .pill-selesai { background: #ecfdf5; color: #047857; }
         .pill-dibatalkan { background: #fef2f2; color: #b91c1c; }
+        .pill-siap_diambil { background: #ccfbf1; color: #115e59; }
 
         /* --- NOTIFIKASI ALERTS --- */
         .alert-success {
@@ -454,12 +466,24 @@ $query_transaksi = $conn->query($sql_transaksi);
              <a href="pesanan.php?status_filter=diproses" class="tab-chip <?php echo $status_filter == 'diproses' ? 'active' : ''; ?>">
                 Diproses <span class="badge"><?php echo $counts['total_diproses'] ?? 0; ?></span>
             </a>
+            <a href="pesanan.php?status_filter=siap diambil" class="tab-chip <?php echo $status_filter == 'siap diambil' ? 'active' : ''; ?>">
+                Siap Diambil <span class="badge badge-teal"><?php echo $counts['total_siap_diambil'] ?? 0; ?></span>
+            </a>
             <a href="pesanan.php?status_filter=selesai" class="tab-chip <?php echo $status_filter == 'selesai' ? 'active' : ''; ?>">
                 Selesai
             </a>
             <a href="pesanan.php?status_filter=dibatalkan" class="tab-chip <?php echo $status_filter == 'dibatalkan' ? 'active' : ''; ?>">
                 Dibatalkan
             </a>
+        </div>
+        <div class="tabs-container">
+            <div class="filter-group">
+                <label for="urutan_filter" class="filter-label">Urutan Waktu</label>
+                <select name="urutan_filter" id="urutan_filter" class="filter-select" onchange="updateUrutanFilter(this.value)">
+                    <option value="DESC" <?php echo $urutan_filter == 'DESC' ? 'selected' : ''; ?>>🔄 Terbaru (Paling Baru)</option>
+                    <option value="ASC" <?php echo $urutan_filter == 'ASC' ? 'selected' : ''; ?>>⏳ Terlama (Paling Lama)</option>
+                </select>
+            </div>
         </div>
 
         <main class="desktop-card-panel">
@@ -520,8 +544,18 @@ $query_transaksi = $conn->query($sql_transaksi);
                                                 <option disabled value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending tidak bisa mengubah status</option>
                                                 <option disabled value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi tidak bisa mengubah status</option>
                                                 <option disabled value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses tidak bisa mengubah status</option>
+                                                <option disabled value="siap diambil" <?php echo $row['status'] == 'siap diambil' ? 'selected' : ''; ?>>🟠 Siap Diambil tidak bisa mengubah status</option>
                                                 <option disabled value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
                                                 <option disabled value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan tidak bisa mengubah status</option>
+                                            </select>
+                                        <?php elseif($row['status'] == 'dibatalkan'): ?>
+                                            <select name="status_baru" onchange="this.form.submit()" class="select-status">
+                                                <option disabled value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending tidak bisa mengubah status</option>
+                                                <option disabled value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi tidak bisa mengubah status</option>
+                                                <option disabled value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses tidak bisa mengubah status</option>
+                                                <option disabled value="siap diambil" <?php echo $row['status'] == 'siap diambil' ? 'selected' : ''; ?>>🟠 Siap Diambil tidak bisa mengubah status</option>
+                                                <option disabled value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai tidak bisa mengubah status</option>
+                                                <option disabled value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan </option>
                                             </select>
                                         <?php else: ?>
 
@@ -529,6 +563,7 @@ $query_transaksi = $conn->query($sql_transaksi);
                                                 <option value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending</option>
                                                 <option value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi</option>
                                                 <option value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses</option>
+                                                <option value="siap diambil" <?php echo $row['status'] == 'siap diambil' ? 'selected' : ''; ?>>🟠 Siap Diambil</option>
                                                 <option value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
                                                 <option value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan</option>
                                             </select>
@@ -592,8 +627,18 @@ $query_transaksi = $conn->query($sql_transaksi);
                                                 <option disabled value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending tidak bisa mengubah status</option>
                                                 <option disabled value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi tidak bisa mengubah status</option>
                                                 <option disabled value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses tidak bisa mengubah status</option>
+                                                <option disabled value="siap diambil" <?php echo $row['status'] == 'siap diambil' ? 'selected' : ''; ?>>🟠 Siap Diambil tidak bisa mengubah status</option>
                                                 <option disabled value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
                                                 <option disabled value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan tidak bisa mengubah status</option>
+                                            </select>
+                                        <?php elseif($row['status'] == 'dibatalkan'): ?>
+                                            <select name="status_baru" onchange="this.form.submit()" class="select-status">
+                                                <option disabled value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending tidak bisa mengubah status</option>
+                                                <option disabled value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi tidak bisa mengubah status</option>
+                                                <option disabled value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses tidak bisa mengubah status</option>
+                                                <option disabled value="siap diambil" <?php echo $row['status'] == 'siap diambil' ? 'selected' : ''; ?>>🟠 Siap Diambil tidak bisa mengubah status</option>
+                                                <option disabled value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai tidak bisa mengubah status</option>
+                                                <option disabled value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan</option>
                                             </select>
                                         <?php else: ?>
 
@@ -601,6 +646,7 @@ $query_transaksi = $conn->query($sql_transaksi);
                                                 <option value="pending" <?php echo ($row['status'] == 'pending' || $row['status'] == 'baru') ? 'selected' : ''; ?>>🟢 Pending</option>
                                                 <option value="dikonfirmasi" <?php echo $row['status'] == 'dikonfirmasi' ? 'selected' : ''; ?>>🔵 Dikonfirmasi</option>
                                                 <option value="diproses" <?php echo $row['status'] == 'diproses' ? 'selected' : ''; ?>>🟣 Diproses</option>
+                                                <option value="siap diambil" <?php echo $row['status'] == 'siap diambil' ? 'selected' : ''; ?>>🟠 Siap Diambil</option>
                                                 <option value="selesai" <?php echo $row['status'] == 'selesai' ? 'selected' : ''; ?>>🟢 Selesai</option>
                                                 <option value="dibatalkan" <?php echo $row['status'] == 'dibatalkan' ? 'selected' : ''; ?>>🔴 Dibatalkan</option>
                                             </select>
@@ -655,6 +701,12 @@ $query_transaksi = $conn->query($sql_transaksi);
             tutupModal.addEventListener("click", function() { modal.classList.remove("active"); });
             window.addEventListener("click", function(e) { if (e.target === modal) { modal.classList.remove("active"); } });
         });
+
+        function updateUrutanFilter(nilai){
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('urutan_filter', nilai); 
+            window.location.search = urlParams.toString();
+        }
     </script>
 </body>
 </html>

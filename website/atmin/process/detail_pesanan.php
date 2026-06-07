@@ -35,7 +35,7 @@ $id_transaksi_angka = $transaksi_utama['ID_TRANSAKSI'];
 // Tentukan Warna Badge Status
 $status_clean = strtolower($transaksi_utama['STATUS']);
 $status_color = "#D97706"; // Oranye (diproses / pending)
-if ($status_clean === 'success' || $status_clean === 'selesai' || $status_clean === 'dikonfirmasi') {
+if ($status_clean === 'success' || $status_clean === 'selesai' || $status_clean === 'dikonfirmasi' || $status_clean === 'siap diambil') {
     $status_color = "#22C55E"; // Hijau
 } elseif ($status_clean === 'cancel' || $status_clean === 'dibatalkan' || $status_clean === 'ditolak') {
     $status_color = "#EF4444"; // Merah

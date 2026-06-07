@@ -32,19 +32,19 @@ $id_kantin_toko = $data_kantin['ID'];
 // ========================================================
 // 2. QUERY KARTU STATISTIK (FIX: Tambah status 'selesai')
 // ========================================================
-$query_hari = "SELECT SUM(TOTAL) as total FROM transaksi WHERE id_kantin = ? AND TGL = CURDATE() AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai')";
+$query_hari = "SELECT SUM(TOTAL) as total FROM transaksi WHERE id_kantin = ? AND TGL = CURDATE() AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai','siap diambil')";
 $stmt_h = $conn->prepare($query_hari);
 $stmt_h->bind_param("i", $id_kantin_toko);
 $stmt_h->execute();
 $pendapatan_hari = $stmt_h->get_result()->fetch_assoc()['total'] ?? 0;
 
-$query_bulan = "SELECT SUM(TOTAL) as total FROM transaksi WHERE id_kantin = ? AND MONTH(TGL) = MONTH(CURDATE()) AND YEAR(TGL) = YEAR(CURDATE()) AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai')";
+$query_bulan = "SELECT SUM(TOTAL) as total FROM transaksi WHERE id_kantin = ? AND MONTH(TGL) = MONTH(CURDATE()) AND YEAR(TGL) = YEAR(CURDATE()) AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'siap diambil')";
 $stmt_b = $conn->prepare($query_bulan);
 $stmt_b->bind_param("i", $id_kantin_toko);
 $stmt_b->execute();
 $pendapatan_bulan = $stmt_b->get_result()->fetch_assoc()['total'] ?? 0;
 
-$query_trx = "SELECT COUNT(ID_TRANSAKSI) as total_trx FROM transaksi WHERE id_kantin = ? AND MONTH(TGL) = MONTH(CURDATE()) AND YEAR(TGL) = YEAR(CURDATE()) AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai')";
+$query_trx = "SELECT COUNT(ID_TRANSAKSI) as total_trx FROM transaksi WHERE id_kantin = ? AND MONTH(TGL) = MONTH(CURDATE()) AND YEAR(TGL) = YEAR(CURDATE()) AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'siap diambil')";
 $stmt_t = $conn->prepare($query_trx);
 $stmt_t->bind_param("i", $id_kantin_toko);
 $stmt_t->execute();
@@ -57,7 +57,7 @@ $query_laris = "SELECT d.NAMA_MENU, SUM(d.QTY) as total_terjual, SUM(d.SUBTOTAL)
                 FROM detail_transaksi d
                 LEFT JOIN tb_menu m ON d.ID_MENU = m.ID_MENU
                 JOIN transaksi t ON d.ID_TRANSAKSI = t.ID_TRANSAKSI
-                WHERE t.id_kantin = ? AND t.STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai')
+                WHERE t.id_kantin = ? AND t.STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'siap diambil')
                 GROUP BY d.NAMA_MENU, m.FOTO_MENU 
                 ORDER BY total_terjual DESC LIMIT 4";
 $stmt_l = $conn->prepare($query_laris);
@@ -94,7 +94,7 @@ $riwayat_transaksi = $stmt_hist->get_result();
 // 5. DATA UNTUK GRAFIK BATANG (Tambah status 'selesai')
 // ========================================================
 $grafik_minggu = array_fill(0, 5, 0);
-$q_g_minggu = "SELECT WEEKDAY(TGL) as hari, SUM(TOTAL) as total FROM transaksi WHERE id_kantin = ? AND YEARWEEK(TGL, 1) = YEARWEEK(CURDATE(), 1) AND WEEKDAY(TGL) BETWEEN 0 AND 4 AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai') GROUP BY WEEKDAY(TGL)";
+$q_g_minggu = "SELECT WEEKDAY(TGL) as hari, SUM(TOTAL) as total FROM transaksi WHERE id_kantin = ? AND YEARWEEK(TGL, 1) = YEARWEEK(CURDATE(), 1) AND WEEKDAY(TGL) BETWEEN 0 AND 4 AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'siap diambil') GROUP BY WEEKDAY(TGL)";
 $stmt_g1 = $conn->prepare($q_g_minggu);
 $stmt_g1->bind_param("i", $id_kantin_toko);
 $stmt_g1->execute();
@@ -104,7 +104,7 @@ while ($row = $res_g1->fetch_assoc()) {
 }
 
 $grafik_bulan = array_fill(0, 12, 0);
-$q_g_bulan = "SELECT MONTH(TGL) as bulan, SUM(TOTAL) as total FROM transaksi WHERE id_kantin = ? AND YEAR(TGL) = YEAR(CURDATE()) AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai') GROUP BY MONTH(TGL)";
+$q_g_bulan = "SELECT MONTH(TGL) as bulan, SUM(TOTAL) as total FROM transaksi WHERE id_kantin = ? AND YEAR(TGL) = YEAR(CURDATE()) AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'siap diambil') GROUP BY MONTH(TGL)";
 $stmt_g2 = $conn->prepare($q_g_bulan);
 $stmt_g2->bind_param("i", $id_kantin_toko);
 $stmt_g2->execute();
@@ -121,7 +121,7 @@ for ($i = 6; $i >= 0; $i--) {
     $labels_tahun[] = $t;
     $grafik_tahun[$t] = 0;
 }
-$q_g_tahun = "SELECT YEAR(TGL) as tahun, SUM(TOTAL) as total FROM transaksi WHERE id_kantin = ? AND YEAR(TGL) >= (? - 6) AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai') GROUP BY YEAR(TGL)";
+$q_g_tahun = "SELECT YEAR(TGL) as tahun, SUM(TOTAL) as total FROM transaksi WHERE id_kantin = ? AND YEAR(TGL) >= (? - 6) AND STATUS IN ('diproses', 'dikonfirmasi', 'pending', 'selesai', 'siap diambil') GROUP BY YEAR(TGL)";
 $stmt_g3 = $conn->prepare($q_g_tahun);
 $stmt_g3->bind_param("ii", $id_kantin_toko, $tahun_sekarang);
 $stmt_g3->execute();
